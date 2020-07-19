@@ -2,68 +2,81 @@ use Proyecto_Lawyers;
 
 SET FOREIGN_KEY_CHECKS = 0;
 
-CREATE TABLE IF NOT EXISTS users (
+CREATE TABLE users (
 	id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(50) NOT NULL,
-    surname VARCHAR(50) NOT NULL,
-    email VARCHAR(50) NOT NULL UNIQUE,
-    phone_number VARCHAR(12) UNIQUE,
-    city VARCHAR(50) NOT NULL,
-    login VARCHAR(50) NOT NULL UNIQUE,
-    password VARCHAR(100) NOT NULL,
-    picture VARCHAR(100),
-    creation_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    update_date DATETIME
+	name VARCHAR(50) NOT NULL,
+	surname VARCHAR(50) NOT NULL,
+	city_user VARCHAR(50) NOT NULL,
+	phone_number_user VARCHAR(12) UNIQUE,
+	login_user VARCHAR(50) NOT NULL UNIQUE,
+	email_user VARCHAR(50) NOT NULL UNIQUE,
+	password TINYTEXT NOT NULL,
+	picture_user VARCHAR(100),
+	role ENUM('normal', 'admin') DEFAULT 'normal' NOT NULL, 
+	low_reason TINYTEXT,
+	active BOOLEAN DEFAULT false,
+	registration_code TINYTEXT,
+	creation_date DATETIME NOT NULL,
+	update_date DATETIME NOT NULL,
+	last_auth_update DATETIME NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS lawyers (
 	id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-    law_firm VARCHAR(50) NOT NULL UNIQUE,
-    street VARCHAR(50) NOT NULL,
-    zip VARCHAR(5) NOT NULL,
-    city VARCHAR(50) NOT NULL,
-    phone_number VARCHAR(12) UNIQUE,
-    email VARCHAR(50) NOT NULL UNIQUE,
-    picture VARCHAR(100),
-    description TINYTEXT,
-    urgency ENUM('Alta', 'Media', 'Baja') NOT NULL,
-    creation_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    update_date DATETIME
+	law_firm VARCHAR(50) NOT NULL UNIQUE,
+	street TINYTEXT NOT NULL,
+	zip VARCHAR(5) NOT NULL,
+	city_lawyer VARCHAR(50) NOT NULL,
+	phone_number_lawyer VARCHAR(12) UNIQUE,
+	login_lawyer VARCHAR(50) NOT NULL UNIQUE,
+	email_lawyer VARCHAR(50) NOT NULL UNIQUE,
+	password TINYTEXT NOT NULL,
+	picture_lawyer VARCHAR(100),
+	low_reason TINYTEXT,
+	active BOOLEAN DEFAULT false,
+	registration_code TINYTEXT,
+	description TINYTEXT,
+	urgency ENUM('alta', 'media', 'baja') DEFAULT 'media' NOT NULL,
+	creation_date DATETIME NOT NULL,
+	update_date DATETIME NOT NULL,
+	last_auth_update DATETIME NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS processes (
+CREATE TABLE IF NOT EXISTS processes(
 	id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-    message VARCHAR(1000) NOT NULL,
-    observations VARCHAR(300),
-    status ENUM('Pendiente', 'Presupuestada', 'Pendiente de una resolución', 'Resuelta'),
-    description VARCHAR(300),
-    id_user INT UNSIGNED,
-    FOREIGN KEY (id_user) REFERENCES users (id),
-    id_lawyer INT UNSIGNED,
-    FOREIGN KEY (id_lawyer) REFERENCES lawyers (id),
-	creation_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    update_date DATETIME
+	message_process TEXT NOT NULL,
+	observations VARCHAR(300),
+	status_process ENUM('pendiente de presupuesto', 'presupuestado', 'presupuesto rechazado', 'pendiente de una resolución', 'resuelto') DEFAULT 'pendiente de presupuesto' NOT NULL,
+	active BOOLEAN DEFAULT true,
+	id_user INT UNSIGNED,
+	FOREIGN KEY(id_user) REFERENCES users(id),
+	id_lawyer INT UNSIGNED,
+	FOREIGN KEY(id_lawyer) REFERENCES lawyers(id),
+	creation_date DATETIME NOT NULL,
+	update_date DATETIME NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS budgets (
+CREATE TABLE IF NOT EXISTS budgets(
 	id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-    status ENUM('Pendiente', 'Aceptado', 'Rechazado'),
-    message VARCHAR(500),
-    price INT DEFAULT 0,
-    rating DECIMAL(4,2),
-    id_lawyer INT UNSIGNED,
-    FOREIGN KEY (id_lawyer) REFERENCES lawyers (id),
-    id_process INT UNSIGNED,
-    FOREIGN KEY (id_process) REFERENCES processes (id),
-	creation_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    update_date DATETIME
+	status_budget ENUM('pendiente', 'aceptado', 'rechazado') DEFAULT 'pendiente' NOT NULL,
+	message_budget TEXT NOT NULL ,
+	price INT NOT NULL,
+	rating INT,
+	opinion TINYTEXT,
+	id_lawyer INT UNSIGNED,
+	FOREIGN KEY(id_lawyer) REFERENCES lawyers(id),
+	id_process INT UNSIGNED,
+	FOREIGN KEY(id_process) REFERENCES processes(id),
+	creation_date DATETIME NOT NULL,
+	update_date DATETIME NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS specialities (
+CREATE TABLE IF NOT EXISTS specialities(
 	id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-    id_lawyer INT UNSIGNED,
-    FOREIGN KEY (id_lawyer) REFERENCES lawyers (id),
-    speciality VARCHAR(50) NOT NULL
+	id_lawyer INT UNSIGNED,
+	FOREIGN KEY(id_lawyer) REFERENCES lawyers(id),
+	speciality TINYTEXT NOT NULL
 );
+
 
 SET FOREIGN_KEY_CHECKS = 1;
