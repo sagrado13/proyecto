@@ -5,32 +5,26 @@ const { getConnection } = require("../../bbdd");
 const jsonwebtoken = require("jsonwebtoken");
 const { generateError } = require("../../helpers");
 
-const {
-  loginUserSchema,
-  loginEmailUserSchema,
-} = require("../../validators/userValidators");
+const { loginSchema } = require("../../validators/userValidators");
 
 async function loginUser(req, res, next) {
   let connection;
   try {
     connection = await getConnection();
 
-    const { login, email, password } = req.body;
+    const { emailOrLogin, password } = req.body;
 
     // Comprobamos los datos que se reciben
-    if (login) {
-      await loginUserSchema.validateAsync(req.body);
-    } else {
-      await loginEmailUserSchema.validateAsync(req.body);
-    }
+    await loginSchema.validateAsync(req.body);
+
     // Verificamos el login o email y la password
     const [user] = await connection.query(
       `
-            SELECT id, role, active
+            SELECT id, name, picture_user, role, low_reason, active, update_date
             FROM users
             WHERE login_user=? OR email_user=? AND password=SHA2(?, 512)
             `,
-      [login, email, password]
+      [emailOrLogin, emailOrLogin, password]
     );
 
     if (user.length === 0) {
@@ -38,6 +32,10 @@ async function loginUser(req, res, next) {
         `No hay ningún usuario con los datos introducidos, revisa que sean correctos`,
         400
       );
+      // Error si está dado de baja
+    } else if (user[0].low_reason !== null) {
+      throw generateError(`El usuario está dado de baja`, 400);
+
       // Si aún está sin activar no le dejamos hacer login
     } else if (!user[0].active) {
       throw generateError(
@@ -70,6 +68,7 @@ async function loginUser(req, res, next) {
     res.send({
       status: `ok`,
       data: {
+        user,
         token,
       },
     });

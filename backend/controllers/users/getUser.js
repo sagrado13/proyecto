@@ -35,6 +35,7 @@ async function getUser(req, res, next) {
 
     // Si es el propio usuario o admin mostramos más datos
     if (userData.id === req.auth.id || req.auth.role === `admin`) {
+      responseData.id = userData.id;
       responseData.name = userData.name;
       responseData.surname = userData.surname;
       responseData.city = userData.city_user;

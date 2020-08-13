@@ -12,7 +12,6 @@ async function editLawyer(req, res, next) {
 
   try {
     connection = await getConnection();
-
     const { idLawyer } = req.params;
     const {
       lawFirm,

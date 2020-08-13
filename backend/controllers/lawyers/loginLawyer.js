@@ -5,33 +5,25 @@ const { getConnection } = require("../../bbdd");
 const jsonwebtoken = require("jsonwebtoken");
 const { generateError } = require("../../helpers");
 
-const {
-  loginLawyerSchema,
-  loginEmailLawyerSchema,
-} = require("../../validators/lawyerValidators");
+const { loginSchema } = require("../../validators/lawyerValidators");
 
 async function loginLawyer(req, res, next) {
   let connection;
   try {
     connection = await getConnection();
 
-    const { login, email, password } = req.body;
-
+    const { emailOrLogin, password } = req.body;
     // Comprobamos los datos que se reciben
-    if (login) {
-      await loginLawyerSchema.validateAsync(req.body);
-    } else {
-      await loginEmailLawyerSchema.validateAsync(req.body);
-    }
+    await loginSchema.validateAsync(req.body);
 
     // Miramos si existe un abogado con el login o email y la contraseña y está activo
     const [lawyer] = await connection.query(
       `
-            SELECT id, active
+            SELECT id, law_firm, picture_lawyer, active, update_date
             FROM lawyers
             WHERE login_lawyer=? OR email_lawyer=? AND password=SHA2(?, 512)
             `,
-      [login, email, password]
+      [emailOrLogin, emailOrLogin, password]
     );
 
     if (lawyer.length === 0) {
@@ -69,6 +61,7 @@ async function loginLawyer(req, res, next) {
     res.send({
       status: `ok`,
       data: {
+        lawyer,
         token,
       },
     });

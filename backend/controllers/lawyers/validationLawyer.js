@@ -9,7 +9,6 @@ async function validationLawyer(req, res, next) {
   try {
     connection = await getConnection();
     const { registrationCode } = req.params;
-
     // Comprobamos que el registationCode que le pasamos es el mismo que tenemos en la bbdd
     const [lawyer] = await connection.query(
       `

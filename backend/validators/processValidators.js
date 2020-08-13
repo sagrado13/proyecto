@@ -15,9 +15,6 @@ const newProcessSchema = Joi.object().keys({
         400
       )
     ),
-  idLawyer: Joi.number()
-    .required()
-    .error(generateError(`El campo idLawyer tiene que existir y ser numérico`)),
 });
 
 // Validator editar proceso por usuario
@@ -33,17 +30,7 @@ const editProcessUserSchema = Joi.object().keys({
     ),
 });
 
-// Validator editar proceso por abogado
-const editProcessLawyerSchema = Joi.object().keys({
-  status: Joi.string()
-    .lowercase()
-    .valid(`resuelto`)
-    .required()
-    .error(generateError(`El campo status debe existir y ser 'resuelto'`, 400)),
-});
-
 module.exports = {
   newProcessSchema,
   editProcessUserSchema,
-  editProcessLawyerSchema,
 };

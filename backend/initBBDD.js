@@ -87,7 +87,7 @@ async function main() {
     await connection.query(`
       CREATE TABLE IF NOT EXISTS budgets(
           id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-          status_budget ENUM('pendiente', 'aceptado', 'rechazado') DEFAULT 'pendiente' NOT NULL,
+          status_budget ENUM('pendiente de respuesta', 'aceptado', 'rechazado') DEFAULT 'pendiente de respuesta' NOT NULL,
           message_budget TEXT NOT NULL ,
           price INT NOT NULL,
           rating INT,

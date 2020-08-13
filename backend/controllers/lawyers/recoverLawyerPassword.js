@@ -35,7 +35,7 @@ async function recoverLawyerPassword(req, res, next) {
 
     // Insertamos un código aleatorio en la url que se le enviará al email del abogado
     const recoverCode = randomString(40);
-    const recoverURL = `${process.env.PUBLIC_HOST}/lawyers/reset-password/${recoverCode}`;
+    const recoverURL = `${process.env.FRONTEND_HOST}/lawyers/reset-password/${recoverCode}`;
 
     await connection.query(
       `

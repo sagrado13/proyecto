@@ -16,9 +16,9 @@ async function getLawyer(req, res, next) {
     const [lawyer] = await connection.query(
       `
       SELECT L.id, L.law_firm, L.street, L.zip, L.city_lawyer, L.phone_number_lawyer, L.login_lawyer, 
-      L.email_lawyer, L.picture_lawyer, L.description, L.urgency, L.creation_date, (SELECT AVG(rating) 
-      FROM budgets WHERE id_lawyer=L.id AND rating>0) AS voteAverage, (SELECT COUNT(rating) 
-      FROM budgets WHERE id_lawyer=L.id) AS total_ratings
+      L.email_lawyer, L.picture_lawyer, L.description, L.urgency, L.creation_date, L.update_date, 
+      (SELECT AVG(rating) FROM budgets WHERE id_lawyer=L.id AND rating>0) AS voteAverage, 
+      (SELECT COUNT(rating) FROM budgets WHERE id_lawyer=L.id) AS total_ratings
       FROM lawyers L
       WHERE L.id=? AND active=true
       `,
@@ -30,7 +30,7 @@ async function getLawyer(req, res, next) {
     }
     const [specialities] = await connection.query(
       `
-      SELECT speciality
+      SELECT id, speciality
       FROM specialities
       WHERE id_lawyer=?
       `,
@@ -40,22 +40,26 @@ async function getLawyer(req, res, next) {
     const [lawyerData] = lawyer;
 
     const responseData = {
-      login: lawyerData.login_lawyer,
+      id: lawyerData.id,
+      lawFirm: lawyerData.law_firm,
+      street: lawyerData.street,
+      zip: lawyerData.zip,
+      city: lawyerData.city_lawyer,
+      phoneNumber: lawyerData.phone_number_lawyer,
+      email: lawyerData.email_lawyer,
       picture: lawyerData.picture_lawyer,
+      urgency: lawyerData.urgency,
+      description: lawyerData.description,
+      voteAverage: lawyerData.voteAverage,
+      totalRatings: lawyerData.total_ratings,
+      creationDate: lawyerData.creation_date,
+      updateDate: lawyerData.update_date,
+      login: lawyerData.login_lawyer,
     };
-
-    // Si es el propio abogado o admin mostramos más datos
+    /*     // Si es el propio abogado o admin mostramos más datos
     if (lawyerData.id === req.auth.id || req.auth.role === `admin`) {
-      responseData.lawFirm = lawyerData.law_firm;
-      responseData.street = lawyerData.street;
-      responseData.zip = lawyerData.zip;
-      responseData.city = lawyerData.city_lawyer;
-      responseData.phoneNumber = lawyerData.phone_number_lawyer;
-      responseData.email = lawyerData.email_lawyer;
-      responseData.description = lawyerData.description;
-      responseData.urgency = lawyerData.urgency;
-      responseData.creationDate = lawyerData.creation_date;
-    }
+      responseData.login_lawyer = lawyerData.login_lawyer;
+    } */
 
     // Damos una respuesta
     res.send({

@@ -37,7 +37,8 @@ async function listDeletedLawyers(req, res, next) {
     const [lawyers] = await connection.query(
       `
       SELECT id, law_firm, street, zip, city_lawyer, phone_number_lawyer, login_lawyer, 
-      email_lawyer, picture_lawyer, description, low_reason, creation_date, update_date
+      email_lawyer, picture_lawyer, description, low_reason, registration_code, 
+      creation_date, update_date
       FROM lawyers
       WHERE active=false
       ORDER BY ${orderBy} ${orderDirection}

@@ -4,10 +4,7 @@
 const { getConnection } = require("../../bbdd");
 const { generateError } = require("../../helpers");
 
-const {
-  editProcessUserSchema,
-  editProcessLawyerSchema,
-} = require("../../validators/processValidators");
+const { editProcessUserSchema } = require("../../validators/processValidators");
 
 async function editProcess(req, res, next) {
   let connection;
@@ -16,7 +13,7 @@ async function editProcess(req, res, next) {
     connection = await getConnection();
 
     const { idUser, idLawyer, idProcess } = req.params;
-    const { observations, status } = req.body;
+    const { observations } = req.body;
 
     if (idUser) {
       // Comprobamos los datos
@@ -62,23 +59,35 @@ async function editProcess(req, res, next) {
     }
 
     if (idLawyer) {
-      // Comprobamos los datos
-      await editProcessLawyerSchema.validateAsync(req.body);
-
-      const [lawyerProcess] = await connection.query(
+      const [lawyerBudget] = await connection.query(
         `
-            SELECT status_process, id_lawyer
-            FROM processes
-            WHERE id=?
-            `,
+        SELECT id, status_budget, id_lawyer
+        FROM budgets
+        WHERE id_process=?
+        `,
         [idProcess]
       );
 
       // Comprobamos si es el abogado que firma la petición
-      if (req.auth.id !== Number(lawyerProcess[0].id_lawyer)) {
+      if (req.auth.id !== Number(lawyerBudget[0].id_lawyer)) {
         throw generateError(`No tienes permiso para editar el proceso`, 401);
       }
 
+      // Comprobamos si existe presupuesto para ese proceso
+      if (lawyerBudget.length === 0) {
+        throw generateError(
+          `No se puede dar como resuelto un proceso si aún no tiene presupuesto y este no sea aceptado`
+        );
+      }
+
+      // Comprobamos que el el presupuesto está aceptado
+      if (lawyerBudget[0].status_budget !== `aceptado`) {
+        throw generateError(
+          `No puedes dar un proceso como resuelto si el presupuesto no está aceptado`,
+          400
+        );
+      }
+      console.log(lawyerBudget[0].status_budget);
       // Actualizamos la bbdd
       await connection.query(
         `
@@ -90,8 +99,8 @@ async function editProcess(req, res, next) {
       );
       // Damos una respuesta
       res.send({
-        idProcess,
-        status,
+        status: `ok`,
+        message: `Proceso resuelto`,
       });
     }
   } catch (error) {

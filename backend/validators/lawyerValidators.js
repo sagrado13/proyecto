@@ -34,6 +34,15 @@ const newLawyerSchema = Joi.object().keys({
         400
       )
     ),
+  phoneNumber: Joi.number()
+    .required()
+    .integer()
+    .error(
+      generateError(
+        `El campo phoneNumber tiene que existir, ser numérico y no puede llevar espacios,puntos,barras... introduce todo el número junto`,
+        400
+      )
+    ),
   login: Joi.string()
     .alphanum()
     .min(3)
@@ -62,36 +71,17 @@ const newLawyerSchema = Joi.object().keys({
 });
 
 // Validator para loguearse con login y contraseña
-const loginLawyerSchema = Joi.object().keys({
-  login: Joi.string()
-    .alphanum()
+const loginSchema = Joi.object().keys({
+  emailOrLogin: Joi.string()
     .min(3)
     .max(30)
     .required()
     .error(
       generateError(
-        `El campo login debe existir y tener entre 3 y 30 caracteres alfanúmericos `,
+        `El campo emailOrLogin debe existir y tener entre 3 y 30 caracteres alfanúmericos `,
         400
       )
     ),
-  password: Joi.string()
-    .alphanum()
-    .min(8)
-    .required()
-    .error(
-      generateError(
-        `El campo password debe existir y tener mínimo 8 caracteres alfanúmericos`,
-        400
-      )
-    ),
-});
-
-// Validator para loguearse con email y contraseña
-const loginEmailLawyerSchema = Joi.object().keys({
-  email: Joi.string()
-    .email()
-    .required()
-    .error(generateError(`El email debe existrir y ser un email válido`, 400)),
   password: Joi.string()
     .alphanum()
     .min(8)
@@ -283,8 +273,7 @@ const searchLawyerSchema = Joi.object().keys({
 
 module.exports = {
   newLawyerSchema,
-  loginLawyerSchema,
-  loginEmailLawyerSchema,
+  loginSchema,
   deleteLawyerSchema,
   editLawyerSchema,
   editLawyerPasswordSchema,

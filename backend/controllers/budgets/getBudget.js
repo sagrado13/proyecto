@@ -10,20 +10,19 @@ async function getBudget(req, res, next) {
   try {
     connection = await getConnection();
 
-    const { idUser, idLawyer, idBudget } = req.params;
-
+    const { idUser, idLawyer, idProcess } = req.params;
     if (idUser) {
       const [budgetUser] = await connection.query(
         `
-            SELECT B.status_budget, B.message_budget, B.price, B.rating, B.opinion, B.id_lawyer, 
+            SELECT B.id, B.status_budget, B.message_budget, B.price, B.rating, B.opinion, B.id_lawyer, 
             B.creation_date, B.update_date, L.law_firm, L.city_lawyer, L.phone_number_lawyer, 
             L.email_lawyer, L.picture_lawyer
             FROM budgets B
-            INNER JOIN lawyers L ON B.id_lawyer=L.id
-            INNER JOIN processes P ON B.id_process=P.id
-            WHERE P.id_user=? AND B.id=?
+            LEFT JOIN lawyers L ON B.id_lawyer=L.id
+            LEFT JOIN processes P ON B.id_process=P.id
+            WHERE P.id_user=? AND B.id_process=?
             `,
-        [idUser, idBudget]
+        [idUser, idProcess]
       );
 
       // Comprobamos que el usuario que accede al presupuesto es el mismo que firma la petición
@@ -37,7 +36,7 @@ async function getBudget(req, res, next) {
       // Miramos si existe y sino lanzamos un error
       if (budgetUser.length === 0) {
         throw generateError(
-          `No tienes ningún presupuesto con la id:${idBudget}`,
+          `No tienes ningún presupuesto para este proceso`,
           404
         );
       }
@@ -52,15 +51,15 @@ async function getBudget(req, res, next) {
     if (idLawyer) {
       const [budgetLawyer] = await connection.query(
         `
-            SELECT B.status_budget, B.message_budget, B.price, B.rating, B.opinion, B.creation_date, 
+            SELECT B.id, B.status_budget, B.message_budget, B.price, B.rating, B.opinion, B.id_process, B.creation_date, 
             B.update_date, U.name, U.surname, U.city_user, U.phone_number_user, U.email_user, 
-            U.picture_user, P.id_user
+            U.picture_user, P.message_process, P.status_process, P.id_user
             FROM budgets B
             INNER JOIN processes P ON B.id_process=P.id
             INNER JOIN users U ON P.id_user=U.id
-            WHERE B.id_lawyer=? AND B.id=?
+            WHERE B.id_lawyer=? AND B.id_process=?
             `,
-        [idLawyer, idBudget]
+        [idLawyer, idProcess]
       );
 
       // Comprobamos que es el abogado que firma la petición
@@ -74,7 +73,7 @@ async function getBudget(req, res, next) {
       // Comprobamos si existe y sino lanzamos un error
       if (budgetLawyer.length === 0) {
         throw generateError(
-          `No tienes ningún presupuesto creado con la id:${idBudget}`,
+          `No tienes ningún presupuesto creado para este proceso`,
           404
         );
       }

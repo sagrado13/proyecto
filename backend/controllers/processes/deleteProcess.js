@@ -48,8 +48,8 @@ async function deleteProcess(req, res, next) {
     // Borramos el proceso con id de usuario  e id de proceso que le pasamos (Desactivamos el proceso en la bbdd)
     await connection.query(
       `
-            UPDATE processes P, budgets B
-            SET P.active=false, B.active=false
+            UPDATE processes P
+            SET P.active=false
             WHERE P.id=?
             `,
       [idProcess]

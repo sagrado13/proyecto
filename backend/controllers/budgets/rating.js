@@ -14,8 +14,8 @@ async function rating(req, res, next) {
 
     const { idUser, idProcess } = req.params;
     const { rating, opinion } = req.body;
-
     // Comprobamos los datos
+    console.log(rating);
     await ratingSchema.validateAsync(req.body);
 
     // Verificamos el usuario que va a votar es el que firma la petición

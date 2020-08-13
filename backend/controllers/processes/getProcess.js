@@ -18,7 +18,7 @@ async function getProcess(req, res, next) {
             SELECT P.message_process, P.observations, P.status_process, P.id_lawyer, 
             P.creation_date, P.update_date, L.law_firm, L.city_lawyer, L.phone_number_lawyer, 
             L.email_lawyer, L.picture_lawyer, B.id, B.status_budget, B.message_budget, B.price, 
-            B.rating
+            B.rating, B.opinion
             FROM processes P
             LEFT JOIN lawyers L ON P.id_lawyer=L.id
             LEFT JOIN budgets B ON B.id_process=P.id
@@ -49,10 +49,10 @@ async function getProcess(req, res, next) {
     if (idLawyer) {
       const [processLawyer] = await connection.query(
         `
-            SELECT P.message_process, P.observations, P.status_process, P.id_user, 
+            SELECT P.id, P.message_process, P.observations, P.status_process, P.id_user, P.id_lawyer,
             P.creation_date, P.update_date, U.name, U.surname, U.city_user, U.phone_number_user, 
-            U.email_user, U.picture_user, B.id, B.status_budget, B.message_budget, B.price, 
-            B.rating
+            U.email_user, U.picture_user, B.status_budget, B.message_budget, B.price, 
+            B.rating, B.opinion
             FROM processes P
             LEFT JOIN users U ON P.id_user=U.id
             LEFT JOIN budgets B ON B.id_process=P.id

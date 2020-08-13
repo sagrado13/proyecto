@@ -2,7 +2,12 @@
 
 // Módulos necesarios
 const { getConnection } = require("../../bbdd");
-const { randomString, sendMail, generateError } = require("../../helpers");
+const {
+  randomString,
+  sendMail,
+  processAndSaveLawyersPicture,
+  generateError,
+} = require("../../helpers");
 
 const { newLawyerSchema } = require("../../validators/lawyerValidators");
 
@@ -17,11 +22,22 @@ async function newLawyer(req, res, next) {
       street,
       zip,
       city,
+      phoneNumber,
       login,
       emailLawyer,
       password,
     } = req.body;
-
+    console.log(login);
+    console.log(
+      lawFirm,
+      street,
+      zip,
+      city,
+      phoneNumber,
+      login,
+      emailLawyer,
+      password
+    );
     // Comprobamos los datos
     await newLawyerSchema.validateAsync(req.body);
 
@@ -30,14 +46,14 @@ async function newLawyer(req, res, next) {
       `
             SELECT id
             FROM lawyers
-            WHERE law_firm=? OR login_lawyer=? OR email_lawyer=?
+            WHERE law_firm=? OR phone_number_lawyer=? OR login_lawyer=? OR email_lawyer=?
             `,
-      [lawFirm, login, emailLawyer]
+      [lawFirm, phoneNumber, login, emailLawyer]
     );
 
     if (existingLawyer.length > 0) {
       throw generateError(
-        `Ya existe un abogado con ese nombre, login o email`,
+        `Ya existe un abogado con ese nombre, teléfono, login o email`,
         409
       );
     }
@@ -47,14 +63,14 @@ async function newLawyer(req, res, next) {
       `
       SELECT id
       FROM users
-      WHERE login_user=? OR email_user=?
+      WHERE phone_number_user=? OR login_user=? OR email_user=?
       `,
-      [login, emailLawyer]
+      [phoneNumber, login, emailLawyer]
     );
 
     if (existingUser.length > 0) {
       throw generateError(
-        `Ya existe un usuario con ese login o email, si estás registrado como usuario no puedes registrarte como abogado`,
+        `Ya existe un usuario con ese teléfono, login o email, si estás registrado como usuario no puedes registrarte como abogado`,
         409
       );
     }
@@ -70,9 +86,25 @@ async function newLawyer(req, res, next) {
 
     const email = admin[0].email_user;
 
+    // Si nos mandan imagen la procesamos y guardamos
+    let savedFileName;
+
+    if (req.files && req.files.avatar) {
+      try {
+        savedFileName = await processAndSaveLawyersPicture(req.files.avatar);
+      } catch (error) {
+        throw generateError(
+          `No se puede procesar la imagen, inténtalo de nuevo`,
+          400
+        );
+      }
+    } else {
+      savedFileName = null;
+    }
+
     // Enviamos un email de confirmación de registro al email del admin
     const registrationCode = randomString(30);
-    const validationURL = `${process.env.PUBLIC_HOST}/lawyers/validation/${registrationCode}`;
+    const validationURL = `${process.env.FRONTEND_HOST}/lawyers/validation/${registrationCode}`;
 
     try {
       await sendMail({
@@ -90,17 +122,20 @@ async function newLawyer(req, res, next) {
     // Insentamos el nuevo abogado sin activar en la bbdd
     await connection.query(
       `
-      INSERT INTO lawyers(law_firm, street, zip, city_lawyer, login_lawyer, email_lawyer, password, registration_code, creation_date, update_date, last_auth_update)
-      VALUES(?, ?, ?, ?, ?, ?, SHA2(?, 512), ?, UTC_TIMESTAMP, UTC_TIMESTAMP, UTC_TIMESTAMP)
+      INSERT INTO lawyers(law_firm, street, zip, city_lawyer, phone_number_lawyer, login_lawyer, email_lawyer, password, 
+      picture_lawyer, registration_code, creation_date, update_date, last_auth_update)
+      VALUES(?, ?, ?, ?, ?, ?, ?, SHA2(?, 512), ?, ?, UTC_TIMESTAMP, UTC_TIMESTAMP, UTC_TIMESTAMP)
       `,
       [
         lawFirm,
         street,
         zip,
         city,
+        phoneNumber,
         login,
         emailLawyer,
         password,
+        savedFileName,
         registrationCode,
       ]
     );

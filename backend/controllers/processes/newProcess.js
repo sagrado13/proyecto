@@ -11,8 +11,8 @@ async function newProcess(req, res, next) {
   try {
     connection = await getConnection();
 
-    const { idUser } = req.params;
-    const { message, idLawyer } = req.body;
+    const { idUser, idLawyer } = req.params;
+    const { message } = req.body;
 
     // Comprobamos los datos
     await newProcessSchema.validateAsync(req.body);

@@ -8,10 +8,13 @@ const express = require("express");
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const fileUpload = require("express-fileupload");
+const cors = require("cors");
 
 // Admin controllers
 const listDeletedUsers = require("./controllers/admin/listDeletedUsers");
-const listDeletedLawyers = require("./controllers/admin/listDeleteLawyers");
+const reactivateUser = require("./controllers/admin/reactivateUser");
+const listDeletedLawyers = require("./controllers/admin/listDeletedLawyers");
+const reactivateLawyer = require("./controllers/admin/reactivateLawyer");
 
 // Users controllers
 const newUser = require("./controllers/users/newUser");
@@ -30,6 +33,7 @@ const newLawyer = require("./controllers/lawyers/newLawyer");
 const validationLawyer = require("./controllers/lawyers/validationLawyer");
 const loginLawyer = require("./controllers/lawyers/loginLawyer");
 const getLawyer = require("./controllers/lawyers/getLawyer");
+const listLawyers = require("./controllers/lawyers/listLawyers");
 const deleteLawyer = require("./controllers/lawyers/deleteLawyer");
 const editLawyer = require("./controllers/lawyers/editLawyer");
 const editLawyerPassword = require("./controllers/lawyers/editLawyerPassword");
@@ -77,15 +81,27 @@ app.use(bodyParser.json());
 // Procesado body tipo form-data
 app.use(fileUpload());
 
+app.use(express.static("static"));
+
+app.use(cors());
+
 // ADMIN ENDPOINTS
 
 // Listar usuarios dados de baja
 // GET - /list-users
 app.get("/list-users", isUser, isAdmin, listDeletedUsers);
 
+// Reactivar cuenta de usuario
+// GET - /reactivate-user/:idUser
+app.get("/reactivate-user/:idUser", reactivateUser);
+
 // Listar abogados dados de baja
 // GET - /list-lawyers
 app.get("/list-lawyers", isLawyer, isAdmin, listDeletedLawyers);
+
+// Reactivar cuenta de abogado
+// GET - /reactivate-lawyer/:idLawyer
+app.get("/reactivate-lawyer/:idLawyer", reactivateLawyer);
 
 // USERS ENDPOINTS
 
@@ -143,9 +159,13 @@ app.get("/lawyers/validation/:registrationCode", validationLawyer);
 // POST - /lawyers/login
 app.post("/lawyers/login", loginLawyer);
 
-// Ver información de abogado
+// Ver información de abogado por usuario
 // GET - /lawyers/:idLawyer/data
-app.get("/lawyers/:idLawyer/data", isLawyer, getLawyer);
+app.get("/lawyers/:idLawyer/data", getLawyer);
+
+// Listar todos los abogados
+// GET - /lawyers/list
+app.get("/lawyers/list", listLawyers);
 
 // Borrar abogado
 // PUT - /lawyers/:idLawyer/delete
@@ -179,11 +199,10 @@ app.get("/lawyers/search", searchLawyer);
 
 // Abrir proceso
 // POST - /users/:idUser/processes
-app.post("/users/:idUser/processes", isUser, newProcess);
+app.post("/users/:idUser/processes/lawyers/:idLawyer", isUser, newProcess);
 
 // Editar proceso por usuario
 // PUT - /users/:idUser/processes/:idProcess/edit
-// PUT - /lawyers/:idLawyer/processes/:idProcess/edit
 app.put(
   "/users/:idUser/processes/:idProcess/edit",
   isUser,
@@ -277,17 +296,12 @@ app.put(
 );
 
 // Listar presupuesto determinado por usuario
-// GET - /user/:idUser/budgets/:idBudget
-app.get("/users/:idUser/budgets/:idBudget", isUser, budgetExists, getBudget);
+// GET - /user/:idUser/process/:idProcess
+app.get("/users/:idUser/process/:idProcess", isUser, getBudget);
 
 // Listar presupuesto determinado por abogado
-// GET - /lawyers/:idLawyers/budgets/:idBudget
-app.get(
-  "/lawyers/:idLawyer/budgets/:idBudget",
-  isLawyer,
-  budgetExists,
-  getBudget
-);
+// GET - /lawyers/:idLawyers/process/:idProcess
+app.get("/lawyers/:idLawyer/process/:idProcess", isLawyer, getBudget);
 
 // Puntuar por usuario
 // PUT - /users/:idUser/processes/:idProcess/budgets
@@ -305,8 +319,8 @@ app.get("/lawyers/:idLawyer/list-rating", listRating);
 // SPECIALITIES ENDPOINTS
 
 // Añadir nueva especialidad por abogado
-// GET - /lawyers/:idLawyer/specilities
-app.get("/lawyers/:idLawyer/specialities", isLawyer, addNewSpeciality);
+// POST - /lawyers/:idLawyer/specilities
+app.post("/lawyers/:idLawyer/specialities", isLawyer, addNewSpeciality);
 
 // Borrar una especialidad por abogado
 // DELETE - /lawyers/:idLawyer/specialities/:idSpeciality

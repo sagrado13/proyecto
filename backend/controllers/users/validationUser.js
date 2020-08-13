@@ -41,7 +41,7 @@ async function validationUser(req, res, next) {
     // Damos una respuesta
     res.send({
       status: `ok`,
-      message: `Ya puedes hacer login con tu email: ${result[0].email_user} y tu contraseña`,
+      message: `Cuenta validada.Ya puedes hacer login cuando quieras`,
     });
   } catch (error) {
     next(error);

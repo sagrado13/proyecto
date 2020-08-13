@@ -50,8 +50,8 @@ async function processAndSaveUsersPicture(uploadedPicture) {
   const pictureInfo = await picture.metadata();
 
   // Cambiamos el tamaño si es demasiado grande
-  if (pictureInfo.width > 800) {
-    picture.resize(800);
+  if (pictureInfo.width > 200 || pictureInfo.heigth > 200) {
+    picture.resize({ width: 200, height: 200 });
   }
 
   // Guardamos la imagen en el directorio
@@ -85,8 +85,8 @@ async function processAndSaveLawyersPicture(uploadedPicture) {
   const pictureInfo = await picture.metadata();
 
   // Cambiamos el tamaño si es demasiado grande
-  if (pictureInfo.width > 800) {
-    picture.resize(800);
+  if (pictureInfo.width > 200 || pictureInfo > 200) {
+    picture.resize({ width: 200, height: 200 });
   }
 
   // Guardamos la imagen en el directorio

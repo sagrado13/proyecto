@@ -1,0 +1,125 @@
+<template>
+  <div>
+    <button id="back" @click="goBack()">🔙</button>
+    <h4>Nuevos presupuesto para proceso Nº{{ idProcess }}</h4>
+    <legend>Mensaje para su cliente*</legend>
+    <textarea
+      v-model="message"
+      name="message"
+      placeholder="Mensaje para el cliente"
+      cols="45"
+      rows="20"
+    ></textarea>
+
+    <legend>Precio*</legend>
+    <input type="text" placeholder="Precio" v-model="price" />
+    <button id="create" @click="addNewBudget()">Crear presupuesto</button>
+  </div>
+</template>
+
+<script>
+// Importamos axios
+import axios from "axios";
+// Importamos sweetalert2
+import Swal from "sweetalert2";
+// IMPORTAMOS FUNCIONES
+import { getIdToken } from "../api/utils";
+export default {
+  name: "NewBudget",
+  data() {
+    return {
+      idProcess: "",
+      message: "",
+      price: "",
+    };
+  },
+  methods: {
+    // FUNCIÓN PARA OBTENER ID DE PROCESO DE LA RUTA Y PONERLA EN EL TÍTULO
+    getIdProcess() {
+      this.idProcess = this.$route.params.id;
+    },
+    // FUNCIÓN PARA VOLVER PARA ATRÁS
+    goBack() {
+      window.history.back();
+    },
+    // FUNCIÓN PARA CREAR UN NUEVO PRESUPUESTO
+    async addNewBudget() {
+      try {
+        let token = localStorage.getItem("AUTH_TOKEN_KEY");
+        axios.defaults.headers.common["Authorization"] = `${token}`;
+        const response = await axios.post(
+          "http://localhost:3000/lawyers/" +
+            getIdToken(token) +
+            "/processes/" +
+            this.idProcess +
+            "/budgets",
+          {
+            message: this.message,
+            price: this.price,
+          }
+        );
+        window.history.back();
+        Swal.fire({
+          title: `${response.data.message}`,
+          icon: "success",
+          confirmButtonText: "OK",
+        });
+      } catch (error) {
+        console.log(error);
+        Swal.fire({
+          icon: "error",
+          title: `${error.response.data.message}`,
+        });
+      }
+    },
+  },
+  created() {
+    this.getIdProcess();
+  },
+};
+</script>
+
+<style scoped>
+div {
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+button#back {
+  align-self: flex-start;
+}
+h4 {
+  margin: 1rem;
+  text-decoration: underline;
+}
+legend {
+  font-size: 0.8rem;
+}
+textarea {
+  outline: none;
+  font-size: 0.8rem;
+  margin-bottom: 1rem;
+}
+input {
+  outline: none;
+  width: 30%;
+  text-align: center;
+  font-size: 0.9rem;
+  text-align: center;
+  background: rgb(22, 22, 22);
+  color: white;
+  border-width: 0 0 1px;
+  border-color: yellowgreen;
+}
+button#create {
+  outline: none;
+  border-radius: 20px;
+  margin: 0.5rem;
+  padding-top: 0.1rem;
+  padding-bottom: 0.1rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  box-shadow: 5px 5px 30px white inset;
+}
+</style>

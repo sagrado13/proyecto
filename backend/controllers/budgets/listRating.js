@@ -30,7 +30,7 @@ async function listRating(req, res, next) {
     // Verificamos que el abogado existe y está activo
     const [lawyer] = await connection.query(
       `
-      SELECT L.law_firm, L.city_lawyer, L.picture_lawyer,
+      SELECT L.id, L.law_firm, L.city_lawyer, L.picture_lawyer,
       (SELECT COUNT(B.id_lawyer) FROM budgets B WHERE B.id_lawyer=L.id) AS total_ratings
       FROM lawyers L
       WHERE id=? AND active=true

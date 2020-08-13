@@ -37,7 +37,7 @@ async function listDeletedUsers(req, res, next) {
     const [users] = await connection.query(
       `
       SELECT id, name, surname, city_user, phone_number_user, login_user, email_user, 
-      picture_user, low_reason, creation_date, update_date
+      picture_user, low_reason, registration_code, creation_date, update_date
       FROM users
       WHERE active=false
       ORDER BY ${orderBy} ${orderDirection}

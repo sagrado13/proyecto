@@ -35,7 +35,7 @@ async function recoverUserPassword(req, res, next) {
 
     // Insertamos un código aleatorio en la url que se enviara por email para resetear la password
     const recoverCode = randomString(40);
-    const recoverURL = `${process.env.PUBLIC_HOST}/users/reset-password/${recoverCode}`;
+    const recoverURL = `${process.env.FRONTEND_HOST}/users/reset-password/${recoverCode}`;
 
     await connection.query(
       `

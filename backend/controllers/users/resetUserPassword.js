@@ -17,7 +17,6 @@ async function resetUserPassword(req, res, next) {
 
     const { recoverCode } = req.params;
     const { newPassword } = req.body;
-
     // Comprobamos los datos
     await resetRecoverCodeUserPasswordSchema.validateAsync(req.params);
     await resetUserPasswordSchema.validateAsync(req.body);

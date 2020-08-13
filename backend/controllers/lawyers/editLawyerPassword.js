@@ -40,7 +40,6 @@ async function editLawyerPassword(req, res, next) {
           `,
       [idLawyer, oldPassword]
     );
-    console.log(lawyer[0].email_lawyer);
 
     if (lawyer.length === 0) {
       throw generateError(`Tu password antigua no es correcta`, 401);

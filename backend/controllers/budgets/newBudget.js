@@ -18,31 +18,23 @@ async function newBudget(req, res, next) {
     // Comprobamos datos
     await newBudgetSchema.validateAsync(req.body);
 
-    // Verificamos que es el abogado que firma la petición
-    if (req.auth.id !== Number(idLawyer)) {
-      throw generateError(
-        `No puedes mandar un presupuesto sin hacer login`,
-        401
-      );
-    }
-
     // Cogemos datos de abogado para añadirlo al email que se le enviará al usuario
     const [lawyer] = await connection.query(
       `
-          SELECT law_firm
-          FROM lawyers
-          WHERE id=?
-          `,
+      SELECT law_firm
+      FROM lawyers
+      WHERE id=?
+      `,
       [idLawyer]
     );
 
     // Cogemos datos de proceso y comprobamos que existe
     const [process] = await connection.query(
       `
-          SELECT id_user, status_process
-          FROM processes
-          WHERE id=? AND id_lawyer=?
-          `,
+        SELECT id_user, id_lawyer, status_process
+        FROM processes
+        WHERE id=? AND id_lawyer=?
+        `,
       [idProcess, idLawyer]
     );
 
@@ -50,6 +42,13 @@ async function newBudget(req, res, next) {
       throw generateError(
         `No existe nigún proceso con el id:${idProcess}`,
         404
+      );
+    }
+    // Verificamos que es el abogado que firma la petición
+    if (req.auth.id !== process[0].id_lawyer) {
+      throw generateError(
+        `No puedes mandar un presupuesto de otro abogado`,
+        401
       );
     }
 
