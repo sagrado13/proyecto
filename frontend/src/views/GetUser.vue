@@ -333,6 +333,7 @@ button#delete {
     font-size: 0.8rem;
   }
   button#deletePicture {
+    margin-top: 0.8rem;
     font-size: 0.7rem;
   }
   button#updateButton {
@@ -346,6 +347,36 @@ button#delete {
   div#deleteUser textarea {
     width: 90%;
     height: 250px;
+  }
+}
+
+@media (min-width: 1000px) {
+  div#update {
+    width: 50%;
+    margin: 0 auto;
+  }
+  p {
+    font-size: 1.1rem;
+    margin-bottom: 1.8rem;
+  }
+  button {
+    font-size: 1rem;
+  }
+  button#updateButton {
+    font-size: 1.15rem;
+  }
+  div#editPassword div {
+    justify-content: space-evenly;
+  }
+  div#changePassword {
+    margin-top: 5rem;
+  }
+  div#changePassword input {
+    width: 20%;
+  }
+  div#deleteUser textarea {
+    width: 50%;
+    margin-bottom: 2rem;
   }
 }
 </style>

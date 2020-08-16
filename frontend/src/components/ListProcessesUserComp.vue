@@ -56,7 +56,7 @@
             <router-link :to="{ name: 'GetBudgetUser', params: { id: process.id } }">Ver presupuesto</router-link>
           </button>
           <button
-            :class="{ hide: process.status_process !== 'resuelto' }"
+            :class="{ hide: process.status_process !== 'resuelto', hide: process.rating > 0 }"
             @click="sendProcessData(index)"
           >Votar</button>
         </div>
@@ -114,6 +114,9 @@ ul li span {
 }
 p {
   font-size: 0.8rem;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 div#buttons {
   display: flex;
@@ -148,6 +151,27 @@ button {
     font-size: 0.9rem;
     padding-top: 0.2rem;
     padding-bottom: 0.2rem;
+  }
+}
+
+@media (min-width: 1000px) {
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  ul li {
+    max-width: 30%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  p {
+    font-size: 1rem;
+  }
+  button {
+    font-size: 1rem;
   }
 }
 </style>

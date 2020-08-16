@@ -121,6 +121,16 @@ const routes = [
     meta: {
       allowAnon: false,
     },
+    beforeEnter: (to, from, next) => {
+      if (isLoggedInLawyer()) {
+        next({
+          path: "/new-user",
+          query: { redirect: to.fullPath },
+        });
+      } else {
+        next();
+      }
+    },
   },
   // Ver processos de usuario
   {

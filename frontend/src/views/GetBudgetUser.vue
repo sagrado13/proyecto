@@ -118,16 +118,19 @@ div#main {
   border: 1px solid white;
   margin: 0.5rem;
   margin-bottom: 2rem;
-  padding: 0.3rem;
+  padding: 0.5rem;
   font-size: 0.8rem;
 }
 button#back {
+  all: unset;
   outline: none;
   display: flex;
 }
 div fieldset {
   width: 80%;
   margin: 0 auto;
+  border-radius: 20px;
+  margin-bottom: 2rem;
 }
 label {
   margin-right: 1rem;
@@ -158,6 +161,22 @@ button#send {
     padding-left: 0.3rem;
     padding-right: 0.3rem;
     font-size: 0.9rem;
+  }
+}
+
+@media (min-width: 1000px) {
+  button#back {
+    font-size: 1.4rem;
+  }
+  div#main {
+    max-width: 70%;
+    display: inline-block;
+  }
+  div fieldset {
+    width: 35%;
+  }
+  button#send {
+    font-size: 1rem;
   }
 }
 </style>

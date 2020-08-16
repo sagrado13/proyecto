@@ -79,13 +79,17 @@ export default {
 <style scoped>
 img {
   border-radius: 50%;
-  width: 35%;
+  width: 80px;
+}
+ul {
+  margin-bottom: 2rem;
 }
 ul li {
   list-style: none;
   margin: 1rem;
   padding: 1rem;
   border: 1px solid white;
+  /* border-radius: 50px; */
 }
 ul li p {
   margin-top: 0.5rem;
@@ -95,8 +99,7 @@ ul li p {
 ul li p span {
   font-weight: bold;
   text-decoration: underline;
-  display: flex;
-  justify-content: space-around;
+  display: block;
 }
 
 .link {
@@ -114,14 +117,23 @@ ul li p span {
   ul {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
   }
   ul li {
     max-width: 190px;
-    height: auto;
   }
   ul li p {
     margin-top: 0.6rem;
     font-size: 0.9rem;
+  }
+}
+
+@media (min-width: 1000px) {
+  img {
+    width: 50%;
+  }
+  h3 {
+    font-size: 1.5rem;
   }
 }
 </style>

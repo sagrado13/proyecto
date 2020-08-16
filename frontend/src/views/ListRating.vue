@@ -53,10 +53,20 @@ export default {
 </script>
 
 <style scoped>
-ul li {
-  list-style: none;
-}
 button {
+  all: unset;
   display: flex;
+}
+
+@media (min-width: 700px) {
+  button {
+    font-size: 1.25rem;
+  }
+}
+
+@media (min-width: 1000px) {
+  button {
+    font-size: 1.5rem;
+  }
 }
 </style>

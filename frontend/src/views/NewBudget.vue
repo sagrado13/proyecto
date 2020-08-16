@@ -87,6 +87,7 @@ div {
   align-items: center;
 }
 button#back {
+  all: unset;
   align-self: flex-start;
 }
 h4 {
@@ -121,5 +122,50 @@ button#create {
   padding-left: 0.5rem;
   padding-right: 0.5rem;
   box-shadow: 5px 5px 30px white inset;
+}
+
+@media (min-width: 700px) {
+  button#back {
+    font-size: 1.25rem;
+  }
+  legend {
+    font-size: 0.9rem;
+  }
+  textarea {
+    font-size: 0.9rem;
+    width: 80%;
+  }
+  input {
+    width: auto;
+    font-size: 0.9rem;
+    padding: 0.2rem;
+  }
+  button#create {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (min-width: 1000px) {
+  h4 {
+    font-size: 1.25rem;
+    margin-bottom: 3rem;
+  }
+  button#back {
+    font-size: 1.4rem;
+  }
+  legend {
+    font-size: 1rem;
+  }
+  textarea {
+    font-size: 1rem;
+    width: 50%;
+  }
+  input {
+    font-size: 1rem;
+  }
+  button#create {
+    font-size: 1rem;
+  }
 }
 </style>

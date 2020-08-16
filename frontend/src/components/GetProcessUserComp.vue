@@ -163,4 +163,16 @@ div#buttons button:nth-child(2) {
     padding-bottom: 0.2rem;
   }
 }
+
+@media (min-width: 1000px) {
+  img {
+    width: 10%;
+  }
+  p {
+    font-size: 1rem;
+  }
+  button {
+    font-size: 1rem;
+  }
+}
 </style>

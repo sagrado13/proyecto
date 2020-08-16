@@ -147,6 +147,7 @@ export default {
 
 <style scoped>
 button#back {
+  all: unset;
   outline: none;
   display: flex;
 }
@@ -176,7 +177,7 @@ div#send button {
   border-radius: 20px;
 }
 div#send button#delete {
-  box-shadow: 5px 5px 30px red inset;
+  background: red;
 }
 
 .modal {
@@ -198,9 +199,61 @@ div#send button#delete {
   border: 1px solid #888;
   background: rgb(0, 0, 0.5);
 }
+.modal button {
+  outline: none;
+  padding-top: 0.1rem;
+  padding-bottom: 0.1rem;
+  padding-left: 0.2rem;
+  padding-right: 0.2rem;
+  box-shadow: 5px 5px 30px white inset;
+  border-radius: 20px;
+  margin: 0.5rem;
+}
 textarea {
   font-size: 0.8rem;
   margin-top: 1rem;
   margin-bottom: 1rem;
+}
+
+@media (min-width: 700px) {
+  button#back {
+    font-size: 1.25rem;
+  }
+  div#main {
+    font-size: 0.9rem;
+  }
+  div#send button {
+    padding-left: 0.3rem;
+    padding-right: 0.3rem;
+    font-size: 0.9rem;
+  }
+  textarea {
+    font-size: 1rem;
+    width: 90%;
+  }
+  div.modal button {
+    font-size: 0.9rem;
+    padding: 0.3rem;
+  }
+  div.modal legend {
+    font-size: 1rem;
+  }
+}
+
+@media (min-width: 1000px) {
+  button#back {
+    font-size: 1.4rem;
+  }
+  div#main {
+    max-width: 70%;
+    display: inline-block;
+  }
+  div#send button {
+    font-size: 1rem;
+  }
+  textarea {
+    font-size: 1rem;
+    width: 100%;
+  }
 }
 </style>

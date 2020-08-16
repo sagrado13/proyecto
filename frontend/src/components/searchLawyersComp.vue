@@ -87,9 +87,12 @@ export default {
 .link:visited {
   color: goldenrod;
 }
+ul {
+  margin-bottom: 2rem;
+}
 img {
   border-radius: 50%;
-  width: 35%;
+  width: 80px;
 }
 ul li {
   list-style: none;
@@ -114,6 +117,7 @@ ul li p span {
     ul {
       display: flex;
       flex-wrap: wrap;
+      justify-content: center;
     }
     ul li {
       max-width: 190px;
@@ -123,6 +127,12 @@ ul li p span {
       margin-top: 0.6rem;
       font-size: 0.9rem;
     }
+  }
+}
+
+@media (min-width: 1000px) {
+  img {
+    width: 50%;
   }
 }
 </style>

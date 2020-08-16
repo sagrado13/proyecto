@@ -7,9 +7,12 @@
       size="35"
     />
     <ul>
-      <!-- :class="{ profile: lawyer.picture_lawyer === null}" -->
-      <!-- :class="{ hide: lawyer.picture_lawyer === null }" -->
       <li v-for="(lawyer, index) in filtered" :key="lawyer.id">
+        <img
+          :class="{ hide: lawyer.picture_lawyer !== null }"
+          src="../assets/profile.jpeg"
+          alt="Foto de perfil por defecto"
+        />
         <img
           :class="{ hide: lawyer.picture_lawyer === null }"
           :src="getPictureLawyers(lawyer.picture_lawyer)"
@@ -56,7 +59,6 @@
           {{ format(new Date(lawyer.update_date), "dd/MM/yyyy HH:mm") }}h
         </p>
         <button @click="sendIdLawyer(index)">Reactivar</button>
-        <hr />
       </li>
     </ul>
   </div>
@@ -145,10 +147,104 @@ export default {
 </script>
 
 <style scoped>
-ul li {
-  list-style: none;
+input {
+  outline: 0;
+  border-width: 0 0 1px;
+  border-color: yellowgreen;
+  font-size: 0.7rem;
+  text-align: center;
+  background: rgb(22, 22, 22);
+  color: white;
+  padding: 0.1rem;
+  margin: 1rem;
 }
 img {
   border-radius: 50%;
+  width: 35%;
+}
+ul {
+  margin-bottom: 2rem;
+}
+ul li {
+  list-style: none;
+  margin: 1rem;
+  padding: 1rem;
+  border: 1px solid white;
+}
+ul li p {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+}
+ul li p span {
+  font-weight: bold;
+  text-decoration: underline;
+  display: block;
+}
+button {
+  outline: none;
+  font-size: 0.7rem;
+  border-radius: 20px;
+  padding: 0.3rem;
+  margin-top: 1rem;
+  box-shadow: 5px 5px 30px white inset;
+}
+
+@media (min-width: 700px) {
+  input {
+    font-size: 0.9rem;
+    width: 280px;
+  }
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  ul li {
+    max-width: 190px;
+  }
+  ul li p {
+    margin-top: 0.6rem;
+    font-size: 0.9rem;
+    word-break: break-word;
+  }
+  button {
+    font-size: 0.8rem;
+    word-break: normal;
+  }
+}
+
+@media (min-width: 1000px) {
+  input {
+    font-size: 1rem;
+    width: 320px;
+  }
+  ul {
+    display: unset;
+  }
+  ul li {
+    font-size: 1rem;
+    max-width: none;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  img {
+    width: 8%;
+  }
+  ul li span {
+    word-break: normal;
+  }
+  ul li p {
+    font-size: 1rem;
+    margin-left: 0.5rem;
+    align-self: center;
+  }
+
+  button {
+    margin-left: 1rem;
+    font-size: 0.9rem;
+    align-self: center;
+  }
 }
 </style>

@@ -115,6 +115,13 @@ div#register {
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin: 0 auto;
+  box-sizing: border-box;
+  border-radius: 20px;
+  width: 70%;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  background-color: rgb(108, 109, 110);
 }
 legend {
   font-size: 0.8rem;
@@ -150,5 +157,44 @@ button#uploadPicture {
 button#register {
   margin-top: 0.5rem;
   margin-bottom: 2rem;
+}
+
+@media (min-width: 700px) {
+  legend {
+    font-size: 0.9rem;
+  }
+  input {
+    padding: 0.2rem;
+    font-size: 0.9rem;
+  }
+  button#uploadPicture {
+    margin-top: 0.8rem;
+    font-size: 0.75rem;
+  }
+  button#register {
+    margin-top: 1rem;
+    font-size: 1rem;
+  }
+}
+
+@media (min-width: 1000px) {
+  div#register {
+    width: 30%;
+  }
+  legend {
+    font-size: 1rem;
+  }
+  input {
+    font-size: 1rem;
+    width: 50%;
+  }
+  button#uploadPicture {
+    margin-top: 1.5rem;
+    font-size: 0.85rem;
+  }
+  button#register {
+    margin-top: 1.5rem;
+    font-size: 1.1rem;
+  }
 }
 </style>

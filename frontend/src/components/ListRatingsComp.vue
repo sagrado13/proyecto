@@ -81,12 +81,12 @@ img {
 }
 ul {
   margin-top: 2rem;
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
 }
 ul li {
   list-style: none;
   border: 1px solid white;
-  margin: 0.5rem;
+  margin: 0.1rem;
   padding: 0.3rem;
 }
 ul li p {
@@ -95,5 +95,35 @@ ul li p {
 #link {
   color: goldenrod;
   font-size: 0.9rem;
+}
+
+@media (min-width: 700px) {
+  img {
+    width: 20%;
+  }
+  h2 {
+    font-size: 1.5rem;
+  }
+  ul {
+    display: grid;
+    gap: 0.5rem;
+    margin: 0.5rem;
+    justify-items: cover;
+    align-items: cover;
+    grid-template-columns: 50% 50%;
+    grid-template-rows: auto auto;
+  }
+}
+
+@media (min-width: 1000px) {
+  img {
+    width: 10%;
+  }
+  ul {
+    margin: 1rem;
+    justify-content: center;
+    grid-template-columns: 25% 25% 25% 25%;
+    grid-template-rows: auto auto;
+  }
 }
 </style>

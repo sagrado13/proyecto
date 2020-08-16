@@ -11,6 +11,8 @@
 <script>
 // Importamos axios
 import axios from "axios";
+// Importamos sweetalert2
+import Swal from "sweetalert2";
 // Importamos el componente GetLawyerComp
 import getlawyercomp from "@/components/GetLawyerComp.vue";
 // IMPORTAMOS FUNCIONES
@@ -40,7 +42,11 @@ export default {
         this.specialities = response.data.data.specialities;
         this.rol = getIsAdmin();
       } catch (error) {
-        console.log(error.response.data.message);
+        console.log(error);
+        Swal.fire({
+          icon: "error",
+          title: `${error.response.data.message}`,
+        });
       }
     },
     // FUNCIÓN PARA VOLVER PARA ATRÁS
@@ -56,11 +62,7 @@ export default {
 
 <style scoped>
 button#back {
-  padding-top: 0.1rem;
-  padding-bottom: 0.1rem;
-  padding-left: 0.1rem;
-  padding-right: 0.1rem;
-  box-shadow: 5px 5px 30px white inset;
+  all: unset;
   display: flex;
 }
 button#openProcess {
@@ -72,5 +74,23 @@ button#openProcess {
   padding-left: 1rem;
   padding-right: 1rem;
   box-shadow: 5px 5px 30px white inset;
+}
+
+@media (min-width: 700px) {
+  button#back {
+    font-size: 1.25rem;
+  }
+  button#openProcess {
+    font-size: 0.9rem;
+  }
+}
+
+@media (min-width: 1000px) {
+  button#back {
+    font-size: 1.5rem;
+  }
+  button#openProcess {
+    font-size: 1rem;
+  }
 }
 </style>

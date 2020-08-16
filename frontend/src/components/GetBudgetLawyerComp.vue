@@ -72,4 +72,13 @@ span {
 p {
   margin-top: 0.5rem;
 }
+
+@media (min-width: 700px) {
+  span {
+    display: inline-block;
+  }
+  p {
+    margin-top: 0.7rem;
+  }
+}
 </style>

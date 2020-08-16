@@ -46,4 +46,26 @@ button {
   font-size: 0.7rem;
   margin-left: 0.5rem;
 }
+
+@media (min-width: 700px) {
+  ul {
+    margin-top: 1.5rem;
+  }
+  span {
+    font-size: 1.25rem;
+  }
+  p {
+    font-size: 1rem;
+    margin: 0.6rem;
+  }
+}
+
+@media (min-width: 1000px) {
+  ul {
+    margin-top: 2rem;
+  }
+  p {
+    margin: 0.8rem;
+  }
+}
 </style>

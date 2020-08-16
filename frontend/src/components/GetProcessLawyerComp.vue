@@ -7,7 +7,7 @@
     />
     <img
       :class="{ hide: process.picture_user === null }"
-      :src="process.picture_user"
+      :src="getPictureUsers(process.picture_user)"
       alt="Foto usuario"
     />
     <p>
@@ -97,6 +97,12 @@ export default {
       let processData = `resuelto`;
       this.$emit("data", processData);
     },
+    // FUNCIÓN PARA OBTENER FOTO DE ABOGADO
+    getPictureUsers(picture) {
+      if (picture !== null) {
+        return process.env.VUE_APP_STATIC_USERS + picture;
+      }
+    },
   },
 };
 </script>
@@ -116,6 +122,9 @@ span {
 p {
   font-size: 0.8rem;
 }
+p:last-of-type {
+  margin-bottom: 1rem;
+}
 div#buttons {
   display: flex;
   justify-content: space-evenly;
@@ -132,5 +141,39 @@ button {
 }
 button:nth-child(1) {
   box-shadow: 5px 5px 30px yellowgreen inset;
+}
+
+@media (min-width: 700px) {
+  img {
+    width: 20%;
+  }
+
+  span {
+    display: inline-block;
+    margin-top: 0.7rem;
+  }
+  p {
+    font-size: 0.9rem;
+  }
+  div#buttons {
+    justify-content: space-between;
+  }
+  button {
+    font-size: 0.9rem;
+    padding-top: 0.2rem;
+    padding-bottom: 0.2rem;
+  }
+}
+
+@media (min-width: 1000px) {
+  img {
+    width: 10%;
+  }
+  p {
+    font-size: 1rem;
+  }
+  button {
+    font-size: 1rem;
+  }
 }
 </style>

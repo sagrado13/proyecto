@@ -3,7 +3,7 @@
     <h1>Nuevo proceso</h1>
     <textarea v-model="message" name="message" placeholder="Descripción detallada del caso"></textarea>
     <br />
-    <button id="send" @click="addNewProcess()">Enviar</button>
+    <button id="send" @click="addNewProcess()">📨 Enviar</button>
   </div>
 </template>
 
@@ -54,11 +54,44 @@ export default {
 </script>
 
 <style scoped>
+h1 {
+  margin: 1.5rem;
+}
 textarea {
+  outline: none;
   width: 80%;
-  height: 80%;
+  height: 200px;
 }
 button#send {
+  outline: none;
+  margin-top: 1rem;
   margin-bottom: 3rem;
+  font-size: 0.7rem;
+  border-radius: 20px;
+  padding-top: 0.3rem;
+  padding-bottom: 0.3rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  box-shadow: 5px 5px 30px white inset;
+}
+
+@media (min-width: 700px) {
+  textarea {
+    height: 400px;
+    font-size: 1.2rem;
+  }
+  button#send {
+    font-size: 0.9rem;
+  }
+}
+
+@media (min-width: 1000px) {
+  textarea {
+    width: 60%;
+    font-size: 1.3rem;
+  }
+  button#send {
+    font-size: 1rem;
+  }
 }
 </style>

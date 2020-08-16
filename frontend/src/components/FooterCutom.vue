@@ -1,6 +1,6 @@
 <template>
   <div>
-    <footer>Iñaki GV© 2020</footer>
+    <footer>© 2020 Iñaki GV</footer>
   </div>
 </template>
 
@@ -25,6 +25,12 @@ footer {
 @media (min-width: 700px) {
   footer {
     font-size: 0.9rem;
+  }
+}
+
+@media (min-width: 1000px) {
+  footer {
+    font-size: 1.1rem;
   }
 }
 </style>

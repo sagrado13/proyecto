@@ -108,6 +108,9 @@ ul li span {
 }
 p {
   font-size: 0.8rem;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 div#buttons {
   display: flex;
@@ -121,5 +124,47 @@ button {
   padding-left: 0.5rem;
   padding-right: 0.5rem;
   box-shadow: 5px 5px 30px white inset;
+}
+
+@media (min-width: 700px) {
+  ul li h3 {
+    font-size: 1.5rem;
+  }
+  ul li span {
+    display: inline-block;
+    margin-top: 0.7rem;
+  }
+  p {
+    font-size: 0.9rem;
+  }
+  div#buttons {
+    justify-content: space-between;
+  }
+  button {
+    font-size: 0.9rem;
+    padding-top: 0.2rem;
+    padding-bottom: 0.2rem;
+  }
+}
+
+@media (min-width: 1000px) {
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  ul li {
+    max-width: 30%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  p {
+    font-size: 1rem;
+  }
+  button {
+    font-size: 1rem;
+  }
 }
 </style>

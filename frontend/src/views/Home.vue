@@ -204,6 +204,7 @@ h3 {
 div#search {
   margin: 0 auto;
   box-sizing: border-box;
+  border-radius: 20px;
   width: 65%;
   padding: 5px;
   background-color: rgb(108, 109, 110);
@@ -219,6 +220,7 @@ div#search select {
   border-width: 0 0 1px;
   border-color: yellowgreen;
   color: white;
+  border-radius: 20px;
 }
 div#search button {
   font-size: 0.7rem;
@@ -266,6 +268,29 @@ div#order select {
   }
   p {
     margin-top: 1rem;
+  }
+}
+
+@media (min-width: 1000px) {
+  p#info {
+    margin-top: 2rem;
+  }
+  div#search {
+    width: 900px;
+  }
+  div#search select {
+    font-size: 1rem;
+    padding: 0.2rem;
+    width: 230px;
+    margin-left: 2rem;
+  }
+  div#search button {
+    font-size: 1rem;
+  }
+
+  div#order select {
+    font-size: 1rem;
+    padding: 0.2rem;
   }
 }
 </style>

@@ -18,7 +18,7 @@
     <div v-show="!seeListProcesses">
       <button id="back" @click="returnProcesses()">🔙</button>
       <div id="getProcess">
-        <h2>Proceso Nº{{ idProcess }}</h2>
+        <h2>Proceso Nº {{ idProcess }}</h2>
         <getprocesslawyercomp v-on:data="updateProcess" :process="process" />
       </div>
     </div>
@@ -148,8 +148,38 @@ div#getProcess {
   border: 1px solid white;
   margin: 0.5rem;
   margin-bottom: 2rem;
+  padding: 0.5rem;
+}
+h2 {
+  margin: 1rem;
+  text-decoration: underline;
 }
 button#back {
+  all: unset;
   display: flex;
+}
+
+@media (min-width: 700px) {
+  div#order select {
+    font-size: 0.9rem;
+    padding: 0.1rem;
+  }
+  button#back {
+    font-size: 1.25rem;
+  }
+}
+
+@media (min-width: 1000px) {
+  div#order select {
+    font-size: 1rem;
+  }
+  button#back {
+    font-size: 1.4rem;
+  }
+
+  div#getProcess {
+    max-width: 70%;
+    display: inline-block;
+  }
 }
 </style>

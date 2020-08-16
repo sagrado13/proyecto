@@ -12,6 +12,7 @@
             :inline="true"
           ></star-rating>
           <router-link
+            class="link"
             :to="{ name: 'ListRating', params: { id: idLawyer } }"
           >( {{ totalRatings }} votos )</router-link>
         </p>
@@ -392,6 +393,17 @@ export default {
 </script>
 
 <style scoped>
+p {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.link {
+  text-decoration: none;
+  color: goldenrod;
+}
+.link:visited {
+  color: goldenrod;
+}
 img {
   border-radius: 50%;
   width: 35%;
@@ -471,5 +483,73 @@ div#deleteUser {
 }
 button#delete {
   box-shadow: 5px 5px 30px red inset;
+}
+
+@media (min-width: 700px) {
+  img {
+    width: 25%;
+  }
+  input {
+    padding: 0.2rem;
+    font-size: 1rem;
+    width: 40%;
+  }
+  legend {
+    font-size: 1rem;
+  }
+  select {
+    padding: 0.2rem;
+    font-size: 1rem;
+    width: 40%;
+  }
+  button {
+    margin-top: 1rem;
+    font-size: 0.8rem;
+  }
+  button#deletePicture {
+    font-size: 0.7rem;
+  }
+  button#updateButton {
+    margin-top: 1.2rem;
+    font-size: 1rem;
+  }
+  div#editPassword div {
+    display: flex;
+    justify-content: space-between;
+  }
+  div#deleteUser textarea {
+    width: 90%;
+    height: 250px;
+  }
+}
+
+@media (min-width: 1000px) {
+  div#update {
+    width: 50%;
+    margin: 1% auto;
+  }
+  p {
+    font-size: 1.1rem;
+    margin-bottom: 1.8rem;
+  }
+  button {
+    font-size: 1rem;
+  }
+  button#updateButton {
+    font-size: 1.15rem;
+  }
+  div#editPassword div {
+    justify-content: space-evenly;
+  }
+  div#changePassword {
+    margin-top: 5rem;
+  }
+  div#changePassword input {
+    width: 20%;
+  }
+  div#deleteUser textarea {
+    width: 50%;
+    margin-bottom: 2rem;
+  }
 }
 </style>

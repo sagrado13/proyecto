@@ -48,7 +48,7 @@
     <!-- MODAL PARA VOTAR PROCESO -->
     <div id="rating" v-show="seeModalRating" class="modal">
       <div class="modalBox">
-        <h3>Puntuación para {{ lawyerRating }}</h3>
+        <h3>Puntuación del proceso Nº {{ processRatingId }}, resuelto por {{ lawyerRating }}</h3>
         <star-rating v-model="rating" :star-size="25" :inline="true"></star-rating>
         <textarea v-model="opinion" name="opinion" cols="40" rows="10" placeholder="Opinion"></textarea>
         <button @click="cancellRating()">Cancelar</button>
@@ -156,7 +156,11 @@ export default {
         location.reload();
         console.log(response);
       } catch (error) {
-        console.log(error);
+        console.log(error.response.data);
+        Swal.fire({
+          icon: "error",
+          title: `${error.response.data.message}`,
+        });
       }
     },
     // FUNCIÓN PARA BORRAR PROCESO
@@ -173,6 +177,10 @@ export default {
         console.log(response);
       } catch (error) {
         console.log(error.response.data);
+        Swal.fire({
+          icon: "error",
+          title: `${error.response.data.message}`,
+        });
       }
     },
     // FUNCIÓN PARA MOSTAR EL MODAL PARA VOTAR PROCESO DETERMINADO
@@ -182,7 +190,7 @@ export default {
       this.seeListProcesses = false;
       this.seeModalRating = true;
     },
-    // FUNCIÓN PARA VOLVER PARA ATRÁS
+    // FUNCIÓN PARA CANCELAR LA VOTACIÓN
     cancellRating() {
       this.seeModalRating = false;
       this.seeListProcesses = true;
@@ -202,6 +210,11 @@ export default {
               opinion: this.opinion,
             }
           );
+          location.reload();
+          Swal.fire({
+            icon: "success",
+            title: `${response.data.message}`,
+          });
         } else {
           const response = await axios.put(
             "http://localhost:3000/users/" +
@@ -213,7 +226,11 @@ export default {
               rating: this.rating,
             }
           );
-          console.log(response);
+          location.reload();
+          Swal.fire({
+            icon: "success",
+            title: `${response.data.message}`,
+          });
         }
       } catch (error) {
         console.log(error.response.data.message);
@@ -243,6 +260,7 @@ div#order select {
 div#getProcess {
   border: 1px solid white;
   margin: 0.5rem;
+  padding: 0.5rem;
   margin-bottom: 2rem;
 }
 h2 {
@@ -254,11 +272,8 @@ button {
   box-shadow: 5px 5px 30px white inset;
 }
 button#back {
+  all: unset;
   display: flex;
-}
-div.modal button {
-  border-radius: 20px;
-  margin: 0.5rem;
 }
 .modal {
   position: fixed;
@@ -276,6 +291,14 @@ div.modal button {
   width: 80%;
   border: 1px solid #888;
   background: rgb(0, 0, 0.5);
+}
+.modalBox textarea {
+  width: 90%;
+}
+
+.modal button {
+  border-radius: 20px;
+  margin: 0.5rem;
 }
 div#rating {
   display: flex;
@@ -312,7 +335,7 @@ div#rating button {
     width: 90%;
     font-size: 1rem;
   }
-  .modal {
+  div.modal {
     display: flex;
     align-items: center;
   }
@@ -323,6 +346,35 @@ div#rating button {
     padding-left: 0.4rem;
     padding-right: 0.4rem;
     font-size: 0.9rem;
+  }
+
+  @media (min-width: 1000px) {
+    div#order select {
+      font-size: 1rem;
+    }
+    button#back {
+      font-size: 1.4rem;
+    }
+    div#getProcess {
+      max-width: 70%;
+      display: inline-block;
+    }
+    div.modal button {
+      font-size: 1rem;
+    }
+    div.modal textarea {
+      width: 95%;
+      font-size: 1.25rem;
+    }
+    div#rating h3 {
+      font-size: 1.4rem;
+    }
+    div#rating textarea {
+      font-size: 1.25rem;
+    }
+    div#rating button {
+      font-size: 1rem;
+    }
   }
 }
 </style>

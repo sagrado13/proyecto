@@ -4,41 +4,32 @@
       <img class="header" src="./assets/header.png" alt="Título de página" />
       <div id="nav">
         <router-link :to="{ name: 'Home' }">Inicio</router-link>|
-        <router-link :to="{ name: 'About' }">Contacto</router-link>
+        <router-link :to="{ name: 'About' }">About</router-link>
       </div>
-
       <!-- LOGIN DE USUARIO -->
-      <div id="login">
-        <div v-show="seeLoginUser">
-          <legend>Login de usuario:</legend>
-          <input
-            v-model="emailOrLogin"
-            type="text"
-            name="emailOrLogin"
-            placeholder="Email o usuario"
-          />
-          <input v-model="password" type="password" name="password" placeholder="Contraseña" />
+      <div id="loginUser" v-show="seeLoginUser">
+        <legend>Login de usuario:</legend>
+        <input v-model="emailOrLogin" type="text" name="emailOrLogin" placeholder="Email o usuario" />
+        <input v-model="password" type="password" name="password" placeholder="Contraseña" />
+        <div>
           <button @click="loginUser()">Login</button>
           <button @click="seeLoginUser = !seeLoginUser">Cancelar</button>
         </div>
-        <!-- LOGIN DE ABOGADO -->
-        <div v-show="seeLoginLawyer">
-          <legend>Login de abogado:</legend>
-          <input
-            v-model="emailOrLogin"
-            type="text"
-            name="emailOrLogin"
-            placeholder="Email o usuario"
-          />
-          <input v-model="password" type="password" name="password" placeholder="Contraseña" />
+      </div>
+      <!-- LOGIN DE ABOGADO -->
+      <div id="loginLawyer" v-show="seeLoginLawyer">
+        <legend>Login de abogado:</legend>
+        <input v-model="emailOrLogin" type="text" name="emailOrLogin" placeholder="Email o usuario" />
+        <input v-model="password" type="password" name="password" placeholder="Contraseña" />
+        <div>
           <button @click="loginLawyer()">Login</button>
           <button @click="seeLoginLawyer = !seeLoginLawyer" s>Cancelar</button>
         </div>
       </div>
       <!-- REGISTRO LOGIN Y BOTÓN PARA RECUPERAR CONTRASEÑA -->
-      <div class="register">
-        <div v-show="!seeWelcomeLawyer">
-          <div v-show="!seeWelcomeUser">
+      <div id="registerUser" v-show="!seeWelcomeLawyer">
+        <div v-show="!seeWelcomeUser">
+          <div v-show="!seeLoginUser">
             <p>¿Aún no eres usuario registrado?</p>
             <button>
               <router-link :to="{ name: 'NewUser' }">Regístrate</router-link>
@@ -47,8 +38,10 @@
             <button @click="showModalUser()">Recuperar contraseña</button>
           </div>
         </div>
-        <div v-show="!seeWelcomeUser">
-          <div v-show="!seeWelcomeLawyer">
+      </div>
+      <div id="registerLawyer" v-show="!seeWelcomeUser">
+        <div v-show="!seeWelcomeLawyer">
+          <div v-show="!seeLoginLawyer">
             <p>¿Aún no eres abogado registrado?</p>
             <button>
               <router-link :to="{ name: 'NewLawyer' }">Regístrate</router-link>
@@ -112,7 +105,7 @@
         <p v-show="seeWelcomeLawyer">Última conexión: {{ getFormat() }}</p>
       </div>
       <!-- MODAL PARA RECUPERAR CONTRASEÑA USUARIO -->
-      <div id="recover">
+      <div id="recoverUser">
         <div v-show="seeModalUser" class="modal">
           <div class="modalBox">
             <legend>Recupera tu contraseña:</legend>
@@ -122,7 +115,9 @@
             <button id="cancel" @click="seeModalUser = !seeModalUser">Cancelar</button>
           </div>
         </div>
-        <!-- MODAL PARA RECUPERAR CONTRASEÑA ABOGADO-->
+      </div>
+      <!-- MODAL PARA RECUPERAR CONTRASEÑA ABOGADO-->
+      <div id="recoverLawyer">
         <div v-show="seeModalLawyer" class="modal">
           <div class="modalBox">
             <legend>Recupera tu contraseña:</legend>
@@ -413,54 +408,85 @@ html {
   min-height: 100%;
   position: relative;
 }
-
 body {
   background-color: rgb(65, 64, 64);
 }
-img.header {
-  max-width: 100%;
-}
+
 #app {
   font-family: var(--font);
   text-align: center;
-  color: white;
+  color: var(--bright);
 }
-
 #nav {
   padding: 0.5rem;
 }
-
 #nav a {
   font-weight: bold;
-  color: white;
+  color: var(--bright);
 }
-
 #nav a.router-link-exact-active {
-  color: goldenrod;
+  color: rgb(248, 226, 171);
 }
 div.background {
   background-image: url(./assets/background.png);
   background-repeat: no-repeat;
   background-size: cover;
   padding-bottom: 0.2rem;
+  display: grid;
+  grid-template-columns: 25% 25% 25% 25%;
+  grid-template-rows: auto auto auto auto;
+  grid-template-areas:
+    "imgHeader   imgHeader    imgHeader    imgHeader"
+    "menu    menu     menu     menu"
+    "registerUser    registerUser     registerLawyer     registerLawyer"
+    "recoverUser    recoverUser     recoverLawyer     recoverLawyer"
+    "userControl    userControl     userControl     userControl";
 }
-div.register {
-  display: flex;
+img.header {
+  max-width: 100%;
+  grid-area: imgHeader;
 }
-div.register p {
+div#nav {
+  grid-area: menu;
+}
+div#registerUser,
+div#loginUser {
+  grid-area: registerUser;
+  align-self: center;
+}
+div.userControl,
+div.lawyerControl {
+  grid-area: userControl;
+}
+div#recoverUser {
+  grid-area: recoverUser;
+}
+div#registerLawyer,
+div#loginLawyer {
+  grid-area: registerLawyer;
+  align-self: center;
+}
+div#recoverLawyer {
+  grid-area: recoverLawyer;
+}
+div#registerUser p,
+div#registerLawyer p {
   font-size: 0.7rem;
 }
-div.register button {
+div#registerUser button,
+div#registerLawyer button {
   outline: none;
   font-size: 0.6rem;
   margin: 0.1rem;
-  padding: 0.1rem;
+  padding: 0.2rem;
   background-color: var(--gray);
 }
-div#login legend {
+div#loginUser legend,
+div#loginLawyer legend {
   font-size: 0.7rem;
 }
-div#login input {
+div#loginUser input,
+div#loginLawyer input {
   outline: none;
   border-width: 0 0 1px;
   border-color: yellowgreen;
@@ -468,23 +494,24 @@ div#login input {
   padding: 0.1rem;
   text-align: center;
   background: rgb(22, 22, 22);
-  color: white;
-  display: flex;
-  margin: 0 auto;
+  color: var(--bright);
 }
-div#login button {
+div#loginUser button,
+div#loginLawyer button {
   outline: none;
   font-size: 0.6rem;
-  margin: 0.1rem;
+  margin: 0.5rem;
   margin-bottom: 0.5rem;
-  padding: 0.1rem;
+  padding: 0.2rem;
   background-color: var(--gray);
 }
-div#recover legend {
+div#recoverUser legend,
+div#recoverLawyer legend {
   margin-top: 0.5rem;
   font-size: 0.7rem;
 }
-div#recover input {
+div#recoverUser input,
+div#recoverLawyer input {
   outline: none;
   border-width: 0 0 1px;
   border-color: yellowgreen;
@@ -494,7 +521,8 @@ div#recover input {
   background: rgb(22, 22, 22);
   color: white;
 }
-div#recover button {
+div#recoverUser button,
+div#recoverLawyer button {
   outline: none;
   font-size: 0.6rem;
   margin: 0.1rem;
@@ -503,29 +531,17 @@ div#recover button {
   padding: 0.1rem;
   background-color: var(--gray);
 }
-div.userControl button {
+div.userControl button,
+div.lawyerControl button {
   border: none;
   outline: none;
-  display: inline-block;
   font-size: 0.6rem;
   margin: 0.1rem;
   padding-left: 0.1rem;
   padding-right: 0.1rem;
   background-color: var(--gray);
 }
-div.userControl p {
-  margin: 0.2rem;
-  font-size: 0.5rem;
-}
-div.lawyerControl button {
-  border: none;
-  outline: none;
-  display: inline-block;
-  font-size: 0.6rem;
-  margin: 0.1rem;
-  padding: 0.1rem;
-  background-color: var(--gray);
-}
+div.userControl p,
 div.lawyerControl p {
   margin: 0.2rem;
   font-size: 0.5rem;
@@ -549,34 +565,38 @@ textarea[placeholder] {
   #nav {
     font-size: 1.5rem;
   }
-  div.register {
-    justify-content: space-between;
-  }
-  div.register p {
+  div#registerUser p,
+  div#registerLawyer p {
     font-size: 0.85rem;
   }
-  div.register button {
+  div#registerUser button,
+  div#registerLawyer button {
     font-size: 0.75rem;
   }
-  div#login legend {
+  div#loginUser legend,
+  div#loginLawyer legend {
     font-size: 0.9rem;
   }
-  div#login input {
+  div#loginUser input,
+  div#loginLawyer input {
     font-size: 0.9rem;
-    margin-top: 0.3rem;
+    margin: 0.3rem;
   }
-
-  div#login button {
+  div#loginUser button,
+  div#loginLawyer button {
     font-size: 0.75rem;
-    margin: 0.7rem;
+    margin: 0.5rem;
   }
-  div#recover legend {
+  div#recoverUser legend,
+  div#recoverLawyer legend {
     font-size: 0.9rem;
   }
-  div#recover input {
+  div#recoverUser input,
+  div#recoverLawyer input {
     font-size: 0.9rem;
   }
-  div#recover button {
+  div#recoverUser button,
+  div#recoverLawyer button {
     font-size: 0.75rem;
     margin: 0.3rem;
   }
@@ -586,27 +606,92 @@ textarea[placeholder] {
   img.pictureLogin {
     width: 50px;
   }
-  div.userControl button {
+  div.userControl button,
+  div.lawyerControl button {
     font-size: 0.8rem;
     margin: 0.3rem;
     padding-left: 0.3rem;
     padding-right: 0.3rem;
   }
-  div.userControl p {
+  div.userControl p,
+  div.lawyerControl p {
     font-size: 0.65rem;
   }
-  /*   div.lawyerControl button {
-  border: none;
-  outline: none;
-  display: inline-block;
-  font-size: 0.6rem;
-  margin: 0.1rem;
-  padding: 0.1rem;
-  background-color: var(--gray);
 }
-div.lawyerControl p {
-  margin: 0.2rem;
-  font-size: 0.5rem;
-} */
+
+@media (min-width: 1000px) {
+  img.header {
+    margin: 0 auto;
+  }
+  #nav {
+    font-size: 1.6rem;
+  }
+  div#registerUser p,
+  div#registerLawyer p {
+    font-size: 1rem;
+  }
+  div#registerUser button,
+  div#registerLawyer button {
+    font-size: 0.9rem;
+  }
+  div#loginUser legend,
+  div#loginLawyer legend {
+    font-size: 1rem;
+  }
+  div#loginUser input,
+  div#loginLawyer input {
+    font-size: 1rem;
+  }
+  div#loginUser button,
+  div#loginLawyer button {
+    font-size: 0.9rem;
+  }
+  div#recoverUser legend,
+  div#recoverLawyer legend {
+    font-size: 1rem;
+  }
+  div#recoverUser input,
+  div#recoverLawyer input {
+    font-size: 1rem;
+  }
+  div#recoverUser button,
+  div#recoverLawyer button {
+    font-size: 0.9rem;
+    margin-top: 0.6rem;
+  }
+  h5 {
+    font-size: 1.2rem;
+  }
+  img.pictureLogin {
+    width: 60px;
+    margin-top: 1rem;
+  }
+  div.userControl button,
+  div.lawyerControl button {
+    font-size: 1rem;
+    padding-left: 0.4rem;
+    padding-right: 0.4rem;
+  }
+  div.userControl p,
+  div.lawyerControl p {
+    font-size: 0.8rem;
+  }
+}
+
+@media (min-width: 1350px) {
+  div.background {
+    grid-template-columns: 15% 35% 35% 15%;
+    grid-template-rows: auto auto auto auto;
+    grid-template-areas:
+      "registerUser   imgHeader    imgHeader    registerLawyer"
+      "registerUser    menu     menu     registerLawyer"
+      "recoverUser    recoverUser     recoverLawyer     recoverLawyer";
+  }
+  div.userControl {
+    grid-area: registerUser;
+  }
+  div.lawyerControl {
+    grid-area: registerLawyer;
+  }
 }
 </style>

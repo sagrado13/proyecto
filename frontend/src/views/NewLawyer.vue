@@ -3,8 +3,8 @@
     <h3>Regístrate para ser abogado</h3>
     <div id="register">
       <p>{{ msg }}</p>
-      <legend>Nombre de bufete*</legend>
-      <input type="text" v-model="lawFirm" placeholder="Nombre de bufete" />
+      <legend>Nombre del bufete*</legend>
+      <input type="text" v-model="lawFirm" placeholder="Nombre del bufete" />
       <legend>Dirección*</legend>
       <input type="text" v-model="street" placeholder="Dirección" />
       <legend>Código postal*</legend>
@@ -177,6 +177,13 @@ div#register {
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin: 0 auto;
+  box-sizing: border-box;
+  border-radius: 20px;
+  width: 70%;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  background-color: rgb(108, 109, 110);
 }
 legend {
   font-size: 0.8rem;
@@ -195,7 +202,7 @@ input {
 select {
   outline: 0;
   font-size: 0.7rem;
-  width: 45%;
+  width: 70%;
   background-color: black;
   color: white;
   border-width: 0 0 1px;
@@ -221,5 +228,53 @@ button#uploadPicture {
 button#register {
   margin-top: 0.5rem;
   margin-bottom: 2rem;
+}
+
+@media (min-width: 700px) {
+  legend {
+    font-size: 0.9rem;
+  }
+  input {
+    padding: 0.2rem;
+    font-size: 0.9rem;
+  }
+  select {
+    width: 35%;
+    padding: 0.2rem;
+    font-size: 0.9rem;
+  }
+  button#uploadPicture {
+    margin-top: 0.8rem;
+    font-size: 0.75rem;
+  }
+  button#register {
+    margin-top: 1rem;
+    font-size: 1rem;
+  }
+}
+
+@media (min-width: 1000px) {
+  div#register {
+    width: 30%;
+  }
+  legend {
+    font-size: 1rem;
+  }
+  input {
+    font-size: 1rem;
+    width: 50%;
+  }
+  select {
+    width: 50%;
+    font-size: 1rem;
+  }
+  button#uploadPicture {
+    margin-top: 1.5rem;
+    font-size: 0.85rem;
+  }
+  button#register {
+    margin-top: 1.5rem;
+    font-size: 1.1rem;
+  }
 }
 </style>

@@ -1,8 +1,8 @@
 <template>
   <div>
-    <h4>Usuarios dados de baja: {{ totalUsers }}</h4>
-    <div @click="listDeletedUsers()">
-      <label>Ordenar</label>
+    <h4>Usuarios dados de baja: 👤 {{ totalUsers }}</h4>
+    <div @click="listDeletedUsers">
+      <legend>Ordenar</legend>
       <select v-model="order" name="order">
         <option value>Nombre</option>
         <option value="email">Email</option>
@@ -82,4 +82,27 @@ export default {
 </script>
 
 <style scoped>
+h4 {
+  margin: 1rem;
+}
+select {
+  background-color: black;
+  color: white;
+  font-size: 0.7rem;
+}
+
+@media (min-width: 700px) {
+  select {
+    font-size: 0.9rem;
+  }
+}
+
+@media (min-width: 700px) {
+  h4 {
+    margin: 1.5rem;
+  }
+  select {
+    font-size: 1rem;
+  }
+}
 </style>

@@ -26,7 +26,10 @@ async function getLawyer(req, res, next) {
     );
 
     if (lawyer.length === 0) {
-      throw generateError(`El abogado con id:${idLawyer} no existe`, 404);
+      throw generateError(
+        `El abogado seleccionado ya no está con nosotros`,
+        404
+      );
     }
     const [specialities] = await connection.query(
       `

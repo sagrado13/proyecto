@@ -60,7 +60,7 @@ async function rating(req, res, next) {
     // Verificamos que no está votado
     if (budget[0].rating > 0) {
       throw generateError(
-        `El proceso con id:${idProcess} ya está votado y no se puede modificar el voto`,
+        `El proceso  ya está votado y no se puede modificar el voto`,
         409
       );
     }
@@ -78,7 +78,7 @@ async function rating(req, res, next) {
     // Damos una respuesta
     res.send({
       status: `ok`,
-      message: `Se guardo tu puntuación para el proceso resuelto con id:${idProcess}`,
+      message: `Puntuación enviada correctamente`,
     });
   } catch (error) {
     next(error);

@@ -37,6 +37,7 @@
       <span>Urgencia tratando los procesos:</span>
       {{ dataLawyer.urgency }}
     </p>
+
     <p :class="{ hide: dataLawyer.description === null }">
       <span>Descripción:</span>
       {{ dataLawyer.description }}
@@ -113,8 +114,8 @@ p {
 span {
   font-weight: bold;
   text-decoration: underline;
-  display: flex;
-  justify-content: space-around;
+  /*   display: flex;
+  justify-content: space-around; */
 }
 #link {
   color: goldenrod;
@@ -130,5 +131,83 @@ ul li {
 ul li span {
   font-weight: bold;
   text-decoration: underline;
+}
+
+@media (min-width: 700px) {
+  img {
+    width: 20%;
+  }
+  h2 {
+    font-size: 1.65rem;
+  }
+  p {
+    font-size: 1rem;
+  }
+  span {
+    margin-top: 0.65rem;
+  }
+}
+
+@media (min-width: 1000px) {
+  img {
+    width: 20%;
+  }
+  h2 {
+    font-size: 1.9rem;
+  }
+  p {
+    font-size: 1.1rem;
+  }
+  div#getLawyer {
+    display: grid;
+    gap: 0.5rem;
+    margin: 0.5rem;
+    justify-items: center;
+    align-items: center;
+    grid-template-columns: auto auto auto auto;
+    grid-template-rows: auto auto auto auto;
+    grid-template-areas:
+      "picture   adress    city    phonenumber"
+      "lawfirm    email     urgency     description"
+      "rating specilaities  creation  update ";
+  }
+
+  img {
+    width: 30%;
+    grid-area: picture;
+  }
+  h2 {
+    grid-area: lawfirm;
+  }
+  :nth-child(4) {
+    grid-area: adress;
+  }
+  :nth-child(5) {
+    grid-area: city;
+  }
+  :nth-child(6) {
+    grid-area: phonenumber;
+  }
+  :nth-child(7) {
+    grid-area: email;
+  }
+  ul li {
+    grid-area: specialities;
+  }
+  :nth-child(9) {
+    grid-area: urgency;
+  }
+  :nth-child(10) {
+    grid-area: description;
+  }
+  :nth-child(11) {
+    grid-area: rating;
+  }
+  :nth-child(12) {
+    grid-area: creation;
+  }
+  :nth-child(13) {
+    grid-area: update;
+  }
 }
 </style>
