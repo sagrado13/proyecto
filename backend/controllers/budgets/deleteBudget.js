@@ -51,7 +51,10 @@ async function deleteBudget(req, res, next) {
       );
     }
 
-    if (budget[0].status_budget !== `pendiente`) {
+    if (
+      budget[0].status_budget !== `pendiente de una respuesta` &&
+      req.auth.role !== `admin`
+    ) {
       throw generateError(
         `No puedes eliminar un presupuesto que ya está aceptado o rechazado`,
         400

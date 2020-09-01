@@ -43,17 +43,13 @@ const newUserSchema = Joi.object().keys({
         400
       )
     ),
-  login: Joi.string()
-    .alphanum()
-    .min(3)
-    .max(30)
-    .required()
-    .error(
-      generateError(
-        `El campo login debe existir y tener entre 3 y 30 caracteres alfanúmericos `,
-        400
-      )
-    ),
+  login: Joi.string().min(3).max(30).required().error(
+    generateError(
+      `El campo login debe existir y tener entre 3 y 30 caracteres
+        `,
+      400
+    )
+  ),
   email: Joi.string()
     .email()
     .required()
@@ -78,7 +74,7 @@ const loginSchema = Joi.object().keys({
     .required()
     .error(
       generateError(
-        `El campo emailOrUser debe existir y tener entre 3 y 30 caracteres alfanúmericos `,
+        `El campo emailOrUser debe existir y tener entre 3 y 30 caracteres`,
         400
       )
     ),
@@ -146,13 +142,12 @@ const editUserSchema = Joi.object().keys({
       )
     ),
   login: Joi.string()
-    .alphanum()
     .min(3)
     .max(30)
     .required()
     .error(
       generateError(
-        `El campo login debe existir y tener entre 3 y 30 caracteres alfanúmericos `,
+        `El campo login debe existir y tener entre 3 y 30 caracteres`,
         400
       )
     ),

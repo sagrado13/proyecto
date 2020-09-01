@@ -12,7 +12,7 @@ async function deleteSpeciality(req, res, next) {
     const { idLawyer, idSpeciality } = req.params;
 
     // Comprobamos que es el abogado que firma la petición
-    if (Number(idLawyer) !== req.auth.id) {
+    if (Number(idLawyer) !== req.auth.id && req.auth.role !== `admin`) {
       throw generateError(
         `Tienes que ser el abogado que hace la petición`,
         401

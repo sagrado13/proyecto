@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <div v-if="isLoaded">
+    <!-- DATOS DE UN PROCESO DETERMINADO DEL ABOGADO -->
     <img
       :class="{ hide: process.picture_user !== null }"
       src="../assets/profile.jpeg"
@@ -60,20 +61,22 @@
     </p>
     <p>
       <span>Fecha de la creación:</span>
-      {{ format(new Date(process.update_date), "dd/MM/yyyy HH:mm") }}h
+      {{ formatDate(process.creation_date) }}h
     </p>
     <p>
       <span>Última actualización:</span>
-      {{ format(new Date(process.update_date), "dd/MM/yyyy HH:mm") }}h
+      Hace
+      {{ formatDistanceDate(process.update_date) }}
     </p>
     <div id="buttons">
       <button
-        :class="{ hide: process.status_process !== 'pendiente de una resolución' }"
+        :class="{
+          hide: process.status_process !== 'pendiente de una resolución',
+        }"
         @click="sendProcessData()"
       >Proceso resuelto</button>
-
       <button :class="{ hide: process.status_budget !== null }">
-        <router-link :to="{ name: 'NewBudget', params: { id: process.id} }">Añadir presupuesto</router-link>
+        <router-link :to="{ name: 'NewBudget', params: { id: process.id } }">Añadir presupuesto</router-link>
       </button>
     </div>
   </div>
@@ -81,27 +84,41 @@
 
 <script>
 // Importamos date-fns
-import { format } from "date-fns";
+import { format, formatDistanceToNow } from "date-fns";
+import es from "date-fns/locale/es";
+
 export default {
   name: "GetProcessLawyerComp",
   props: {
     process: Object,
   },
-  data() {
-    return {
-      format,
-    };
+  computed: {
+    isLoaded() {
+      return this.process !== null;
+    },
   },
   methods: {
+    // FUNCIÓN QUE EMITE UN EVENTO CON EL DATO 'RESUELTO' PARA CAMBIAR A ESE ESTADO EL PROCESO
     sendProcessData() {
       let processData = `resuelto`;
       this.$emit("data", processData);
     },
-    // FUNCIÓN PARA OBTENER FOTO DE ABOGADO
+    // FUNCIÓN PARA OBTENER FOTO DE USUARIO
     getPictureUsers(picture) {
       if (picture !== null) {
         return process.env.VUE_APP_STATIC_USERS + picture;
       }
+    },
+    //FUNCIÓN PARA FORMATEAR FECHA
+    formatDate(date) {
+      return format(new Date(date), "dd/MM/yyyy HH:mm");
+    },
+    //FUNCIÓN PARA CALCULAR EL TIEMPO DESDE LA FECHA
+    formatDistanceDate(date) {
+      return formatDistanceToNow(new Date(date), {
+        includeSeconds: true,
+        locale: es,
+      });
     },
   },
 };
@@ -110,7 +127,7 @@ export default {
 <style scoped>
 img {
   border-radius: 50%;
-  width: 35%;
+  width: 100px;
 }
 span {
   font-weight: bold;
@@ -135,17 +152,18 @@ button {
   margin-bottom: 0.5rem;
   font-size: 0.8rem;
   border-radius: 20px;
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
-  box-shadow: 5px 5px 30px white inset;
+  box-shadow: 5px 5px 30px var(--button) inset;
 }
 button:nth-child(1) {
   box-shadow: 5px 5px 30px yellowgreen inset;
 }
+.vue-star-rating {
+  margin-top: 1rem;
+}
 
 @media (min-width: 700px) {
   img {
-    width: 20%;
+    width: 150px;
   }
 
   span {
@@ -160,15 +178,10 @@ button:nth-child(1) {
   }
   button {
     font-size: 0.9rem;
-    padding-top: 0.2rem;
-    padding-bottom: 0.2rem;
   }
 }
 
 @media (min-width: 1000px) {
-  img {
-    width: 10%;
-  }
   p {
     font-size: 1rem;
   }

@@ -19,7 +19,7 @@ async function editUserPassword(req, res, next) {
     await editUserPasswordSchema.validateAsync(req.body);
 
     // Comprobamos que el usuario que quiere cambiar la password es el mismo que está firmando la petición
-    if (req.auth.id !== Number(idUser)) {
+    if (req.auth.id !== Number(idUser) && req.auth.role !== `admin`) {
       throw generateError(
         `No puedes cambiar la contraseña de otro usuario`,
         403
@@ -72,14 +72,14 @@ async function editUserPassword(req, res, next) {
 
     // Generamos una url para validar el cambio de la password
     const registrationCode = randomString(30);
-    const validationURL = `${process.env.PUBLIC_HOST}/users/validation/${registrationCode}`;
+    const validationURL = `${process.env.FRONTEND_HOST}/users/validation/${registrationCode}`;
 
     // Enviamos email de validación
     try {
       await sendMail({
         email,
-        title: `Has cambiado el email, valídalo de nuevo `,
-        content: `Para validar tu cuenta de usuario en Legal Shield haz click en el enlace: ${validationURL}`,
+        title: `Has cambiado el email o contraseña valídate de nuevo `,
+        content: `Para validar el cambio en tu cuenta de usuario en Legal Shield haz click en el enlace: ${validationURL}`,
       });
     } catch (error) {
       throw generateError(`Error enviando el email`);
@@ -98,7 +98,7 @@ async function editUserPassword(req, res, next) {
     // Damos una respuesta
     res.send({
       status: `ok`,
-      message: `Cambios realizados correctamente`,
+      message: `Cambios realizados correctamente, se te ha enviado un correo para validar el cambio.`,
     });
   } catch (error) {
     next(error);

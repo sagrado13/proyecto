@@ -11,6 +11,13 @@ async function listDeletedUsers(req, res, next) {
     connection = await getConnection();
     const { order, direction } = req.query;
 
+    if (req.auth.role !== `admin`) {
+      throw generateError(
+        `No puedes listar todos los usuarios dados de baja si no eres el admin`,
+        403
+      );
+    }
+
     // Dirección del orden
     const orderDirection =
       (direction && direction.toLowerCase()) === "desc" ? "DESC" : "ASC";

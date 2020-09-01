@@ -12,7 +12,7 @@ async function deleteLawyerPicture(req, res, next) {
     const { idLawyer } = req.params;
 
     // Comprobamos que el abogado que quiere borrar la imagen es el que firma la petición
-    if (req.auth.id !== Number(idLawyer)) {
+    if (req.auth.id !== Number(idLawyer) && req.auth.role !== `admin`) {
       throw generateError(`No puedes borrar la imagen de otro abogado`, 401);
     }
 

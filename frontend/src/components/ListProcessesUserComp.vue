@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- DATOS DE LOS PROCESOS DEL USUARIO -->
     <ul>
       <li v-for="(process, index) in processes" :key="process.id">
         <h3>
@@ -19,7 +20,7 @@
           {{ process.law_firm }}
         </p>
         <p>
-          <span>Ciudad del abogado:</span>
+          <span>Localidad del abogado:</span>
           {{ process.city_lawyer }}
         </p>
         <p>
@@ -44,19 +45,27 @@
         </p>
         <p>
           <span>Fecha de la creación:</span>
-          {{ format(new Date(process.creation_date), "dd/MM/yyyy HH:mm") }}h
+          {{ formatDate(process.creation_date) }}h
         </p>
         <p>
           <span>Última actualización:</span>
-          {{ format(new Date(process.update_date), "dd/MM/yyyy HH:mm") }}h
+          Hace
+          {{ formatDistanceDate(process.update_date) }}
         </p>
+
+        <!-- BOTONES PARA VER MÁS, VER PRESUPUESTO Y VOTAR (APARECEN SI SE DAN UNAS CONDICIONES) -->
         <div id="buttons">
           <button @click="sendIdProcess(index)">Ver más</button>
           <button :class="{ hide: process.status_budget === null }">
-            <router-link :to="{ name: 'GetBudgetUser', params: { id: process.id } }">Ver presupuesto</router-link>
+            <router-link
+              :to="{
+                name: 'GetBudgetUser',
+                params: { id: process.id, idUser: process.id_user },
+              }"
+            >Ver presupuesto</router-link>
           </button>
           <button
-            :class="{ hide: process.status_process !== 'resuelto', hide: process.rating > 0 }"
+            v-if="process.status_process === 'resuelto' && process.rating === null"
             @click="sendProcessData(index)"
           >Votar</button>
         </div>
@@ -67,25 +76,35 @@
 
 <script>
 // Importamos date-fns
-import { format } from "date-fns";
+import { format, formatDistanceToNow } from "date-fns";
+import es from "date-fns/locale/es";
+
 export default {
   name: "ListProcessesUserComp",
   props: {
     processes: Array,
   },
-  data() {
-    return {
-      format,
-    };
-  },
   methods: {
+    // FUNCIÓN QUE EMITE UN EVENTO EL CUAL ENVÍA EL ID DEL PROCESO SELECCIONADO PARA VER TODA LA INFORMACIÓN
     sendIdProcess(index) {
       let idProcess = this.processes[index].id;
       this.$emit("data", idProcess);
     },
+    // FUNCIÓN QUE EMITE UN EVENTO EL CUAL ENVÍA DATOS DEL PROCESO SELECCIONADO PARA VOTARLO
     sendProcessData(index) {
       let processData = this.processes[index];
       this.$emit("id", processData);
+    },
+    //FUNCIÓN PARA FORMATEAR FECHA
+    formatDate(date) {
+      return format(new Date(date), "dd/MM/yyyy HH:mm");
+    },
+    //FUNCIÓN PARA CALCULAR EL TIEMPO DESDE LA FECHA
+    formatDistanceDate(date) {
+      return formatDistanceToNow(new Date(date), {
+        includeSeconds: true,
+        locale: es,
+      });
     },
   },
 };
@@ -97,9 +116,10 @@ ul {
 }
 ul li {
   list-style: none;
-  border: 1px solid white;
+  border: 1px solid var(--dark);
   margin: 0.5rem;
   padding: 0.3rem;
+  background: white;
 }
 ul li h3 {
   text-decoration: underline;
@@ -128,9 +148,11 @@ button {
   margin-top: 0.5rem;
   font-size: 0.8rem;
   border-radius: 20px;
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
-  box-shadow: 5px 5px 30px white inset;
+  /* border: none; */
+  /* padding-left: 0.5rem;
+  padding-right: 0.5rem; */
+  box-shadow: 5px 5px 30px var(--button) inset;
+  font-weight: bold;
 }
 
 @media (min-width: 700px) {
@@ -149,8 +171,8 @@ button {
   }
   button {
     font-size: 0.9rem;
-    padding-top: 0.2rem;
-    padding-bottom: 0.2rem;
+    /* padding-top: 0.2rem;
+    padding-bottom: 0.2rem; */
   }
 }
 
@@ -161,7 +183,7 @@ button {
     justify-content: center;
   }
   ul li {
-    max-width: 30%;
+    width: 600px;
     height: auto;
     display: flex;
     flex-direction: column;

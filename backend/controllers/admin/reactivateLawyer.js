@@ -10,6 +10,13 @@ async function reactivateLawyer(req, res, next) {
     connection = await getConnection();
     const { idLawyer } = req.params;
 
+    if (req.auth.role !== `admin`) {
+      throw generateError(
+        `No puedes reactivar abogados si no eres el admin`,
+        403
+      );
+    }
+
     // Comprobamos que el idLawyer que nos pasan es el mismo que tenemos en la bbdd
     // y sacamos el email para mandarle una confirmación
     const [result] = await connection.query(
@@ -20,7 +27,7 @@ async function reactivateLawyer(req, res, next) {
             `,
       [idLawyer]
     );
-    console.log(result);
+
     if (result.length === 0) {
       throw generateError(
         `No hay ningún abogado con esa id para reactivar`,
@@ -34,7 +41,7 @@ async function reactivateLawyer(req, res, next) {
     await connection.query(
       `
             UPDATE lawyers
-            SET active=true, registration_code=NULL
+            SET low_reason=NULL ,active=true, registration_code=NULL
             WHERE id=?
             `,
       [idLawyer]

@@ -1,10 +1,22 @@
 <template>
-  <div>
-    <button id="back" @click="goBack()">🔙</button>
-    <getlawyercomp :dataLawyer="dataLawyer" :specialities="specialities" />
-    <button id="openProcess">
-      <router-link :to="{ name: 'NewProcess', params: { id: dataLawyer.id } }">💼 Abrir proceso</router-link>
+  <div v-if="isLoaded">
+    <!-- Declaramos vue-headful -->
+    <vue-headful title="Datos del abogado" />
+    <!-- BOTÓN DE VOLVER ATRÁS -->
+    <button id="back" @click="goBack()">
+      <img src="../assets/deshacer.svg" />
     </button>
+    <!-- BOTÓN DE ABRIR PROCESO CON EL ABOGADO SELECCIONADO -->
+    <button id="openProcess">
+      <router-link
+        :to="{
+          name: 'NewProcess',
+          params: { id: dataLawyer.id, lawFirm: dataLawyer.lawFirm },
+        }"
+      >💼 Abrir proceso</router-link>
+    </button>
+    <!-- DATOS DEL ABOGADO SELECCIONADO -->
+    <getlawyercomp :dataLawyer="dataLawyer" :specialities="specialities" />
   </div>
 </template>
 
@@ -17,7 +29,7 @@ import Swal from "sweetalert2";
 import getlawyercomp from "@/components/GetLawyerComp.vue";
 // IMPORTAMOS FUNCIONES
 import { getIdToken } from "../api/utils";
-import { getIsAdmin } from "../api/utils";
+import { getIsAdmin, goBack } from "../api/utils";
 
 export default {
   name: "GetLawyer",
@@ -26,10 +38,14 @@ export default {
   },
   data() {
     return {
-      dataLawyer: {},
+      dataLawyer: null,
       specialities: [],
-      rol: "",
     };
+  },
+  computed: {
+    isLoaded() {
+      return this.dataLawyer !== null;
+    },
   },
   methods: {
     // FUNCIÓN PARA OBTENER DATOS DEL ABOGADO SELECCIONADO
@@ -40,7 +56,6 @@ export default {
         );
         this.dataLawyer = response.data.data.responseData;
         this.specialities = response.data.data.specialities;
-        this.rol = getIsAdmin();
       } catch (error) {
         console.log(error);
         Swal.fire({
@@ -61,34 +76,21 @@ export default {
 </script>
 
 <style scoped>
-button#back {
-  all: unset;
-  display: flex;
-}
 button#openProcess {
-  margin-bottom: 3rem;
+  outline: none;
   font-size: 0.7rem;
   border-radius: 20px;
-  padding-top: 0.3rem;
-  padding-bottom: 0.3rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  box-shadow: 5px 5px 30px white inset;
+  padding: 1rem;
+  box-shadow: 5px 5px 30px yellowgreen inset;
 }
 
 @media (min-width: 700px) {
-  button#back {
-    font-size: 1.25rem;
-  }
   button#openProcess {
     font-size: 0.9rem;
   }
 }
 
 @media (min-width: 1000px) {
-  button#back {
-    font-size: 1.5rem;
-  }
   button#openProcess {
     font-size: 1rem;
   }

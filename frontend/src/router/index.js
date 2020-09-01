@@ -17,6 +17,15 @@ const routes = [
       allowAnon: true,
     },
   },
+  // CONTACTO
+  {
+    path: "/contact",
+    name: "Contact",
+    component: () => import("../views/Contact.vue"),
+    meta: {
+      allowAnon: true,
+    },
+  },
   // ABOUT
   {
     path: "/about",
@@ -26,17 +35,17 @@ const routes = [
       allowAnon: true,
     },
   },
-  // ERROR
+  // PPRIVACY
   {
-    path: "*",
-    name: "Error",
-    component: () => import("../views/Error.vue"),
+    path: "/privacy",
+    name: "Privacy",
+    component: () => import("../views/Privacy.vue"),
     meta: {
       allowAnon: true,
     },
   },
   // RUTAS DE ADMIN
-  // Listado de usuarios dados de baja
+  // Listado de usuarios dados de baja y reactivar
   {
     path: "/list-deleted-users",
     name: "ListDeletedUsers",
@@ -46,7 +55,27 @@ const routes = [
       onlyAdmin: true,
     },
     beforeEnter: (to, from, next) => {
-      if (to.meta.onlyAdmin === true && checkIsAdmin()) {
+      if (to.meta.onlyAdmin === true && !checkIsAdmin()) {
+        next({
+          path: "/",
+          query: { redirect: to.fullPath },
+        });
+      } else {
+        next();
+      }
+    },
+  },
+  // Listado de usuarios activos y darlos de baja
+  {
+    path: "/list-activated-users",
+    name: "ListActivatedUsers",
+    component: () => import("../views/ListActivatedUsers.vue"),
+    meta: {
+      allowAnon: false,
+      onlyAdmin: true,
+    },
+    beforeEnter: (to, from, next) => {
+      if (to.meta.onlyAdmin === true && !checkIsAdmin()) {
         next({
           path: "/",
           query: { redirect: to.fullPath },
@@ -66,7 +95,27 @@ const routes = [
       onlyAdmin: true,
     },
     beforeEnter: (to, from, next) => {
-      if (to.meta.onlyAdmin === true && checkIsAdmin()) {
+      if (to.meta.onlyAdmin === true && !checkIsAdmin()) {
+        next({
+          path: "/",
+          query: { redirect: to.fullPath },
+        });
+      } else {
+        next();
+      }
+    },
+  },
+  // Listado de usuarios activos y darlos de baja
+  {
+    path: "/list-activated-lawyers",
+    name: "ListActivatedLawyers",
+    component: () => import("../views/ListActivatedLawyers.vue"),
+    meta: {
+      allowAnon: false,
+      onlyAdmin: true,
+    },
+    beforeEnter: (to, from, next) => {
+      if (to.meta.onlyAdmin === true && !checkIsAdmin()) {
         next({
           path: "/",
           query: { redirect: to.fullPath },
@@ -106,7 +155,7 @@ const routes = [
   },
   // Ver Perfil de usuario, editarlo y borrarlo
   {
-    path: "/profile-user",
+    path: "/profile-user/",
     name: "GetUser",
     component: () => import("../views/GetUser.vue"),
     meta: {
@@ -115,7 +164,7 @@ const routes = [
   },
   // Abrir proceso nuevo
   {
-    path: "/new-process/:id",
+    path: "/new-process/:id/:lawFirm",
     name: "NewProcess",
     component: () => import("../views/NewProcess.vue"),
     meta: {
@@ -134,7 +183,7 @@ const routes = [
   },
   // Ver processos de usuario
   {
-    path: "/processes-user",
+    path: "/processes-user/",
     name: "ListProcessesUser",
     component: () => import("../views/ListProcessesUser.vue"),
     meta: {
@@ -143,7 +192,7 @@ const routes = [
   },
   // Ver un presupuesto determinado
   {
-    path: "/budget-user/:id",
+    path: "/budget-user/",
     name: "GetBudgetUser",
     component: () => import("../views/GetBudgetUser.vue"),
     meta: {
@@ -198,7 +247,7 @@ const routes = [
   },
   // Editar abogado
   {
-    path: "/profile-lawyer",
+    path: "/profile-lawyer/",
     name: "EditLawyer",
     component: () => import("../views/EditLawyer.vue"),
     meta: {
@@ -207,7 +256,7 @@ const routes = [
   },
   // Ver processos de abogado
   {
-    path: "/processes-lawyer",
+    path: "/processes-lawyer/",
     name: "ListProcessesLawyer",
     component: () => import("../views/ListProcessesLawyer.vue"),
     meta: {
@@ -216,7 +265,7 @@ const routes = [
   },
   // Ver un presupuesto determinado
   {
-    path: "/budget-lawyer/:id",
+    path: "/budget-lawyer/",
     name: "GetBudgetLawyer",
     component: () => import("../views/GetBudgetLawyer.vue"),
     meta: {
@@ -230,6 +279,15 @@ const routes = [
     component: () => import("../views/NewBudget.vue"),
     meta: {
       allowAnon: false,
+    },
+  },
+  // ERROR
+  {
+    path: "*",
+    name: "Error",
+    component: () => import("../views/Error.vue"),
+    meta: {
+      allowAnon: true,
     },
   },
 ];

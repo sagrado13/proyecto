@@ -2,7 +2,7 @@
 
 // Módulos necesarios
 const { getConnection } = require("../../bbdd");
-const { generateError } = require("../../helpers");
+const { generateError, sendMail } = require("../../helpers");
 
 const { deleteLawyerSchema } = require("../../validators/lawyerValidators");
 
@@ -21,7 +21,7 @@ async function deleteLawyer(req, res, next) {
     // permiso él y el admin
     if (Number(idLawyer) !== req.auth.id && req.auth.role !== `admin`) {
       throw generateError(
-        `Necesitas ser el propio abogado o administrador con id:${idLawyer} para borrar los datos`,
+        `Necesitas ser el propio abogado o administrador para borrar los datos`,
         401
       );
     }
@@ -29,7 +29,7 @@ async function deleteLawyer(req, res, next) {
     // Comprobamos que existe el abogado en la bbdd
     const [lawyer] = await connection.query(
       `
-            SELECT id
+            SELECT id, email_lawyer
             FROM lawyers
             WHERE id=? AND active=true
             `,
@@ -42,6 +42,7 @@ async function deleteLawyer(req, res, next) {
         404
       );
     }
+    const email = lawyer[0].email_lawyer;
 
     // Si tiene procesos aún sin resolver o no es el admin no dejamos borrar el perfil
     const [process] = await connection.query(
@@ -75,10 +76,23 @@ async function deleteLawyer(req, res, next) {
       [lowReason, idLawyer]
     );
 
+    // Enviamos email con el motivo de la baja
+    try {
+      await sendMail({
+        email,
+        title: `Su cuenta ha sido eliminada de Legal Shield`,
+        content: `La cuenta que tenía registrada a sido borrada por:
+        ${lowReason}
+        `,
+      });
+    } catch (error) {
+      throw generateError(`Error enviando el email`);
+    }
+
     // Damos una respuesta
     res.send({
       status: `ok`,
-      message: `El abogado con id:${idLawyer} fue borrado`,
+      message: `El abogado fue borrado correctamente`,
     });
   } catch (error) {
     next(error);

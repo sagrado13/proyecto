@@ -21,10 +21,11 @@ const newProcessSchema = Joi.object().keys({
 const editProcessUserSchema = Joi.object().keys({
   observations: Joi.string()
     .min(10)
+    .max(300)
     .required()
     .error(
       generateError(
-        `El campo observations debe existir y tener un mínimo de 10 caracteres`,
+        `El campo observations debe existir y tener entre 10 y 300 caracteres`,
         400
       )
     ),

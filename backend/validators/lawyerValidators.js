@@ -20,10 +20,10 @@ const newLawyerSchema = Joi.object().keys({
     .required()
     .error(generateError(`El campo street debe existir`, 400)),
   zip: Joi.string()
-    .min(4)
+    .max(5)
     .required()
     .error(
-      generateError(`El campo zip debe existir y tener  mínimo 4 dígitos`, 400)
+      generateError(`El campo zip debe existir y tener máximo 5 dígitos`, 400)
     ),
   city: Joi.string()
     .min(2)
@@ -44,13 +44,12 @@ const newLawyerSchema = Joi.object().keys({
       )
     ),
   login: Joi.string()
-    .alphanum()
     .min(3)
     .max(30)
     .required()
     .error(
       generateError(
-        `El campo login debe existir y tener entre 3 y 30 caracteres alfanúmericos `,
+        `El campo login debe existir y tener entre 3 y 30 caracteres`,
         400
       )
     ),
@@ -78,7 +77,7 @@ const loginSchema = Joi.object().keys({
     .required()
     .error(
       generateError(
-        `El campo emailOrLogin debe existir y tener entre 3 y 30 caracteres alfanúmericos `,
+        `El campo emailOrLogin debe existir y tener entre 3 y 30 caracteres`,
         400
       )
     ),
@@ -146,21 +145,20 @@ const editLawyerSchema = Joi.object().keys({
       )
     ),
   login: Joi.string()
-    .alphanum()
     .min(3)
     .max(30)
     .required()
     .error(
       generateError(
-        `El campo login debe existir y tener entre 3 y 30 caracteres alfanúmericos `,
+        `El campo login debe existir y tener entre 3 y 30 caracteres`,
         400
       )
     ),
   description: Joi.string()
-    .min(20)
+    .max(30)
     .error(
       generateError(
-        `El campo description debe tener un mínimo de 20 caracteres`,
+        `El campo description debe ser alfanúmerico y no tener más de 30 caracteres`,
         400
       )
     ),

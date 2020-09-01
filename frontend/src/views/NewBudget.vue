@@ -1,6 +1,14 @@
 <template>
   <div>
-    <button id="back" @click="goBack()">🔙</button>
+    <!-- Declaramos vue-headful -->
+    <vue-headful title="Nuevo presupuesto" />
+
+    <!-- BOTÓN DE VOLVER ATRÁS -->
+    <button id="back" @click="goBack()">
+      <img src="../assets/deshacer.svg" />
+    </button>
+
+    <!-- FORMULARIO PARA AÑADIR NUEVO PRESUPUESTO -->
     <h4>Nuevos presupuesto para proceso Nº{{ idProcess }}</h4>
     <legend>Mensaje para su cliente*</legend>
     <textarea
@@ -10,7 +18,6 @@
       cols="45"
       rows="20"
     ></textarea>
-
     <legend>Precio*</legend>
     <input type="text" placeholder="Precio" v-model="price" />
     <button id="create" @click="addNewBudget()">Crear presupuesto</button>
@@ -72,6 +79,10 @@ export default {
         });
       }
     },
+    // FUNCIÓN PARA VOLVER PARA ATRÁS
+    goBack() {
+      window.history.back();
+    },
   },
   created() {
     this.getIdProcess();
@@ -87,7 +98,6 @@ div {
   align-items: center;
 }
 button#back {
-  all: unset;
   align-self: flex-start;
 }
 h4 {
@@ -101,6 +111,7 @@ textarea {
   outline: none;
   font-size: 0.8rem;
   margin-bottom: 1rem;
+  padding: 0.5rem;
 }
 input {
   outline: none;
@@ -108,26 +119,20 @@ input {
   text-align: center;
   font-size: 0.9rem;
   text-align: center;
-  background: rgb(22, 22, 22);
-  color: white;
-  border-width: 0 0 1px;
+  background: var(--dark);
+  color: var(--bright);
+  border-width: 0 0 2px;
   border-color: yellowgreen;
+  border-radius: 10px;
 }
 button#create {
   outline: none;
   border-radius: 20px;
   margin: 0.5rem;
-  padding-top: 0.1rem;
-  padding-bottom: 0.1rem;
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
-  box-shadow: 5px 5px 30px white inset;
+  box-shadow: 5px 5px 30px var(--button) inset;
 }
 
 @media (min-width: 700px) {
-  button#back {
-    font-size: 1.25rem;
-  }
   legend {
     font-size: 0.9rem;
   }
@@ -151,15 +156,13 @@ button#create {
     font-size: 1.25rem;
     margin-bottom: 3rem;
   }
-  button#back {
-    font-size: 1.4rem;
-  }
   legend {
     font-size: 1rem;
   }
   textarea {
-    font-size: 1rem;
+    font-size: 1.1rem;
     width: 50%;
+    height: 450px;
   }
   input {
     font-size: 1rem;

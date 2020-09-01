@@ -1,6 +1,7 @@
 <template>
   <div>
     <ul>
+      <!-- LISTADO DE ESPECIALIDADES DE UN ABOGADO DETERMINADO -->
       <span>Especialidades:</span>
       <li v-for="(speciality, index) in specialities" :key="speciality.id">
         <p>
@@ -19,9 +20,9 @@ export default {
     specialities: Array,
   },
   methods: {
+    // FUNCIÓN PARA EMITIR EVENTO CON EL ID DE LA ESPECIALIDAD SELECIONADA CON EL BOTÓN ❌
     sendSpecialityId(index) {
       let idSpeciality = this.specialities[index].id;
-      console.log(idSpeciality);
       this.$emit("delete", idSpeciality);
     },
   },
@@ -39,10 +40,12 @@ span {
 ul li {
   list-style: none;
   margin: 0.3rem;
+  font-size: 0.8rem;
 }
 button {
   outline: none;
   all: unset;
+  cursor: pointer;
   font-size: 0.7rem;
   margin-left: 0.5rem;
 }

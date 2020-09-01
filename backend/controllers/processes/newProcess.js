@@ -61,7 +61,6 @@ async function newProcess(req, res, next) {
     } catch (error) {
       throw generateError(`Error enviando el email`);
     }
-
     // Damos una respuesta
     res.send({
       status: `ok`,

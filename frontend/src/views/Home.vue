@@ -1,53 +1,68 @@
 <template>
   <div class="home">
-    <p id="info">Abogados en la web: 👤 {{ totalLawyers }}</p>
-    <h3>Busca el abogado que necesitas</h3>
-    <div id="search">
-      <select v-model="speciality" name="speciality">
-        <option value>Selecciona una especialidad</option>
-        <option value="Derecho Civil">Derecho Civil</option>
-        <option value="Derecho Penal">Derecho Penal</option>
-        <option value="Derecho Comercial">Derecho Comercial</option>
-        <option value="Derecho Laboral">Derecho Laboral</option>
-        <option value="Derecho Tributario">Derecho Tributario</option>
-        <option value="Derecho Constitucional">Derecho Constitucional</option>
-        <option value="Derecho Administrativo">Derecho Administrativo</option>
-        <option value="Derecho Intelectual">Derecho Intelectual</option>
-        <option value="Derecho Ambiental">Derecho Ambiental</option>
-      </select>
-
-      <select v-model="city" name="city">
-        <option value>Selecciona una localidad</option>
-        <option v-for="province in provinces" :key="province.id" :value="province">{{ province }}</option>
-      </select>
-
-      <select v-model="urgency" name="urgency">
-        <option value>Selecciona la urgencia</option>
-        <option value="Alta">Alta</option>
-        <option value="Media">Media</option>
-        <option value="Baja">Baja</option>
-      </select>
-      <button @click="searchLawyer()">Buscar</button>
-    </div>
-
-    <div id="order" @click="searchLawyer()" v-show="!showListLawyers">
-      <legend>Ordenar</legend>
-      <select v-model="order" name="order">
-        <option value>Nombre</option>
-        <option value="voteAverage">Puntuación</option>
-        <option value="city">Ciudad</option>
-        <option value="urgency">Urgencia</option>
-      </select>
-      <select v-model="direction" name="direction">
-        <option value>Ascendente</option>
-        <option value="desc">Descendente</option>
-      </select>
-    </div>
-    <listlawyerscomp v-show="showListLawyers" :lawyers="lawyers" />
-    <div>
-      <p v-show="!showListLawyers">Abogados encontrados: 👤 {{ totalLawyersFound }}</p>
-      <searchlawyerscomp :searchLawyers="searchLawyers" />
-    </div>
+    <!-- Declaramos vue-headful -->
+    <vue-headful title="Inicio" />
+    <!-- SPINNER -->
+    <loaderspinner :is-loading="!isLoaded">
+      <div id="search">
+        <p id="info">Abogados en la web: 👤 {{ totalLawyers }}</p>
+        <h3>Busca el abogado que necesitas</h3>
+        <!--  BUSCADOR POR ESPECIALIDAD -->
+        <select v-model="speciality" name="speciality">
+          <option value>Selecciona una especialidad</option>
+          <option value="Derecho Civil">Derecho Civil</option>
+          <option value="Derecho Penal">Derecho Penal</option>
+          <option value="Derecho Comercial">Derecho Comercial</option>
+          <option value="Derecho Laboral">Derecho Laboral</option>
+          <option value="Derecho Tributario">Derecho Tributario</option>
+          <option value="Derecho Constitucional">Derecho Constitucional</option>
+          <option value="Derecho Administrativo">Derecho Administrativo</option>
+          <option value="Derecho Intelectual">Derecho Intelectual</option>
+          <option value="Derecho Ambiental">Derecho Ambiental</option>
+        </select>
+        <!-- BUSCADOR POR LOCALIDAD -->
+        <select v-model="city" name="city">
+          <option value>Selecciona una localidad</option>
+          <option
+            v-for="province in provinces"
+            :key="province.id"
+            :value="province"
+            >{{ province }}</option
+          >
+        </select>
+        <!-- BUSCADOR POR URGENCIA TRATANDO LOS CASOS -->
+        <select v-model="urgency" name="urgency">
+          <option value>Selecciona la urgencia</option>
+          <option value="Alta">Alta</option>
+          <option value="Media">Media</option>
+          <option value="Baja">Baja</option>
+        </select>
+        <button @click="searchLawyer()">Buscar</button>
+      </div>
+      <!-- TOP 5 DE ABOGADOS MEJOR VALORADOS -->
+      <top5lawyerscomp v-if="showListLawyers" :topLawyers="topLawyers" />
+      <!-- ORDENACIÓN -->
+      <div id="order" @click="searchLawyer()" v-if="!showListLawyers">
+        <legend>Ordenar</legend>
+        <select v-model="order" name="order">
+          <option value>Nombre</option>
+          <option value="voteAverage">Puntuación</option>
+          <option value="city">Ciudad</option>
+          <option value="urgency">Urgencia</option>
+        </select>
+        <select v-model="direction" name="direction">
+          <option value>Ascendente</option>
+          <option value="desc">Descendente</option>
+        </select>
+      </div>
+      <!-- LISTA DE ÚLTIMOS ABOGADOS QUE ESTUVIERON CONECTADOS -->
+      <listlawyerscomp v-if="showListLawyers" :lawyers="lawyers" />
+      <div v-if="!showListLawyers">
+        <!-- RESULTADO DE LA BÚSQUEDA -->
+        <p>Abogados encontrados: 👤 {{ totalLawyersFound }}</p>
+        <searchlawyerscomp :searchLawyers="searchLawyers" />
+      </div>
+    </loaderspinner>
   </div>
 </template>
 
@@ -60,11 +75,18 @@ import Swal from "sweetalert2";
 import listlawyerscomp from "@/components/ListLawyersComp.vue";
 // Importamos el componente searchLawyersComp
 import searchlawyerscomp from "@/components/searchLawyersComp.vue";
+// Importamos el componente Top10LawyersComp
+import top5lawyerscomp from "@/components/Top5LawyersComp.vue";
+// Importamos LoaderSpinner
+import loaderspinner from "@/components/LoaderSpinner.vue";
+
 export default {
   name: "Home",
   components: {
     listlawyerscomp,
     searchlawyerscomp,
+    top5lawyerscomp,
+    loaderspinner,
   },
   data() {
     return {
@@ -86,7 +108,7 @@ export default {
         "Alicante",
         "Almería",
         "Asturias",
-        "Avila",
+        "Ávila",
         "Badajoz",
         "Barcelona",
         "Burgos",
@@ -131,7 +153,13 @@ export default {
         "Zamora",
         "Zaragoza",
       ],
+      topLawyers: [],
     };
+  },
+  computed: {
+    isLoaded() {
+      return this.lawyers.length > 0 || this.searchLawyers.length > 0;
+    },
   },
   methods: {
     // FUNCIÓN PARA OBTENER LISTADO DE ABOGADOS
@@ -177,6 +205,8 @@ export default {
             icon: "error",
             title: `${error.message}`,
           });
+          this.listLawyers();
+          this.showListLawyers = true;
         } else {
           Swal.fire({
             icon: "error",
@@ -185,10 +215,20 @@ export default {
         }
       }
     },
+    // FUNCIÓN PARA OBTENER EL TOP10 DE ABOGADOS CON LAS MEJORES PUNTUACIONES
+    async top10Lawyers() {
+      try {
+        const response = await axios.get("http://localhost:3000/lawyers/top10");
+        this.topLawyers = response.data.data;
+      } catch (error) {
+        console.log(error.response.data.message);
+      }
+    },
   },
   // HOOK
   created() {
     this.listLawyers();
+    this.top10Lawyers();
   },
 };
 </script>
@@ -202,13 +242,12 @@ h3 {
   margin: 0.5rem;
 }
 div#search {
-  margin: 0 auto;
+  margin: 1% auto 0 auto;
   box-sizing: border-box;
   border-radius: 20px;
   width: 65%;
-  padding: 5px;
-  background-color: rgb(108, 109, 110);
-  margin-bottom: 1.25rem;
+  padding: 20px;
+  background-color: var(--gray);
 }
 div#search select {
   outline: 0;
@@ -216,22 +255,19 @@ div#search select {
   margin: 0.3rem;
   padding: 0.1rem;
   width: 90%;
-  background-color: black;
-  border-width: 0 0 1px;
+  background-color: var(--bright);
+  border-width: 0 0 3px;
   border-color: yellowgreen;
-  color: white;
-  border-radius: 20px;
+  color: var(--dark);
+  border-radius: 10px;
 }
 div#search button {
   font-size: 0.7rem;
   border-radius: 20px;
   outline: 0;
-  padding-top: 0.3rem;
-  padding-bottom: 0.3rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
   margin-top: 0.5rem;
-  box-shadow: 5px 5px 30px white inset;
+  box-shadow: 5px 5px 30px var(--button) inset;
+  font-weight: bold;
 }
 
 div#order legend {
@@ -239,8 +275,8 @@ div#order legend {
 }
 div#order select {
   outline: none;
-  background-color: black;
-  color: white;
+  background-color: var(--bright);
+  color: var(--dark);
 }
 
 @media (min-width: 700px) {
@@ -272,20 +308,22 @@ div#order select {
 }
 
 @media (min-width: 1000px) {
-  p#info {
-    margin-top: 2rem;
+  h3 {
+    font-size: 1.5rem;
   }
   div#search {
     width: 900px;
+    padding: 40px;
   }
   div#search select {
     font-size: 1rem;
     padding: 0.2rem;
     width: 230px;
-    margin-left: 2rem;
+    margin: 1rem;
   }
   div#search button {
     font-size: 1rem;
+    min-width: 100px;
   }
 
   div#order select {

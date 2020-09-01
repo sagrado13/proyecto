@@ -13,8 +13,11 @@ const cors = require("cors");
 // Admin controllers
 const listDeletedUsers = require("./controllers/admin/listDeletedUsers");
 const reactivateUser = require("./controllers/admin/reactivateUser");
+const listActivatedUsers = require("./controllers/admin/listActivatedUsers");
 const listDeletedLawyers = require("./controllers/admin/listDeletedLawyers");
 const reactivateLawyer = require("./controllers/admin/reactivateLawyer");
+const listActivatedLawyers = require("./controllers/admin/listActivatedLawyers");
+const contact = require("./controllers/admin/contact");
 
 // Users controllers
 const newUser = require("./controllers/users/newUser");
@@ -34,6 +37,7 @@ const validationLawyer = require("./controllers/lawyers/validationLawyer");
 const loginLawyer = require("./controllers/lawyers/loginLawyer");
 const getLawyer = require("./controllers/lawyers/getLawyer");
 const listLawyers = require("./controllers/lawyers/listLawyers");
+const topLawyers = require("./controllers/lawyers/topLawyers");
 const deleteLawyer = require("./controllers/lawyers/deleteLawyer");
 const editLawyer = require("./controllers/lawyers/editLawyer");
 const editLawyerPassword = require("./controllers/lawyers/editLawyerPassword");
@@ -88,20 +92,32 @@ app.use(cors());
 // ADMIN ENDPOINTS
 
 // Listar usuarios dados de baja
-// GET - /list-users
-app.get("/list-users", isUser, isAdmin, listDeletedUsers);
+// GET - /list-deleted-users
+app.get("/list-deleted-users", isUser, isAdmin, listDeletedUsers);
 
 // Reactivar cuenta de usuario
 // GET - /reactivate-user/:idUser
-app.get("/reactivate-user/:idUser", reactivateUser);
+app.get("/reactivate-user/:idUser", isUser, isAdmin, reactivateUser);
+
+// Listar usuarios activos
+// GET - / /list-activated-users
+app.get("/list-activated-users", isUser, isAdmin, listActivatedUsers);
 
 // Listar abogados dados de baja
-// GET - /list-lawyers
-app.get("/list-lawyers", isLawyer, isAdmin, listDeletedLawyers);
+// GET - /list-deleted-lawyers
+app.get("/list-deleted-lawyers", isUser, isAdmin, listDeletedLawyers);
 
 // Reactivar cuenta de abogado
 // GET - /reactivate-lawyer/:idLawyer
-app.get("/reactivate-lawyer/:idLawyer", reactivateLawyer);
+app.get("/reactivate-lawyer/:idLawyer", isUser, isAdmin, reactivateLawyer);
+
+// Listar abogados activos
+// GET - / /list-activated-lawyers
+app.get("/list-activated-lawyers", isUser, isAdmin, listActivatedLawyers);
+
+// Enviar formulario de contacto
+// POST - /contact
+app.post("/contact", contact);
 
 // USERS ENDPOINTS
 
@@ -163,9 +179,13 @@ app.post("/lawyers/login", loginLawyer);
 // GET - /lawyers/:idLawyer/data
 app.get("/lawyers/:idLawyer/data", getLawyer);
 
-// Listar todos los abogados
+// Listar los 20 últimos abogados conectados
 // GET - /lawyers/list
 app.get("/lawyers/list", listLawyers);
+
+// Listar el Top 10 abogados con la mejor puntueción
+// GET - /lawyers/top10
+app.get("/lawyers/top10", topLawyers);
 
 // Borrar abogado
 // PUT - /lawyers/:idLawyer/delete

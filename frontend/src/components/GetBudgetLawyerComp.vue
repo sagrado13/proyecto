@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- DATOS DE UN PRESUPUESTO DETERMNINADO DEL ABOGADO -->
     <p>
       <span>Detalles del proceso nº {{ budget.id_process }}:</span>
       {{ budget.message_process }}
@@ -37,27 +38,38 @@
     </p>
     <p>
       <span>Fecha de creación:</span>
-      {{ format(new Date(budget.creation_date), "dd/MM/yyyy HH:mm") }}h
+      {{ formatDate(budget.creation_date) }}h
     </p>
     <p>
-      <span>Fecha de actualización:</span>
-      {{ format(new Date(budget.update_date), "dd/MM/yyyy HH:mm") }}h
+      <span>Última actualización:</span>
+      Hace
+      {{ formatDistanceDate(budget.update_date) }}
     </p>
   </div>
 </template>
 
 <script>
 // Importamos date-fns
-import { format } from "date-fns";
+import { format, formatDistanceToNow } from "date-fns";
+import es from "date-fns/locale/es";
+
 export default {
   name: "GetBudgetLawyerComp",
   props: {
     budget: Object,
   },
-  data() {
-    return {
-      format,
-    };
+  methods: {
+    //FUNCIÓN PARA FORMATEAR FECHA
+    formatDate(date) {
+      return format(new Date(date), "dd/MM/yyyy HH:mm");
+    },
+    //FUNCIÓN PARA CALCULAR EL TIEMPO DESDE LA FECHA
+    formatDistanceDate(date) {
+      return formatDistanceToNow(new Date(date), {
+        includeSeconds: true,
+        locale: es,
+      });
+    },
   },
 };
 </script>

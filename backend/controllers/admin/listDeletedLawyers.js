@@ -11,6 +11,13 @@ async function listDeletedLawyers(req, res, next) {
     connection = await getConnection();
     const { order, direction } = req.query;
 
+    if (req.auth.role !== `admin`) {
+      throw generateError(
+        `No puedes listar todos los abogados dados de baja si no eres el admin`,
+        403
+      );
+    }
+
     // Dirección del orden
     const orderDirection =
       (direction && direction.toLowerCase()) === "desc" ? "DESC" : "ASC";
@@ -37,7 +44,7 @@ async function listDeletedLawyers(req, res, next) {
     const [lawyers] = await connection.query(
       `
       SELECT id, law_firm, street, zip, city_lawyer, phone_number_lawyer, login_lawyer, 
-      email_lawyer, picture_lawyer, description, low_reason, registration_code, 
+      email_lawyer, picture_lawyer, low_reason, registration_code, 
       creation_date, update_date
       FROM lawyers
       WHERE active=false

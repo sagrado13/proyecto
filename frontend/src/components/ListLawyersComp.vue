@@ -1,8 +1,11 @@
 <template>
-  <div>
+  <div id="list">
     <h3>Últimos abogados conectados</h3>
+
+    <!-- DATOS DE LOS ÚLTIMOS ABOGADOS QUE ESTUVIERON CONECTADOS -->
     <ul>
       <li v-for="lawyer in lawyers" :key="lawyer.id">
+        <!-- ENLACE PARA VER TODOS LOS DATOS DEL ABOGADO SELECCIONADO -->
         <router-link class="link" :to="{ name: 'GetLawyer', params: { id: lawyer.id } }">
           <img
             :class="{ hide: lawyer.picture_lawyer !== null }"
@@ -19,14 +22,14 @@
             {{ lawyer.law_firm }}
           </p>
           <p>
-            <span>Ciudad:</span>
-            {{ lawyer.city_lawyer }}
+            <span>Localidad:</span>
+            🌍 {{ lawyer.city_lawyer }}
           </p>
-          <p :class="{ hide: lawyer.description === null }">
+          <p v-if="lawyer.description !== null && lawyer.description !== 'null'">
             <span>Descripción:</span>
             {{ lawyer.description }}
           </p>
-          <p id="rating">
+          <p>
             <star-rating
               :rating="Number(lawyer.voteAverage)"
               :increment="0.1"
@@ -36,15 +39,19 @@
               :inline="true"
               :glow="2"
             ></star-rating>
-            ( {{ lawyer.total_ratings }} )
+            <router-link
+              class="link"
+              :to="{ name: 'ListRating', params: { id: lawyer.id } }"
+            >( {{ lawyer.total_ratings }} )</router-link>
           </p>
           <p>
             <span>Registrado desde:</span>
-            {{ format(new Date(lawyer.creation_date), "dd/MM/yyyy") }}
+            {{ formatDate(lawyer.creation_date) }}
           </p>
           <p>
             <span>Última conexión:</span>
-            {{ format(new Date(lawyer.update_date), "dd/MM/yyyy HH:mm") }}h
+            Hace
+            {{ formatDistanceDate(lawyer.update_date) }}
           </p>
         </router-link>
       </li>
@@ -54,16 +61,13 @@
 
 <script>
 // Importamos date-fns
-import { format } from "date-fns";
+import { format, formatDistanceToNow } from "date-fns";
+import es from "date-fns/locale/es";
+
 export default {
   name: "ListLawyers",
   props: {
     lawyers: Array,
-  },
-  data() {
-    return {
-      format,
-    };
   },
   methods: {
     // FUNCIÓN PARA OBTENER FOTO DE ABOGADO
@@ -72,11 +76,33 @@ export default {
         return process.env.VUE_APP_STATIC_LAWYERS + picture;
       }
     },
+    //FUNCIÓN PARA FORMATEAR FECHA
+    formatDate(date) {
+      return format(new Date(date), "dd/MM/yyyy");
+    },
+    //FUNCIÓN PARA CALCULAR EL TIEMPO DESDE LA FECHA
+    formatDistanceDate(date) {
+      return formatDistanceToNow(new Date(date), {
+        includeSeconds: true,
+        locale: es,
+      });
+    },
   },
 };
 </script>
 
 <style scoped>
+.link {
+  text-decoration: none;
+  color: goldenrod;
+}
+.link:visited {
+  color: goldenrod;
+}
+div#list {
+  background-color: var(--background);
+  padding: 1rem;
+}
 img {
   border-radius: 50%;
   width: 80px;
@@ -88,26 +114,19 @@ ul li {
   list-style: none;
   margin: 1rem;
   padding: 1rem;
-  border: 1px solid white;
-  /* border-radius: 50px; */
+  border: 1px solid var(--dark);
+  border-radius: 10px;
+  background-color: var(--bright);
 }
 ul li p {
   margin-top: 0.5rem;
   font-size: 0.8rem;
-  color: white;
+  color: var(--dark);
 }
 ul li p span {
   font-weight: bold;
   text-decoration: underline;
   display: block;
-}
-
-.link {
-  text-decoration: none;
-  color: black;
-}
-.link:visited {
-  color: black;
 }
 
 @media (min-width: 700px) {
@@ -120,7 +139,7 @@ ul li p span {
     justify-content: center;
   }
   ul li {
-    max-width: 190px;
+    width: 160px;
   }
   ul li p {
     margin-top: 0.6rem;
@@ -130,7 +149,11 @@ ul li p span {
 
 @media (min-width: 1000px) {
   img {
-    width: 50%;
+    width: 100px;
+  }
+  ul li {
+    width: 190px;
+    /*     height: 400px; */
   }
   h3 {
     font-size: 1.5rem;

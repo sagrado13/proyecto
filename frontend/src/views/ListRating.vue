@@ -1,6 +1,14 @@
 <template>
   <div>
-    <button @click="goBack()">🔙</button>
+    <!-- Declaramos vue-headful -->
+    <vue-headful title="Votos del abogado" />
+
+    <!-- BOTÓN DE VOLVER ATRÁS -->
+    <button id="back" @click="goBack()">
+      <img src="../assets/deshacer.svg" />
+    </button>
+
+    <!-- LISTADO DE PUNTUCIONES DEL ABOGADO SELECCIONADO -->
     <listratingscomp :lawyer="lawyer" :ratings="ratings" />
   </div>
 </template>
@@ -8,6 +16,8 @@
 <script>
 // Importamos axios
 import axios from "axios";
+// Importamos sweetalert2
+import Swal from "sweetalert2";
 // Importamos el componente ListRatingsComp
 import listratingscomp from "@/components/ListRatingsComp.vue";
 export default {
@@ -43,6 +53,11 @@ export default {
         this.ratings = response.data.data.ratings;
       } catch (error) {
         console.log(error.response.data.message);
+        window.history.back();
+        Swal.fire({
+          icon: "error",
+          title: `${error.response.data.message}`,
+        });
       }
     },
   },
@@ -53,11 +68,6 @@ export default {
 </script>
 
 <style scoped>
-button {
-  all: unset;
-  display: flex;
-}
-
 @media (min-width: 700px) {
   button {
     font-size: 1.25rem;

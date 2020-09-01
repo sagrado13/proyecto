@@ -23,7 +23,7 @@ async function editLawyer(req, res, next) {
       description,
       urgency,
     } = req.body;
-
+    console.log(description);
     // Comprobamos los datos
     await editLawyerSchema.validateAsync(req.body);
 
@@ -38,7 +38,7 @@ async function editLawyer(req, res, next) {
       [idLawyer]
     );
 
-    if (req.auth.id !== Number(idLawyer)) {
+    if (req.auth.id !== Number(idLawyer) && req.auth.role !== `admin`) {
       throw generateError(`No puedes editar otro abogado`, 401);
     }
 

@@ -115,8 +115,8 @@ async function main() {
 
     await connection.query(
       `
-        INSERT INTO users(name, surname, city_user, login_user, email_user, password, role, active, creation_date, update_date, last_auth_update)
-        VALUES('Iñaki', 'González Vázquez', 'Lugo', 'igonvaz', 'legalshield5.33@gmail.com', SHA2('${process.env.DEFAULT_ADMIN_PASSWORD}', 512), 'admin', true, UTC_TIMESTAMP, UTC_TIMESTAMP, UTC_TIMESTAMP)
+        INSERT INTO users(name, surname, city_user, phone_number_user, login_user, email_user, password, role, active, creation_date, update_date, last_auth_update)
+        VALUES('Iñaki', 'González Vázquez', 'Lugo', '647816071', 'igonvaz', 'legalshield5.33@gmail.com', SHA2('${process.env.DEFAULT_ADMIN_PASSWORD}', 512), 'admin', true, UTC_TIMESTAMP, UTC_TIMESTAMP, UTC_TIMESTAMP)
         `
     );
 
@@ -154,22 +154,78 @@ async function main() {
     }
 
     console.log(`Insertando datos en lawyers`);
-    const lawyers = 20;
+    const lawyers = 130;
+    const provinces = [
+      "A Coruña",
+      "Álava",
+      "Albacete",
+      "Alicante",
+      "Almería",
+      "Asturias",
+      "Avila",
+      "Badajoz",
+      "Barcelona",
+      "Burgos",
+      "Cáceres",
+      "Cádiz",
+      "Cantabria",
+      "Castellón",
+      "Ciudad Real",
+      "Córdoba",
+      "Cuenca",
+      "Gerona",
+      "Granada",
+      "Guadalajara",
+      "Guipúzcoa",
+      "Huelva",
+      "Huesca",
+      "Islas Baleares",
+      "Jaén",
+      "Las Palmas",
+      "La Rioja",
+      "León",
+      "Lérida",
+      "Lugo",
+      "Madrid",
+      "Málaga",
+      "Murcia",
+      "Navarra",
+      "Orense",
+      "Palencia",
+      "Pontevedra",
+      "Salamanca",
+      "Santa Cruz de Tenerife",
+      "Segovia",
+      "Sevilla",
+      "Soria",
+      "Tarragona",
+      "Teruel",
+      "Toledo",
+      "Valencia",
+      "Valladolid",
+      "Vizcaya",
+      "Zamora",
+      "Zaragoza",
+    ];
+    const urgencies = [`Alta`, `Media`, `Baja`];
 
     for (let i = 0; i < lawyers; i++) {
       const lawFirm = faker.company.companyName();
       const street = faker.address.streetAddress();
       const zip = faker.address.zipCode();
-      const cityLawyer = faker.address.city();
+      const province = Math.floor(Math.random() * provinces.length);
+      const cityLawyer = provinces[province];
       const phoneNumberLawyer = faker.phone.phoneNumber();
       const emailLawyer = faker.internet.email();
       const loginLawyer = faker.internet.userName();
       const passwordLawyer = faker.internet.password();
+      const urgency = Math.floor(Math.random() * urgencies.length);
+      const urgencyLawyer = urgencies[urgency];
 
       await connection.query(
         `
         INSERT INTO lawyers(law_firm, street, zip, city_lawyer, phone_number_lawyer, email_lawyer, 
-        login_lawyer, password, creation_date, update_date, last_auth_update)
+        login_lawyer, password, urgency, creation_date, update_date, last_auth_update)
         VALUES(
           "${lawFirm}", 
           "${street}", 
@@ -179,6 +235,7 @@ async function main() {
           "${emailLawyer}", 
           "${loginLawyer}", 
           SHA2("${passwordLawyer}", 512), 
+          "${urgencyLawyer}",
           UTC_TIMESTAMP,
           UTC_TIMESTAMP, 
           UTC_TIMESTAMP)

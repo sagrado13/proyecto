@@ -2,7 +2,7 @@
 
 // Módulos necesarios
 const { getConnection } = require("../../bbdd");
-const { generateError } = require("../../helpers");
+const { generateError, sendMail } = require("../../helpers");
 
 const { deleteUserSchema } = require("../../validators/userValidators");
 
@@ -29,7 +29,7 @@ async function deleteUser(req, res, next) {
     // Comprobamos que existe el usuario en la bbdd y está activo
     const [user] = await connection.query(
       `
-            SELECT id
+            SELECT id, email_user
             FROM users
             WHERE id=? AND active=true
             `,
@@ -38,6 +38,8 @@ async function deleteUser(req, res, next) {
     if (user.length === 0) {
       throw generateError(`No existe ningún usuario con el id:${idUser}`, 404);
     }
+
+    const email = user[0].email_user;
 
     // Si tiene procesos aún sin resolver o no es el admin no dejamos borrar el perfil
     const [process] = await connection.query(
@@ -70,6 +72,19 @@ async function deleteUser(req, res, next) {
             `,
       [lowReason, idUser]
     );
+
+    // Enviamos email con el motivo de la baja
+    try {
+      await sendMail({
+        email,
+        title: `Su cuenta ha sido eliminada de Legal Shield`,
+        content: `La cuenta que tenía registrada a sido borrada por:
+        ${lowReason}
+        `,
+      });
+    } catch (error) {
+      throw generateError(`Error enviando el email`);
+    }
 
     // Damos una respuesta
     res.send({

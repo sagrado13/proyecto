@@ -1,5 +1,8 @@
 <template>
-  <div></div>
+  <div>
+    <!-- Declaramos vue-headful -->
+    <vue-headful title="Validación de cuenta" />
+  </div>
 </template>
 
 <script>

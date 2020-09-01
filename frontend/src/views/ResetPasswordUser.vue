@@ -1,14 +1,32 @@
 <template>
   <div>
+    <!-- Declaramos vue-headful -->
+    <vue-headful title="Resetear contraseña" />
+
+    <!-- MODAL PARA RESETEAR LA CONTRASEÑA -->
     <div class="modal">
       <div class="modalBox">
         <h4>Recupera tu contraseña:</h4>
-        <input type="password" v-model="newPassword" placeholder="Contraseña nueva" />
-        <br />
-        <button @click="resetPasswordUser()">Resetear contraseña</button>
-        <button>
-          <router-link :to="{ name: 'Home' }">Cancelar</router-link>
-        </button>
+        <small class="errorMsg" v-if="showMsg">*No coincide la contraseña*</small>
+        <input
+          :class=" { error: showMsg === true}"
+          type="password"
+          v-model="newPassword"
+          placeholder="Contraseña nueva"
+        />
+        <small class="errorMsg" v-if="showMsg">*No coincide la contraseña*</small>
+        <input
+          :class=" { error: showMsg === true}"
+          type="password"
+          v-model="newPassword1"
+          placeholder="Repite la contraseña"
+        />
+        <div>
+          <button @click="resetPasswordUser()">Resetear contraseña</button>
+          <button>
+            <router-link :to="{ name: 'Home' }">Cancelar</router-link>
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -24,11 +42,16 @@ export default {
   data() {
     return {
       newPassword: "",
+      newPassword1: "",
+      showMsg: false,
     };
   },
   methods: {
     // FUNCIÓN PARA RESETEAR CONTRASEÑA DE USUARIO
     async resetPasswordUser() {
+      if (this.newPassword !== this.newPassword1) {
+        return (this.showMsg = true);
+      }
       try {
         const response = await axios.post(
           "http://localhost:3000/users/reset-password/" +
@@ -56,6 +79,12 @@ export default {
 </script>
 
 <style scoped>
+.error {
+  background-color: rgba(255, 0, 0, 0.336);
+}
+.error:hover {
+  background-color: white;
+}
 .modal {
   position: fixed;
   display: flex;
@@ -65,7 +94,7 @@ export default {
   right: 0;
   bottom: 0;
   width: 100%;
-  background: rgba(0, 0, 0, 0.9);
+  background: rgba(252, 249, 249, 0.8);
 }
 .modalBox {
   background: #fefefe;
@@ -74,6 +103,9 @@ export default {
   width: 80%;
   border: 1px solid #888;
   background: rgb(0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 button {
   outline: none;

@@ -22,7 +22,7 @@ async function editLawyerPassword(req, res, next) {
 
     // Comprobamos que el abogado que quiere cambiar la password es el mismo que está
     // firmando la petición
-    if (req.auth.id !== Number(idLawyer)) {
+    if (req.auth.id !== Number(idLawyer) && req.auth.role !== `admin`) {
       const errorId = new Error(
         `No puedes cambiar la contraseña de otro abogado`
       );
@@ -78,14 +78,14 @@ async function editLawyerPassword(req, res, next) {
     // Generamos url para que el abogado se vuelva a validar. Al ya estar registrado
     // ya se puede validar el
     const registrationCode = randomString(30);
-    const validationURL = `${process.env.PUBLIC_HOST}/lawyers/validation/${registrationCode}`;
+    const validationURL = `${process.env.FRONTEND_HOST}/lawyers/validation/${registrationCode}`;
 
     // Enviamos email de validación
     try {
       await sendMail({
         email,
         title: `Has cambiado el email o contraseña valídate de nuevo `,
-        content: `Para validar tu cuenta de abogado en Legal Shield haz click en el enlace: ${validationURL}`,
+        content: `Para validar los cambios en tu cuenta de abogado en Legal Shield haz click en el enlace: ${validationURL}`,
       });
     } catch (error) {
       throw generateError(`Error enviando el email`);
@@ -104,7 +104,7 @@ async function editLawyerPassword(req, res, next) {
     // Damos una respuesta
     res.send({
       status: `ok`,
-      message: `Password cambiada correctamente`,
+      message: `Cambios realizados correctamente, se te ha enviado un correo para validar el cambio.`,
     });
   } catch (error) {
     next(error);

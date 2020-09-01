@@ -1,12 +1,21 @@
 <template>
   <div>
+    <!-- Declaramos vue-headful -->
+    <vue-headful title="Abogados dados de baja" />
+
+    <!-- BOTÓN DE VOLVER ATRÁS -->
+    <button id="back" @click="goBack()">
+      <img src="../assets/deshacer.svg" />
+    </button>
     <h4>Abogados dados de baja: 👤 {{ totalLawyers }}</h4>
+
+    <!-- ORDENACIÓN -->
     <div @click="listDeletedLawyers">
       <legend>Ordenar</legend>
       <select v-model="order" name="order">
         <option value>Bufete</option>
         <option value="email">Email</option>
-        <option value="city">Ciudad</option>
+        <option value="city">Localidad</option>
         <option value="login">Login</option>
         <option value="updateDate">Última conexión</option>
       </select>
@@ -15,7 +24,9 @@
         <option value="desc">Descendente</option>
       </select>
     </div>
-    <listdeletedlawyerscomp v-on:id="reactivateLawyer" :lawyers="lawyers" />
+
+    <!-- LISTADO DE ABOGADOS DADOS DE BAJA -->
+    <listdeletedlawyerscomp @data="reactivateLawyer" :lawyers="lawyers" />
   </div>
 </template>
 
@@ -44,34 +55,65 @@ export default {
     async listDeletedLawyers() {
       try {
         let token = localStorage.getItem("AUTH_TOKEN_KEY");
-        axios.defaults.headers.common["Authorization"] = `${token}`;
-        const response = await axios.get("http://localhost:3000/list-lawyers", {
-          params: {
-            order: this.order,
-            direction: this.direction,
-          },
-        });
+        axios.defaults.headers.common["Authorization"] = token;
+        const response = await axios.get(
+          "http://localhost:3000/list-deleted-lawyers",
+          {
+            params: {
+              order: this.order,
+              direction: this.direction,
+            },
+          }
+        );
         this.lawyers = response.data.lawyers;
         this.totalLawyers = response.data.data[0].total_lawyers;
       } catch (error) {
         console.log(error);
+        Swal.fire({
+          icon: "error",
+          title: `${error.response.data.message}`,
+        });
+        window.history.back();
       }
     },
     // FUNCIÓN PARA REACTIVAR LA CUENTA DE UN ABOAGADO
-    async reactivateLawyer(idLawyer) {
-      try {
-        const response = await axios.get(
-          "http://localhost:3000/reactivate-lawyer/" + idLawyer
-        );
+    async reactivateLawyer(dataLawyer) {
+      const result = await Swal.fire({
+        title: `Estas seguro de que quieres reactivar la cuenta de ${dataLawyer.law_firm}`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí, estoy seguro!",
+        cancelButtonText: "No, cancelar!",
+        reverseButtons: true,
+      });
+      if (result.value) {
+        try {
+          const response = await axios.get(
+            "http://localhost:3000/reactivate-lawyer/" + dataLawyer.id
+          );
+          Swal.fire({
+            title: `${response.data.message}`,
+            icon: "success",
+            confirmButtonText: "OK",
+          });
+          this.listDeletedLawyers();
+        } catch (error) {
+          console.log(error.response);
+          Swal.fire({
+            icon: "error",
+            title: `${error.response.data.message}`,
+          });
+        }
+      } else {
         Swal.fire({
-          title: `${response.data.message}`,
-          icon: "success",
-          confirmButtonText: "OK",
+          title: "Reactivación cancelada",
+          icon: "error",
         });
-        location.reload();
-      } catch (error) {
-        console.log(error.response);
       }
+    },
+    // FUNCIÓN PARA VOLVER PARA ATRÁS
+    goBack() {
+      window.history.back();
     },
   },
   created() {
@@ -85,8 +127,8 @@ h4 {
   margin: 1rem;
 }
 select {
-  background-color: black;
-  color: white;
+  background-color: var(--bright);
+  color: var(--dark);
   font-size: 0.7rem;
 }
 

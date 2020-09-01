@@ -1,7 +1,8 @@
 <template>
   <div>
+    <!-- NOMBRE DEL ABOGADO, LOCALIDAD, MEDIA DE LAS PUNTUACIONES Y TOTAL DE VOTOS RECIBIDOS -->
     <div id="header">
-      <router-link id="link" :to="{ name: 'GetLawyer'}">
+      <router-link id="link" :to="{ name: 'GetLawyer' }">
         <img
           :class="{ hide: lawyer.picture_lawyer !== null }"
           src="../assets/profile.jpeg"
@@ -14,11 +15,25 @@
         />
         <h2>{{ lawyer.law_firm }}</h2>
         <p>
-          <span>Ciudad:</span>
+          <span>Localidad:</span>
           {{ lawyer.city_lawyer }}
         </p>
       </router-link>
+      <p id="rating">
+        <star-rating
+          :rating="Number(lawyer.voteAverage)"
+          :increment="0.1"
+          :read-only="true"
+          :fixed-points="1"
+          :star-size="25"
+          :inline="true"
+          :glow="2"
+        ></star-rating>
+        ( {{ lawyer.total_ratings }} votos )
+      </p>
     </div>
+
+    <!-- LISTADO DE LAS PUNTUACIONES DEL ABOGADO SELECCIONADO -->
     <ul>
       <li v-for="rating in ratings" :key="rating.id">
         <p>
@@ -34,13 +49,13 @@
             :star-size="20"
             :inline="true"
             :glow="2"
-          >( {{ rating.total_ratings }} )</star-rating>
+          ></star-rating>
         </p>
         <p :class="{ hide: rating.opinion === null }">
           <span>Opinión:</span>
           {{ rating.opinion }}
         </p>
-        <p>{{ format(new Date(rating.update_date), "dd/MM/yyyy HH:mm") }}h</p>
+        <p>{{ formatDate(rating.update_date) }}h</p>
       </li>
     </ul>
   </div>
@@ -55,16 +70,16 @@ export default {
     lawyer: Object,
     ratings: Array,
   },
-  data() {
-    return {
-      format,
-    };
-  },
   methods: {
+    //FUNCIÓN PARA SACAR IMAGEN
     getPictureLawyers(picture) {
       if (picture !== null && picture !== undefined) {
         return process.env.VUE_APP_STATIC_LAWYERS + picture;
       }
+    },
+    //FUNCIÓN PARA FORMATEAR FECHA
+    formatDate(date) {
+      return format(new Date(date), "dd/MM/yyyy HH:mm");
     },
   },
 };
@@ -73,6 +88,12 @@ export default {
 <style scoped>
 div#header {
   margin: 1rem;
+}
+p#rating {
+  margin-top: 1rem;
+}
+span {
+  font-weight: bold;
 }
 img {
   margin-top: 1rem;
@@ -85,15 +106,18 @@ ul {
 }
 ul li {
   list-style: none;
-  border: 1px solid white;
+  border: 1px solid var(--dark);
+  background-color: var(--bright);
+  border-radius: 10px;
   margin: 0.1rem;
   padding: 0.3rem;
 }
 ul li p {
   margin: 0.3rem;
+  font-size: 0.8rem;
 }
 #link {
-  color: goldenrod;
+  color: var(--dark);
   font-size: 0.9rem;
 }
 
@@ -105,13 +129,15 @@ ul li p {
     font-size: 1.5rem;
   }
   ul {
-    display: grid;
-    gap: 0.5rem;
-    margin: 0.5rem;
-    justify-items: cover;
-    align-items: cover;
-    grid-template-columns: 50% 50%;
-    grid-template-rows: auto auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  ul li {
+    width: 45%;
+  }
+  ul li p {
+    font-size: 0.9rem;
   }
 }
 
@@ -119,11 +145,11 @@ ul li p {
   img {
     width: 10%;
   }
-  ul {
-    margin: 1rem;
-    justify-content: center;
-    grid-template-columns: 25% 25% 25% 25%;
-    grid-template-rows: auto auto;
+  ul li {
+    width: 23%;
+  }
+  ul li p {
+    font-size: 1rem;
   }
 }
 </style>

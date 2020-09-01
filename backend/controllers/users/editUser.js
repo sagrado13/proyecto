@@ -18,8 +18,8 @@ async function editUser(req, res, next) {
     // Comprobamos los datos que se reciben
     await editUserSchema.validateAsync(req.body);
 
-    // Comprobamos que el usuario que queremos cambiar es el que firma la petición
-    if (req.auth.id !== Number(idUser)) {
+    // Comprobamos que el usuario que queremos cambiar es el que firma la petición o es el admin
+    if (req.auth.id !== Number(idUser) && req.auth.role !== `admin`) {
       throw generateError(`No puedes editar este usuario`, 403);
     }
 

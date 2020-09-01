@@ -29,7 +29,10 @@ async function editProcess(req, res, next) {
       );
 
       // Comprobamos que es el usuario que firma la petición
-      if (req.auth.id !== Number(userProcess[0].id_user)) {
+      if (
+        req.auth.id !== Number(userProcess[0].id_user) &&
+        req.auth.role !== `admin`
+      ) {
         throw generateError(`No tienes permiso para editar el proceso`, 401);
       }
 
@@ -69,7 +72,10 @@ async function editProcess(req, res, next) {
       );
 
       // Comprobamos si es el abogado que firma la petición
-      if (req.auth.id !== Number(lawyerBudget[0].id_lawyer)) {
+      if (
+        req.auth.id !== Number(lawyerBudget[0].id_lawyer) &&
+        req.auth.role !== `admin`
+      ) {
         throw generateError(`No tienes permiso para editar el proceso`, 401);
       }
 

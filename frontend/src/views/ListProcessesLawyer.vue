@@ -1,27 +1,43 @@
 <template>
   <div>
-    <div id="listProcesses" v-show="seeListProcesses">
-      <h1>Tus Procesos</h1>
-      <div id="order" @click="listProcesses">
-        <legend>Ordenar por:</legend>
-        <select v-model="order" name="order">
-          <option value>Estado</option>
-          <option value="creationDate">Fecha de solicitud</option>
-        </select>
-        <select v-model="direction" name="direction">
-          <option value>Ascendente</option>
-          <option value="desc">Descendente</option>
-        </select>
+    <!-- Declaramos vue-headful -->
+    <vue-headful title="Tus procesos" />
+
+    <!-- SPINNER -->
+    <loaderspinner :is-loading="!isLoaded">
+      <div id="listProcesses" v-if="seeListProcesses">
+        <h1>Tus Procesos</h1>
+
+        <!-- ORDENACIÓN -->
+        <div id="order" @click="listProcesses">
+          <legend>Ordenar por:</legend>
+          <select v-model="order" name="order">
+            <option value>Estado</option>
+            <option value="creationDate">Fecha de solicitud</option>
+          </select>
+          <select v-model="direction" name="direction">
+            <option value>Ascendente</option>
+            <option value="desc">Descendente</option>
+          </select>
+        </div>
+
+        <!-- LISTADO DE PROCESOS DEL ABOGADO -->
+        <listprocesseslawyercomp @id="getProcess" :processes="processes" />
       </div>
-      <listprocesseslawyercomp v-on:id="getProcess" :processes="processes" />
-    </div>
-    <div v-show="!seeListProcesses">
-      <button id="back" @click="returnProcesses()">🔙</button>
-      <div id="getProcess">
-        <h2>Proceso Nº {{ idProcess }}</h2>
-        <getprocesslawyercomp v-on:data="updateProcess" :process="process" />
+
+      <div v-if="!seeListProcesses">
+        <!-- BOTÓN DE VOLVER ATRÁS -->
+        <button id="back" @click="seeListProcesses = !seeListProcesses">
+          <img src="../assets/deshacer.svg" />
+        </button>
+
+        <!-- DATOS DE PROCESO DETERMINADO -->
+        <div id="getProcess">
+          <h2>Proceso Nº {{ idProcess }}</h2>
+          <getprocesslawyercomp @data="updateProcess" :process="process" />
+        </div>
       </div>
-    </div>
+    </loaderspinner>
   </div>
 </template>
 
@@ -34,13 +50,17 @@ import Swal from "sweetalert2";
 import listprocesseslawyercomp from "@/components/ListProcessesLawyerComp.vue";
 // Importamos el componente GetProcessLawyerComp
 import getprocesslawyercomp from "@/components/GetProcessLawyerComp.vue";
+// Importamos LoaderSpinner
+import loaderspinner from "@/components/LoaderSpinner.vue";
 // IMPORTAMOS FUNCIONES
 import { getIdToken } from "../api/utils";
+import { checkIsAdmin } from "../api/utils.js";
 export default {
   name: "ListProcessesLawyer",
   components: {
     listprocesseslawyercomp,
     getprocesslawyercomp,
+    loaderspinner,
   },
   data() {
     return {
@@ -50,17 +70,28 @@ export default {
       order: "",
       direction: "",
       idProcess: "",
-      process: {},
+      process: null,
       statusProcess: "",
     };
   },
+  computed: {
+    isLoaded() {
+      return this.processes !== null || this.process !== null;
+    },
+  },
   methods: {
     // FUNCIÓN PARA OBTENER LISTADO DE PROCESOS DE ABOGADO
-    async listProcesses() {
+    async listProcesses(idLawyer) {
       try {
-        let token = localStorage.getItem("AUTH_TOKEN_KEY");
-        axios.defaults.headers.common["Authorization"] = `${token}`;
-        this.idLawyer = getIdToken(token);
+        if (this.$route.params.id && checkIsAdmin() === true) {
+          this.idLawyer = this.$route.params.id;
+          let token = localStorage.getItem("AUTH_TOKEN_KEY");
+          axios.defaults.headers.common["Authorization"] = `${token}`;
+        } else {
+          let token = localStorage.getItem("AUTH_TOKEN_KEY");
+          axios.defaults.headers.common["Authorization"] = `${token}`;
+          this.idLawyer = getIdToken(token);
+        }
         const response = await axios.get(
           "http://localhost:3000/lawyers/" + this.idLawyer + "/list/processes",
           {
@@ -77,16 +108,13 @@ export default {
           icon: "error",
           title: `${error.response.data.message}`,
         });
+        window.history.back();
       }
     },
-    // FUNCIÓN PARA VOLVER ATRÁS DEL GETPROCESS
-    returnProcesses() {
-      this.seeListProcesses = true;
-    },
     // FUNCIÓN PARA OBTENER DATOS DE UN PROCESO DETERMINADO
-    async getProcess(processId) {
+    async getProcess(idProcess) {
       try {
-        this.idProcess = processId;
+        this.idProcess = idProcess;
         this.seeListProcesses = false;
         const response = await axios.get(
           "http://localhost:3000/lawyers/" +
@@ -96,7 +124,7 @@ export default {
         );
         this.process = response.data.data[0];
       } catch (error) {
-        console.log(error);
+        console.log(error.response.data.message);
       }
     },
     // FUNCIÓN PARA ACTUALIZAR EL ESTADO DE UN PROCESO
@@ -109,8 +137,7 @@ export default {
             this.idProcess +
             "/edit"
         );
-        location.reload();
-        console.log(response.data);
+        this.getProcess(this.idProcess);
         Swal.fire({
           title: `${response.data.message}`,
           icon: "success",
@@ -141,11 +168,12 @@ div#listProcesses {
   margin-bottom: 2rem;
 }
 div#order select {
-  background-color: black;
-  color: white;
+  background-color: var(--bright);
+  color: var(--dark);
 }
 div#getProcess {
-  border: 1px solid white;
+  border: 1px solid var(--dark);
+  background-color: var(--bright);
   margin: 0.5rem;
   margin-bottom: 2rem;
   padding: 0.5rem;
@@ -154,27 +182,17 @@ h2 {
   margin: 1rem;
   text-decoration: underline;
 }
-button#back {
-  all: unset;
-  display: flex;
-}
 
 @media (min-width: 700px) {
   div#order select {
     font-size: 0.9rem;
     padding: 0.1rem;
   }
-  button#back {
-    font-size: 1.25rem;
-  }
 }
 
 @media (min-width: 1000px) {
   div#order select {
     font-size: 1rem;
-  }
-  button#back {
-    font-size: 1.4rem;
   }
 
   div#getProcess {

@@ -1,0 +1,364 @@
+@import url("https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+}
+html {
+  --dark: black;
+  --bright: white;
+  --gray: lightgray;
+  --background: lightblue;
+  --button: deepskyblue;
+  --header: rgb(47, 72, 89);
+  --font: Merriweather, sans-serif;
+  min-height: 100%;
+  position: relative;
+}
+body {
+  background-image: url(../assets/background.png);
+  background-repeat: repeat-y;
+  background-size: cover;
+  margin-bottom: 5rem;
+}
+
+#app {
+  font-family: var(--font);
+  text-align: center;
+  color: var(--dark);
+}
+#nav {
+  display: flex;
+  justify-content: space-around;
+}
+#nav a {
+  font-weight: bold;
+  color: var(--bright);
+  text-decoration: none;
+}
+#nav a.router-link-exact-active {
+  color: goldenrod;
+}
+div.background {
+  background-color: var(--header);
+  padding-bottom: 0.2rem;
+  display: grid;
+  align-items: center;
+  grid-template-columns: 13% 38% auto auto;
+  grid-template-rows: auto auto auto auto;
+  grid-template-areas:
+    "logo   legal  menu  menu"
+    "registerUser     registerUser   registerLawyer   registerLawyer"
+    "userControl   userControl  userControl  userControl";
+}
+a.linkLogo {
+  font-weight: bold;
+  color: var(--bright);
+  grid-area: legal;
+  text-align: left;
+  text-decoration: none;
+}
+a.linkLogo.router-link-exact-active {
+  color: goldenrod;
+}
+img#logo {
+  grid-area: logo;
+  width: 40px;
+}
+div#nav {
+  grid-area: menu;
+}
+div#registerUser,
+div#loginUser,
+div#recoverUser {
+  grid-area: registerUser;
+  align-self: center;
+}
+
+div#registerLawyer,
+div#loginLawyer,
+div#recoverLawyer {
+  grid-area: registerLawyer;
+  align-self: center;
+}
+
+div#registerUser p,
+div#registerLawyer p {
+  font-size: 0.7rem;
+  color: var(--bright);
+  font-weight: bold;
+}
+div#registerUser button,
+div#registerLawyer button,
+div#loginUser button,
+div#loginLawyer button,
+div#recoverUser button,
+div#recoverLawyer button {
+  outline: none;
+  font-size: 0.6rem;
+  padding: 0.2rem;
+  background-color: var(--header);
+  color: var(--bright);
+  display: inline-block;
+}
+div#registerUser button a,
+div#registerLawyer button a {
+  color: var(--bright);
+}
+div#loginUser legend,
+div#loginLawyer legend,
+div#recoverUser legend,
+div#recoverLawyer legend {
+  font-size: 0.7rem;
+  color: var(--bright);
+}
+div#loginUser input,
+div#loginLawyer input,
+div#recoverUser input,
+div#recoverLawyer input {
+  outline: none;
+  border-width: 0 0 3px;
+  border-radius: 10px;
+  border-color: yellowgreen;
+  font-size: 0.7rem;
+  padding: 0.1rem;
+  text-align: center;
+  background: var(--bright);
+  color: var(--dark);
+}
+div.userControl,
+div.lawyerControl {
+  grid-area: userControl;
+}
+div#profile {
+  display: flex;
+  justify-content: center;
+}
+div.userControl button#menu,
+div.lawyerControl button#menu {
+  all: unset;
+  cursor: pointer;
+}
+div.userControl button#menu img:first-of-type,
+div.lawyerControl button#menu img:first-of-type {
+  width: 10px;
+  margin-right: 0.3rem;
+}
+h5 {
+  font-size: 0.7rem;
+  margin: 0.3rem;
+  text-decoration: underline;
+}
+div#menuUser ul,
+div#menuLawyer ul {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  background-color: rgb(199, 229, 250);
+  right: 1rem;
+  width: 60%;
+  padding-bottom: 1rem;
+  border-radius: 20px;
+  border: 1px solid var(--dark);
+}
+div#menuUser ul button,
+div#menuLawyer ul button {
+  all: unset;
+  border-bottom: 1px dotted var(--dark);
+  cursor: pointer;
+  padding: 0.5rem;
+  font-size: 0.6rem;
+  font-weight: 900;
+}
+
+div#menuUser ul p,
+div#menuLawyer ul p {
+  margin: 0.3rem;
+  font-size: 0.7rem;
+}
+
+button a {
+  text-decoration: none;
+  color: var(--dark);
+}
+button {
+  font-weight: bold;
+  border: none;
+  padding: 1rem;
+}
+textarea[placeholder] {
+  text-align: center;
+}
+.hide {
+  display: none;
+}
+.pictureLogin {
+  border-radius: 50%;
+  width: 30px;
+}
+select {
+  text-align-last: center;
+}
+select:hover,
+button:hover {
+  cursor: pointer;
+}
+.errorMsg {
+  color: red;
+}
+button#back {
+  outline: none;
+  cursor: pointer;
+  display: flex;
+  background-color: var(--gray);
+  border-radius: 10px;
+}
+button#back img {
+  width: 15px;
+}
+
+@media (min-width: 700px) {
+  div.background {
+    grid-template-columns: auto auto auto auto auto;
+    grid-template-rows: auto auto auto auto auto;
+    grid-template-areas:
+      "logo   legal  menu   menu  menuUserAndLawyer"
+      "registerUser     registerUser   none   registerLawyer   registerLawyer";
+  }
+  a.linkLogo {
+    font-size: 1.5rem;
+  }
+  img#logo {
+    width: 60px;
+  }
+  #nav {
+    font-size: 1.5rem;
+    justify-content: space-around;
+  }
+  div#registerUser p,
+  div#registerLawyer p {
+    font-size: 0.85rem;
+  }
+  div#registerUser button,
+  div#registerLawyer button,
+  div#loginUser button,
+  div#loginLawyer button,
+  div#recoverUser button,
+  div#recoverLawyer button {
+    font-size: 0.8rem;
+    padding: 0.5rem;
+  }
+  div#loginUser legend,
+  div#loginLawyer legend {
+    font-size: 0.9rem;
+  }
+  div#loginUser input,
+  div#loginLawyer input,
+  div#recoverUser input,
+  div#recoverLawyer input {
+    font-size: 0.9rem;
+    margin: 0.3rem;
+  }
+  div#recoverUser legend,
+  div#recoverLawyer legend {
+    font-size: 0.9rem;
+  }
+  h5 {
+    font-size: 1rem;
+  }
+  div.userControl,
+  div.lawyerControl {
+    grid-area: menuUserAndLawyer;
+  }
+  div#menuUser ul button,
+  div#menuLawyer ul button {
+    padding: 1rem;
+    font-size: 0.8rem;
+  }
+  div#menuUser ul p,
+  div#menuLawyer ul p {
+    font-size: 0.65rem;
+  }
+  .pictureLogin {
+    width: 50px;
+  }
+  button#back img {
+    width: 20px;
+  }
+}
+
+@media (min-width: 1000px) {
+  a.linkLogo {
+    font-size: 1.8rem;
+  }
+  #nav {
+    font-size: 1.6rem;
+  }
+  div#registerUser p,
+  div#registerLawyer p {
+    font-size: 1rem;
+  }
+  div#registerUser button,
+  div#registerLawyer button,
+  div#loginUser button,
+  div#loginLawyer button,
+  div#recoverUser button,
+  div#recoverLawyer button {
+    font-size: 0.9rem;
+  }
+  div#loginUser legend,
+  div#loginLawyer legend,
+  div#recoverUser legend,
+  div#recoverLawyer legend {
+    font-size: 1rem;
+  }
+  div#loginUser input,
+  div#loginLawyer input,
+  div#recoverUser input,
+  div#recoverLawyer input {
+    font-size: 1rem;
+  }
+  h5 {
+    font-size: 1.2rem;
+  }
+  .pictureLogin {
+    width: 60px;
+    margin-top: 1rem;
+  }
+  div#menuUser ul button,
+  div#menuLawyer ul button {
+    font-size: 1rem;
+  }
+  div#menuUser ul p,
+  div#menuLawyer ul p {
+    font-size: 0.8rem;
+  }
+  button#back img {
+    width: 30px;
+  }
+}
+
+@media (min-width: 1350px) {
+  div.background {
+    grid-template-columns: 8% 25% auto auto auto;
+    grid-template-areas: "logo   legal    registerUser    menu    registerLawyer";
+  }
+  a.linkLogo {
+    font-size: 2.3rem;
+  }
+  img#logo {
+    grid-area: logo;
+    width: 80px;
+  }
+  .pictureLogin {
+    width: 70px;
+  }
+  div.userControl,
+  div.lawyerControl {
+    grid-area: registerLawyer;
+  }
+  div#menuUser ul,
+  div#menuLawyer ul {
+    width: 30%;
+  }
+}

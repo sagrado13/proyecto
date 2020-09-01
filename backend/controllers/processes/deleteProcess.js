@@ -38,9 +38,14 @@ async function deleteProcess(req, res, next) {
     const now = new Date();
     const result = differenceInHours(now, date);
 
-    if (result > 23 && status !== `resuelto` && req.auth.role !== `admin`) {
+    if (
+      result > 23 &&
+      status !== `pendiente de presupuesto` &&
+      status !== `resuelto` &&
+      req.auth.role !== `admin`
+    ) {
       throw generateError(
-        `Para poder eliminar un proceso tiene que ser en las primeras 24 horas, que esté resuelto o que seas el admin`,
+        `Para poder eliminar un proceso tiene que ser en las primeras 24 horas, que esté pendiente de presupuesto, que esté resuelto o que seas el admin`,
         403
       );
     }
@@ -58,7 +63,7 @@ async function deleteProcess(req, res, next) {
     // Damos una respuesta
     res.send({
       status: `ok`,
-      message: `El processo con id:${idProcess} del usuario con id:${idUser} ha sido borrado`,
+      message: `El processo ha sido eliminado correctamente`,
     });
   } catch (error) {
     next(error);

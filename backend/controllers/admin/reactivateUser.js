@@ -10,6 +10,13 @@ async function reactivateUser(req, res, next) {
     connection = await getConnection();
     const { idUser } = req.params;
 
+    if (req.auth.role !== `admin`) {
+      throw generateError(
+        `No puedes reactivar usuarios activos si no eres el admin`,
+        403
+      );
+    }
+
     // Comprobamos que el idUser que nos pasan es el mismo que tenemos en la bbdd
     // y sacamos el email para mandarle una confirmación
     const [result] = await connection.query(
@@ -34,7 +41,7 @@ async function reactivateUser(req, res, next) {
     await connection.query(
       `
             UPDATE users
-            SET active=true, registration_code=NULL
+            SET low_reason=NULL, active=true, registration_code=NULL
             WHERE id=?
             `,
       [idUser]

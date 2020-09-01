@@ -23,7 +23,7 @@ async function editBudget(req, res, next) {
       await editBudgetUserSchema.validateAsync(req.body);
 
       // Comprobamos que es el usuario que firma la petición
-      if (req.auth.id !== Number(idUser)) {
+      if (req.auth.id !== Number(idUser) && req.auth.role !== `admin`) {
         throw generateError(`No tienes permiso para editar el proceso`, 401);
       }
 
@@ -98,7 +98,7 @@ async function editBudget(req, res, next) {
       await editBudgetLawyerSchema.validateAsync(req.body);
 
       // Verificamos que es el abogado que firma la petción
-      if (req.auth.id !== Number(idLawyer)) {
+      if (req.auth.id !== Number(idLawyer) && req.auth.role !== `admin`) {
         throw generateError(`No tienes permiso para editar el proceso`, 401);
       }
 

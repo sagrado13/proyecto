@@ -1,9 +1,10 @@
 <template>
   <div>
+    <!-- FILTRO PARA BUSCAR POR NOMBRE, TELÉFONO, LOGIN O EMAIL -->
     <input
       type="search"
       v-model="search"
-      placeholder="Buscar por teléfono, login o email"
+      placeholder="Buscar por nombre, teléfono, login o email"
       size="25"
     />
     <ul>
@@ -48,11 +49,12 @@
         </p>
         <p>
           <span>Fecha de registro:</span>
-          {{ format(new Date(user.creation_date), "dd/MM/yyyy") }}
+          {{ formatDate(user.creation_date) }}
         </p>
         <p>
-          <span>Fecha de última conexión:</span>
-          {{ format(new Date(user.update_date), "dd/MM/yyyy HH:mm") }}h
+          <span>Última conexión:</span>
+          Hace
+          {{ formatDistanceDate(user.update_date) }}
         </p>
         <button @click="sendIdUser(index)">Reactivar</button>
       </li>
@@ -62,7 +64,9 @@
 
 <script>
 // Importamos date-fns
-import { format } from "date-fns";
+import { format, formatDistanceToNow } from "date-fns";
+import es from "date-fns/locale/es";
+
 export default {
   name: "ListDeletedUsersComp",
   props: {
@@ -70,7 +74,6 @@ export default {
   },
   data() {
     return {
-      format,
       search: "",
     };
   },
@@ -103,7 +106,7 @@ export default {
                 .normalize("NFD")
                 .replace(/[\u0300-\u036f]/g, "")
             ) ||
-          user.phone_number_user
+          user.name
             .toLowerCase()
             .normalize("NFD")
             .replace(/[\u0300-\u036f]/g, "")
@@ -112,7 +115,8 @@ export default {
                 .toLowerCase()
                 .normalize("NFD")
                 .replace(/[\u0300-\u036f]/g, "")
-            )
+            ) ||
+          user.phone_number_user.includes(this.search)
       );
     },
   },
@@ -125,8 +129,19 @@ export default {
     },
     // FUNCIÓN PARA ENVIAR ID DEL USUARIO SELECCIONADO
     sendIdUser(index) {
-      let idUser = this.users[index].id;
-      this.$emit("id", idUser);
+      let dataUser = this.users[index];
+      this.$emit("data", dataUser);
+    },
+    //FUNCIÓN PARA FORMATEAR FECHA
+    formatDate(date) {
+      return format(new Date(date), "dd/MM/yyyy");
+    },
+    //FUNCIÓN PARA CALCULAR EL TIEMPO DESDE LA FECHA
+    formatDistanceDate(date) {
+      return formatDistanceToNow(new Date(date), {
+        includeSeconds: true,
+        locale: es,
+      });
     },
   },
 };
@@ -135,12 +150,12 @@ export default {
 <style scoped>
 input {
   outline: 0;
-  border-width: 0 0 1px;
+  border-width: 0 0 2px;
   border-color: yellowgreen;
   font-size: 0.7rem;
   text-align: center;
-  background: rgb(22, 22, 22);
-  color: white;
+  background: var(--bright);
+  color: var(--dark);
   padding: 0.1rem;
   margin: 1rem;
 }
@@ -155,7 +170,8 @@ ul li {
   list-style: none;
   margin: 1rem;
   padding: 1rem;
-  border: 1px solid white;
+  background-color: var(--button);
+  border-radius: 30px;
 }
 ul li p {
   margin-top: 0.5rem;
@@ -170,9 +186,7 @@ button {
   outline: none;
   font-size: 0.7rem;
   border-radius: 20px;
-  padding: 0.3rem;
-  margin-top: 1rem;
-  box-shadow: 5px 5px 30px white inset;
+  box-shadow: 5px 5px 30px yellowgreen inset;
 }
 
 @media (min-width: 700px) {
@@ -226,9 +240,10 @@ button {
   }
 
   button {
+    margin-left: 0.5rem;
     font-size: 0.9rem;
     align-self: center;
-    word-break: normal;
+    min-width: 90px;
   }
 }
 </style>

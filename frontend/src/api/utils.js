@@ -38,7 +38,7 @@ export function isLoggedInUser() {
   return !!authToken && !isExpired(authToken) && !!getName();
 }
 
-// FUNCIÓN QUE COMPRUEBA SI EL USUARIO ESTÁ LOGUEADA Y SU TOKEN ES VÁLIDO
+// FUNCIÓN QUE COMPRUEBA SI EL ABOGADO ESTÁ LOGUEADA Y SU TOKEN ES VÁLIDO
 export function isLoggedInLawyer() {
   let authToken = getAuthToken();
   return !!authToken && !isExpired(authToken) && !!getLawFirm();
@@ -53,7 +53,7 @@ export function getIsAdmin() {
 export function checkIsAdmin() {
   let role = null;
   let admin = getIsAdmin();
-  if (admin === "true") {
+  if (admin === "admin") {
     role = true;
   } else {
     role = false;

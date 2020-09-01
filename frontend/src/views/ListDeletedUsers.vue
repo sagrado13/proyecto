@@ -1,6 +1,15 @@
 <template>
   <div>
+    <!-- Declaramos vue-headful -->
+    <vue-headful title="Usuarios dados de baja" />
+
+    <!-- BOTÓN DE VOLVER ATRÁS -->
+    <button id="back" @click="goBack()">
+      <img src="../assets/deshacer.svg" />
+    </button>
     <h4>Usuarios dados de baja: 👤 {{ totalUsers }}</h4>
+
+    <!-- ORDENACIÓN -->
     <div @click="listDeletedUsers">
       <legend>Ordenar</legend>
       <select v-model="order" name="order">
@@ -15,7 +24,9 @@
         <option value="desc">Descendente</option>
       </select>
     </div>
-    <listdeleteduserscomp v-on:id="reactivateUser" :users="users" />
+
+    <!-- LISTADO DE USUARIOS DADOS DE BAJA -->
+    <listdeleteduserscomp @data="reactivateUser" :users="users" />
   </div>
 </template>
 
@@ -44,34 +55,66 @@ export default {
     async listDeletedUsers() {
       try {
         let token = localStorage.getItem("AUTH_TOKEN_KEY");
-        axios.defaults.headers.common["Authorization"] = `${token}`;
-        const response = await axios.get("http://localhost:3000/list-users", {
-          params: {
-            order: this.order,
-            direction: this.direction,
-          },
-        });
+        axios.defaults.headers.common["Authorization"] = token;
+        const response = await axios.get(
+          "http://localhost:3000/list-deleted-users",
+          {
+            params: {
+              order: this.order,
+              direction: this.direction,
+            },
+          }
+        );
         this.users = response.data.users;
         this.totalUsers = response.data.data[0].total_users;
       } catch (error) {
         console.log(error.response.data.message);
+        Swal.fire({
+          icon: "error",
+          title: `${error.response.data.message}`,
+        });
       }
     },
     // FUNCIÓN PARA REACTIVAR LA CUENTA DE UN USUARIO
-    async reactivateUser(idUser) {
-      try {
-        const response = await axios.get(
-          "http://localhost:3000/reactivate-user/" + idUser
-        );
+    async reactivateUser(dataUser) {
+      const result = await Swal.fire({
+        title: `Estas seguro de que quieres reactivar la cuenta de ${
+          dataUser.name + " " + dataUser.surname
+        }`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí, estoy seguro!",
+        cancelButtonText: "No, cancelar!",
+        reverseButtons: true,
+      });
+      if (result.value) {
+        try {
+          const response = await axios.get(
+            "http://localhost:3000/reactivate-user/" + dataUser.id
+          );
+          Swal.fire({
+            title: `${response.data.message}`,
+            icon: "success",
+            confirmButtonText: "OK",
+          });
+          this.listDeletedUsers();
+        } catch (error) {
+          console.log(error.response);
+          Swal.fire({
+            icon: "error",
+            title: `${error.response.data.message}`,
+          });
+        }
+      } else {
         Swal.fire({
-          title: `${response.data.message}`,
-          icon: "success",
-          confirmButtonText: "OK",
+          title: "Reactivación cancelada",
+          icon: "error",
         });
-        location.reload();
-      } catch (error) {
-        console.log(error.response);
       }
+    },
+    // FUNCIÓN PARA VOLVER PARA ATRÁS
+    goBack() {
+      window.history.back();
     },
   },
   // HOOK
@@ -86,8 +129,8 @@ h4 {
   margin: 1rem;
 }
 select {
-  background-color: black;
-  color: white;
+  background-color: var(--bright);
+  color: var(--dark);
   font-size: 0.7rem;
 }
 

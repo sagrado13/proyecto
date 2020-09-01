@@ -20,7 +20,7 @@ async function addNewSpeciality(req, res, next) {
     await addNewSpecialitySchema.validateAsync(req.body);
 
     // Comprobamos que es el abogado que firma la petición
-    if (req.auth.id !== Number(idLawyer)) {
+    if (req.auth.id !== Number(idLawyer) && req.auth.role !== `admin`) {
       throw generateError(
         `Tienes que ser un abogado registrado, verifica tus datos`,
         401

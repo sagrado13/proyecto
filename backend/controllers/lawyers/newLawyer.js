@@ -27,17 +27,7 @@ async function newLawyer(req, res, next) {
       emailLawyer,
       password,
     } = req.body;
-    console.log(login);
-    console.log(
-      lawFirm,
-      street,
-      zip,
-      city,
-      phoneNumber,
-      login,
-      emailLawyer,
-      password
-    );
+
     // Comprobamos los datos
     await newLawyerSchema.validateAsync(req.body);
 

@@ -28,7 +28,7 @@ async function getProcess(req, res, next) {
       );
 
       // Comprobamos que es el usuario que accede a los procesos es el mismo que firma la petición
-      if (req.auth.id !== Number(idUser)) {
+      if (req.auth.id !== Number(idUser) && req.auth.role !== `admin`) {
         throw generateError(`No tienes permiso`, 401);
       }
 
@@ -62,7 +62,7 @@ async function getProcess(req, res, next) {
       );
 
       // Comprobamos que es el abogado que firma la petición
-      if (req.auth.id !== Number(idLawyer)) {
+      if (req.auth.id !== Number(idLawyer) && req.auth.role !== `admin`) {
         throw generateError(
           `Tienes que ser el abogado destinatario del proceso`,
           401

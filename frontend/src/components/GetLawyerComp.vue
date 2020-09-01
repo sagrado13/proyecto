@@ -1,5 +1,6 @@
 <template>
   <div id="getLawyer">
+    <!-- DATOS DEL ABOGADO SELECCIONADO -->
     <img
       :class="{ hide: dataLawyer.picture !== null }"
       src="../assets/profile.jpeg"
@@ -16,7 +17,7 @@
       {{ dataLawyer.street }} {{ dataLawyer.zip }}
     </p>
     <p>
-      <span>Ciudad:</span>
+      <span>Localidad:</span>
       {{ dataLawyer.city }}
     </p>
     <p :class="{ hide: dataLawyer.phoneNumber === null }">
@@ -37,12 +38,15 @@
       <span>Urgencia tratando los procesos:</span>
       {{ dataLawyer.urgency }}
     </p>
-
-    <p :class="{ hide: dataLawyer.description === null }">
+    <p
+      v-show="
+        dataLawyer.description !== null && dataLawyer.description !== 'null'
+      "
+    >
       <span>Descripción:</span>
       {{ dataLawyer.description }}
     </p>
-    <p :class="{ hide: dataLawyer.totalRatings === 0 }">
+    <p>
       <star-rating
         :rating="Number(dataLawyer.voteAverage)"
         :increment="0.1"
@@ -59,34 +63,46 @@
     </p>
     <p>
       <span>Registrado desde:</span>
-      {{ format(new Date(dataLawyer.creationDate), "dd/MM/yyyy") }}
+      {{ formatDate(dataLawyer.creationDate) }}
     </p>
     <p>
       <span>Última conexión:</span>
-      {{ format(new Date(dataLawyer.updateDate), "dd/MM/yyyy HH:mm") }}h
+      Hace
+      {{
+      formatDistanceDate(dataLawyer.updateDate)
+      }}
     </p>
   </div>
 </template>
 
 <script>
 // Importamos date-fns
-import { format } from "date-fns";
+import { format, formatDistanceToNow } from "date-fns";
+import es from "date-fns/locale/es";
+
 export default {
   name: "GetLawyerComp",
   props: {
     dataLawyer: Object,
     specialities: Array,
   },
-  data() {
-    return {
-      format,
-    };
-  },
   methods: {
+    // FUNCIÓN PARA SACAR IMAGEN
     getPictureLawyers(picture) {
       if (picture !== null) {
         return process.env.VUE_APP_STATIC_LAWYERS + picture;
       }
+    },
+    //FUNCIÓN PARA FORMATEAR FECHA
+    formatDate(date) {
+      return format(new Date(date), "dd/MM/yyyy");
+    },
+    //FUNCIÓN PARA CALCULAR EL TIEMPO DESDE LA FECHA
+    formatDistanceDate(date) {
+      return formatDistanceToNow(new Date(date), {
+        includeSeconds: true,
+        locale: es,
+      });
     },
   },
 };
@@ -98,8 +114,10 @@ img {
   width: 35%;
 }
 div#getLawyer {
-  border: 1px solid white;
-  margin: 1rem;
+  border: 1px solid var(--dark);
+  background-color: var(--bright);
+  border-radius: 10px;
+  margin: 0.5rem;
   padding: 1rem;
 }
 h2 {
@@ -126,6 +144,7 @@ ul {
 
 ul li {
   list-style: none;
+  border: none;
 }
 
 ul li span {
@@ -134,6 +153,10 @@ ul li span {
 }
 
 @media (min-width: 700px) {
+  div#getLawyer {
+    width: 70%;
+    margin: 0 auto;
+  }
   img {
     width: 20%;
   }
@@ -160,20 +183,26 @@ ul li span {
   }
   div#getLawyer {
     display: grid;
-    gap: 0.5rem;
-    margin: 0.5rem;
+    width: 50%;
+    gap: 1.5rem;
+    margin: 1% auto;
     justify-items: center;
     align-items: center;
-    grid-template-columns: auto auto auto auto;
-    grid-template-rows: auto auto auto auto;
+    grid-template-columns: auto auto;
+    grid-template-rows: auto auto;
     grid-template-areas:
-      "picture   adress    city    phonenumber"
-      "lawfirm    email     urgency     description"
-      "rating specilaities  creation  update ";
+      "picture   picture  "
+      "rating rating"
+      "lawfirm    lawfirm"
+      "adress    city"
+      "phonenumber    email"
+      "specialities    specialities"
+      "urgency    urgency"
+      "description description"
+      "creation update";
   }
 
   img {
-    width: 30%;
     grid-area: picture;
   }
   h2 {
@@ -191,7 +220,7 @@ ul li span {
   :nth-child(7) {
     grid-area: email;
   }
-  ul li {
+  ul {
     grid-area: specialities;
   }
   :nth-child(9) {

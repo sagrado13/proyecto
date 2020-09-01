@@ -17,7 +17,7 @@ async function listLawyers(req, res, next) {
       (SELECT COUNT(rating) FROM budgets WHERE id_lawyer=L.id) AS total_ratings
       FROM lawyers L
       WHERE active=true
-      ORDER BY update_date DESC LIMIT 15
+      ORDER BY update_date DESC LIMIT 21
       `
     );
 

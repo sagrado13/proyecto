@@ -31,7 +31,8 @@ async function listRating(req, res, next) {
     const [lawyer] = await connection.query(
       `
       SELECT L.id, L.law_firm, L.city_lawyer, L.picture_lawyer,
-      (SELECT COUNT(B.id_lawyer) FROM budgets B WHERE B.id_lawyer=L.id) AS total_ratings
+      (SELECT AVG(rating) FROM budgets WHERE id_lawyer=L.id AND rating>0) AS voteAverage,
+      (SELECT COUNT(rating) FROM budgets B WHERE B.id_lawyer=L.id) AS total_ratings
       FROM lawyers L
       WHERE id=? AND active=true
       `,
@@ -39,7 +40,7 @@ async function listRating(req, res, next) {
     );
 
     if (lawyer.length === 0) {
-      throw generateError(`El abogado con id:${idLawyer} no existe`, 404);
+      throw generateError(`El abogado no existe`, 404);
     }
 
     // Sacamos datos de la puntuación y login de usuario si está activo
@@ -57,7 +58,7 @@ async function listRating(req, res, next) {
 
     if (ratings.length === 0) {
       throw generateError(
-        `El abogado con id:${idLawyer} todavía no tiene puntuación`,
+        `El abogado seleccionado todavía no tiene puntuación`,
         404
       );
     }

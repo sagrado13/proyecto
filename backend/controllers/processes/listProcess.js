@@ -30,7 +30,7 @@ async function listProcess(req, res, next) {
     if (idUser) {
       const [processUser] = await connection.query(
         `
-            SELECT P.id, P.message_process, P.observations, P.status_process, P.creation_date, 
+            SELECT P.id, P.message_process, P.observations, P.status_process, P.id_user, P.creation_date, 
             P.update_date, L.law_firm, L.city_lawyer, B.status_budget, B.price, B.rating
             FROM processes P
             LEFT JOIN lawyers L ON P.id_lawyer=L.id
@@ -64,7 +64,7 @@ async function listProcess(req, res, next) {
     if (idLawyer) {
       const [processLawyer] = await connection.query(
         `
-            SELECT P.id, P.message_process, P.observations, P.status_process, P.creation_date, 
+            SELECT P.id, P.message_process, P.observations, P.status_process, P.id_lawyer, P.creation_date, 
             P.update_date, U.name, U.surname, U.city_user, B.status_budget, B.price, B.rating
             FROM processes P
             LEFT JOIN users U ON P.id_user=U.id
