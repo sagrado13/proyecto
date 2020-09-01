@@ -23,7 +23,6 @@
     <footer>
       <router-link :to="{ name: 'Privacy' }">Privacidad</router-link>
       <p>Copyright © 2020 by Iñaki GV</p>
-      <router-link :to="{ name: 'Privacy' }">Reglas de Uso</router-link>
     </footer>
   </div>
 </template>
