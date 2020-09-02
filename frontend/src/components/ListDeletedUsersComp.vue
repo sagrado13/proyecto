@@ -129,7 +129,7 @@ export default {
     },
     // FUNCIÓN PARA ENVIAR ID DEL USUARIO SELECCIONADO
     sendIdUser(index) {
-      let dataUser = this.users[index];
+      let dataUser = this.filtered[index];
       this.$emit("data", dataUser);
     },
     //FUNCIÓN PARA FORMATEAR FECHA

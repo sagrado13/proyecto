@@ -5,7 +5,9 @@
 
     <!-- BOTÓN DE VOLVER ATRÁS -->
     <button id="back">
-      <router-link :to="{ name: 'ListProcessesLawyer', params: { id: this.idLawyer }}">
+      <router-link
+        :to="{ name: 'ListProcessesLawyer', params: { id: this.idLawyer } }"
+      >
         <img src="../assets/deshacer.svg" />
       </router-link>
     </button>
@@ -24,8 +26,10 @@
             cols="40"
             rows="20"
           ></textarea>
-          <button @click="editBudget()">Enviar</button>
-          <button @click="seeModal =! seeModal">Cancelar</button>
+          <div>
+            <button @click="editBudget()">Enviar</button>
+            <button @click="seeModal = !seeModal">Cancelar</button>
+          </div>
         </div>
       </div>
 
@@ -33,14 +37,21 @@
       <getbudgetlawyercomp :budget="budget" />
       <div id="send">
         <button
-          :class="{ hide: budget.status_budget !== 'pendiente de respuesta'}"
-          @click="seeModal =! seeModal"
-        >Editar</button>
+          :class="{ hide: budget.status_budget !== 'pendiente de respuesta' }"
+          @click="seeModal = !seeModal"
+        >
+          Editar
+        </button>
         <button
-          v-if="budget.status_budget === 'pendiente de respuesta' || isAdmin === true"
+          v-if="
+            budget.status_budget === 'pendiente de respuesta' ||
+              isAdmin === true
+          "
           id="delete"
           @click="deleteBudget()"
-        >Borrar</button>
+        >
+          Borrar
+        </button>
       </div>
     </div>
   </div>

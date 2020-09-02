@@ -14,7 +14,10 @@
       <a href="https://twitter.com/home" target="_blank">
         <img src="../assets/twitter.svg" alt="Logo Twitter" />
       </a>
-      <a href="mailto:legalshield5.33@gmail.com?Subject=Sugerencias%20o%20dudas" target="_blank">
+      <a
+        href="mailto:legalshield5.33@gmail.com?Subject=Sugerencias%20o%20dudas"
+        target="_blank"
+      >
         <img src="../assets/gmail.svg" alt="Logo email" />
       </a>
     </div>

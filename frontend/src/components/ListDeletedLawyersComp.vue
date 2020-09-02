@@ -142,7 +142,7 @@ export default {
     },
     // FUNCIÓN PARA ENVIAR EL ID DEL ABOGADO SELECCIONADO
     sendIdLawyer(index) {
-      let dataLawyer = this.lawyers[index];
+      let dataLawyer = this.filtered[index];
       this.$emit("data", dataLawyer);
     },
     //FUNCIÓN PARA FORMATEAR FECHA

@@ -3,9 +3,11 @@
     <div class="background">
       <!-- LOGO Y NOMBRE DE PÁGINA QUE ENLAZA A INICIO -->
       <router-link :to="{ name: 'Home' }">
-        <img id="logo" src="./assets/justicia.png" alt />
+        <img id="logo" src="./assets/justicieLogo.png" alt />
       </router-link>
-      <router-link :to="{ name: 'Home' }" class="linkLogo">LEGAL SHIELD</router-link>
+      <router-link :to="{ name: 'Home' }" class="linkLogo"
+        >LEGAL SHIELD</router-link
+      >
 
       <!-- RUTAS A CONTACTO Y INFO -->
       <div id="nav">
@@ -16,8 +18,18 @@
       <!-- LOGIN Y RECUPERAR CONTARSEÑA DE USUARIO -->
       <div id="loginUser" v-if="seeLoginUser">
         <legend>Login de usuario:</legend>
-        <input v-model="emailOrLogin" type="text" name="emailOrLogin" placeholder="Email o usuario" />
-        <input v-model="password" type="password" name="password" placeholder="Contraseña" />
+        <input
+          v-model="emailOrLogin"
+          type="text"
+          name="emailOrLogin"
+          placeholder="Email o usuario"
+        />
+        <input
+          v-model="password"
+          type="password"
+          name="password"
+          placeholder="Contraseña"
+        />
         <div>
           <button @click="loginUser()">Login</button>
           <button @click="seeLoginUser = !seeLoginUser">Cancelar</button>
@@ -28,8 +40,18 @@
       <!-- LOGIN Y RECUPERAR CONTRASEÑA DE ABOGADO -->
       <div id="loginLawyer" v-if="seeLoginLawyer">
         <legend>Login de abogado:</legend>
-        <input v-model="emailOrLogin" type="text" name="emailOrLogin" placeholder="Email o usuario" />
-        <input v-model="password" type="password" name="password" placeholder="Contraseña" />
+        <input
+          v-model="emailOrLogin"
+          type="text"
+          name="emailOrLogin"
+          placeholder="Email o usuario"
+        />
+        <input
+          v-model="password"
+          type="password"
+          name="password"
+          placeholder="Contraseña"
+        />
         <div>
           <button @click="loginLawyer()">Login</button>
           <button @click="seeLoginLawyer = !seeLoginLawyer">Cancelar</button>
@@ -103,19 +125,29 @@
               <router-link :to="{ name: 'GetUser' }">Ver Perfil</router-link>
             </button>
             <button>
-              <router-link :to="{ name: 'ListProcessesUser' }">Ver procesos</router-link>
+              <router-link :to="{ name: 'ListProcessesUser' }"
+                >Ver procesos</router-link
+              >
             </button>
             <button v-if="rol === 'admin'">
-              <router-link :to="{ name: 'ListDeletedUsers' }">Usuarios de baja</router-link>
+              <router-link :to="{ name: 'ListDeletedUsers' }"
+                >Usuarios de baja</router-link
+              >
             </button>
             <button v-if="rol === 'admin'">
-              <router-link :to="{ name: 'ListActivatedUsers' }">Usuarios activos</router-link>
+              <router-link :to="{ name: 'ListActivatedUsers' }"
+                >Usuarios activos</router-link
+              >
             </button>
             <button v-if="rol === 'admin'">
-              <router-link :to="{ name: 'ListDeletedLawyers' }">Abogados de baja</router-link>
+              <router-link :to="{ name: 'ListDeletedLawyers' }"
+                >Abogados de baja</router-link
+              >
             </button>
             <button v-if="rol === 'admin'">
-              <router-link :to="{ name: 'ListActivatedLawyers' }">Abogados activos</router-link>
+              <router-link :to="{ name: 'ListActivatedLawyers' }"
+                >Abogados activos</router-link
+              >
             </button>
             <button @click="logout()">Logout</button>
             <p>Última conexión: {{ getFormat() }}h.</p>
@@ -154,7 +186,9 @@
               <router-link :to="{ name: 'EditLawyer' }">Ver Perfil</router-link>
             </button>
             <button>
-              <router-link :to="{ name: 'ListProcessesLawyer' }">Ver procesos</router-link>
+              <router-link :to="{ name: 'ListProcessesLawyer' }"
+                >Ver procesos</router-link
+              >
             </button>
             <button @click="logout()">Logout</button>
             <p v-if="seeWelcomeLawyer">Última conexión: {{ getFormat() }}h.</p>
@@ -170,7 +204,9 @@
             <input type="email" v-model="emailUser" placeholder="Email" />
             <br />
             <button @click="recoverPasswordUser()">Recuperar contraseña</button>
-            <button id="cancel" @click="seeModalUser = !seeModalUser">Cancelar</button>
+            <button id="cancel" @click="seeModalUser = !seeModalUser">
+              Cancelar
+            </button>
           </div>
         </div>
       </div>
@@ -182,8 +218,12 @@
             <legend>Recupera tu contraseña:</legend>
             <input type="email" v-model="emailLawyer" placeholder="Email" />
             <br />
-            <button @click="recoverPasswordLawyer()">Recuperar contraseña</button>
-            <button id="cancel" @click="seeModalLawyer = !seeModalLawyer">Cancelar</button>
+            <button @click="recoverPasswordLawyer()">
+              Recuperar contraseña
+            </button>
+            <button id="cancel" @click="seeModalLawyer = !seeModalLawyer">
+              Cancelar
+            </button>
           </div>
         </div>
       </div>

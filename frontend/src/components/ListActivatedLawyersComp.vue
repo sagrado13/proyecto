@@ -26,7 +26,8 @@
           <router-link
             class="link"
             :to="{ name: 'EditLawyer', params: { id: lawyer.id } }"
-          >{{ lawyer.law_firm }}</router-link>
+            >{{ lawyer.law_firm }}</router-link
+          >
         </p>
         <p>
           <span>Dirección:</span>
@@ -64,7 +65,8 @@
           <button>
             <router-link
               :to="{ name: 'ListProcessesLawyer', params: { id: lawyer.id } }"
-            >Ver procesos</router-link>
+              >Ver procesos</router-link
+            >
           </button>
         </div>
       </li>
@@ -139,7 +141,7 @@ export default {
     },
     // FUNCIÓN PARA ENVIAR EL ID DEL ABOGADO SELECCIONADO
     sendDataLawyer(index) {
-      let dataLawyer = this.lawyers[index];
+      let dataLawyer = this.filtered[index];
       this.$emit("data", dataLawyer);
     },
     //FUNCIÓN PARA FORMATEAR FECHA

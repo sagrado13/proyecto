@@ -27,7 +27,8 @@
           <router-link
             class="link"
             :to="{ name: 'GetUser', params: { id: user.id } }"
-          >{{ user.name }} {{ user.surname }}</router-link>
+            >{{ user.name }} {{ user.surname }}</router-link
+          >
         </p>
         <p>
           <span>Ciudad:</span>
@@ -59,7 +60,10 @@
         <div id="button">
           <button @click="sendDataUser(index)">Dar de baja</button>
           <button>
-            <router-link :to="{ name: 'ListProcessesUser', params: { id: user.id } }">Ver procesos</router-link>
+            <router-link
+              :to="{ name: 'ListProcessesUser', params: { id: user.id } }"
+              >Ver procesos</router-link
+            >
           </button>
         </div>
       </li>
@@ -132,9 +136,9 @@ export default {
         return process.env.VUE_APP_STATIC_USERS + picture;
       }
     },
-    // FUNCIÓN PARA ENVIAR ID DEL USUARIO SELECCIONADO
+    // FUNCIÓN PARA ENVIAR LOS DATOS DEL USUARIO SELECCIONADO
     sendDataUser(index) {
-      let dataUser = this.users[index];
+      let dataUser = this.filtered[index];
       this.$emit("data", dataUser);
     },
     //FUNCIÓN PARA FORMATEAR FECHA
