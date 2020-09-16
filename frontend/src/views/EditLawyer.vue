@@ -4,7 +4,11 @@
     <vue-headful title="Ver y editar perfil" />
 
     <!-- BOTÓN DE VOLVER ATRÁS -->
-    <button v-if="!showEditPassword && !showLowLawyer" id="back" @click="goBack()">
+    <button
+      v-if="!showEditPassword && !showLowLawyer"
+      id="back"
+      @click="goBack()"
+    >
       <img src="../assets/deshacer.svg" />
     </button>
 
@@ -22,7 +26,8 @@
         <router-link
           class="link"
           :to="{ name: 'ListRating', params: { id: idLawyer } }"
-        >( {{ totalRatings }} votos )</router-link>
+          >( {{ totalRatings }} votos )</router-link
+        >
       </p>
       <p>Estos son tus datos {{ lawFirm }}, puedes actualizarlos si deseas.</p>
       <img
@@ -30,24 +35,43 @@
         src="../assets/profile.jpeg"
         alt="Foto de perfil por defecto"
       />
-      <img :class="{ hide: picture === null }" :src="picture" alt="Avatar de abogado" />
+      <img
+        :class="{ hide: picture === null }"
+        :src="picture"
+        alt="Avatar de abogado"
+      />
       <button id="deletePicture" @click="deletePicture">Eliminar imagen</button>
       <legend>Nombre bufete*</legend>
-      <input type="text" placeholder="Nombre bufete" v-model="lawFirm" />
+      <input
+        type="text"
+        placeholder="Nombre bufete"
+        v-model="lawFirm"
+        required
+      />
       <legend>Dirección</legend>
-      <input type="text" placeholder="Calle" v-model="street" />
+      <input type="text" placeholder="Calle" v-model="street" required />
       <legend>Código postal*</legend>
-      <input type="text" placeholder="Código postal" v-model="zip" />
+      <input type="text" placeholder="Código postal" v-model="zip" required />
       <legend>Localidad*</legend>
-      <select v-model="city" name="city">
+      <select v-model="city" name="city" required>
         <option value></option>
-        <option v-for="province in provinces" :key="province.id" :value="province">{{ province }}</option>
+        <option
+          v-for="province in provinces"
+          :key="province.id"
+          :value="province"
+          >{{ province }}</option
+        >
       </select>
       <legend>Teléfono*</legend>
-      <input type="tel" placeholder="Número de teléfono" v-model="phoneNumber" />
+      <input
+        type="tel"
+        placeholder="Número de teléfono"
+        v-model="phoneNumber"
+        required
+      />
       <legend>Usuario*</legend>
-      <input type="text" placeholder="Usuario" v-model="login" />
-      <legend>Urgencia tratando los casos*</legend>
+      <input type="text" placeholder="Usuario" v-model="login" required />
+      <legend>Urgencia tratando los casos</legend>
       <select v-model="urgency" name="urgency">
         <option value>Urgencia tratando los casos</option>
         <option value="Alta">Alta</option>
@@ -56,10 +80,17 @@
       </select>
       <legend>Descripción</legend>
       <input type="text" placeholder="Descripción" v-model="description" />
+      <div class="objetfit" v-if="previewAvatar">
+        <img :src="previewAvatar" />
+        <p>{{ namePreviewAvatar }}</p>
+        <button @click="cancellUploadPicture">Cancelar</button>
+      </div>
       <input id="upload" type="file" @change="processFile" ref="fileInput" />
       <button @click="$refs.fileInput.click()">Cargar imagen</button>
       <progress max="100" :value.prop="uploadProgress"></progress>
-      <button id="updateButton" @click="updateLawyer">Actualiza tu perfil</button>
+      <button id="updateButton" @click="updateLawyer">
+        Actualiza tu perfil
+      </button>
 
       <!-- LISTADO DE ESPECIALIDADES AÑADIDAS EN SU PERFIL, CON LA OPCIÓN DE BORRARLAS -->
       <editlawyercomp @delete="deleteSpeciality" :specialities="specialities" />
@@ -83,23 +114,33 @@
 
     <!-- BOTONES PARA CAMBIAR EMAIL O CONTRASEÑA Y DARSE DE BAJA-->
     <div id="editPassword" v-if="!showEditPassword && !showLowLawyer">
-      <button @click="showEditPassword = !showEditPassword">Cambiar email o contraseña</button>
-      <button id="delete" @click="showLowLawyer = !showLowLawyer">Date de baja</button>
+      <button @click="showEditPassword = !showEditPassword">
+        Cambiar email o contraseña
+      </button>
+      <button id="delete" @click="showLowLawyer = !showLowLawyer">
+        Date de baja
+      </button>
     </div>
 
     <!-- CAMBIO DE EMAIL Y CONTRASEÑA -->
     <div v-if="showEditPassword" id="changePassword">
       <p>Cambia tu email o contraseña</p>
       <legend>Email*</legend>
-      <input type="email" placeholder="Email" v-model="email" />
+      <input type="email" placeholder="Email" v-model="email" required />
       <legend>Contraseña vieja*</legend>
-      <input type="password" placeholder="Contraseña antigua" v-model="oldPassword" />
+      <input
+        type="password"
+        placeholder="Contraseña antigua"
+        v-model="oldPassword"
+        required
+      />
       <legend>Contraseña nueva*</legend>
       <input
         :class="{ error: showMsg === true }"
         type="password"
         v-model="newPassword"
         placeholder="Contraseña nueva"
+        required
       />
       <small class="errorMsg" v-if="showMsg">*No coincide la contraseña*</small>
       <legend>Repetir contraseña nueva*</legend>
@@ -108,6 +149,7 @@
         type="password"
         v-model="newPassword1"
         placeholder="Repite la contraseña nueva"
+        required
       />
       <small class="errorMsg" v-if="showMsg">*No coincide la contraseña*</small>
       <div>
@@ -125,6 +167,7 @@
         name="lowReason"
         cols="30"
         rows="10"
+        required
       ></textarea>
       <button @click="showLowLawyer = !showLowLawyer">Cancelar</button>
       <button id="delete" @click="deleteLawyer()">Date de baja</button>
@@ -160,6 +203,8 @@ export default {
       description: "",
       picture: "",
       avatar: null,
+      previewAvatar: null,
+      namePreviewAvatar: "",
       uploadProgress: 0,
       voteAverage: "",
       totalRatings: "",
@@ -243,7 +288,7 @@ export default {
           this.idLawyer = getIdToken(token);
         }
         const response = await axios.get(
-          "http://localhost:3000/lawyers/" + this.idLawyer + "/data"
+          process.env.VUE_APP_BACK_URL + "lawyers/data/" + this.idLawyer
         );
         this.lawFirm = response.data.data.responseData.lawFirm;
         this.street = response.data.data.responseData.street;
@@ -257,18 +302,32 @@ export default {
         this.voteAverage = response.data.data.responseData.voteAverage;
         this.totalRatings = response.data.data.responseData.totalRatings;
         this.specialities = response.data.data.specialities;
-        localStorage.setItem("PICTURE_LAWYER", this.picture);
-        this.$emit("showPictureLawyer");
+        if (checkIsAdmin() !== true) {
+          localStorage.setItem("PICTURE_LAWYER", this.picture);
+          this.$emit("showPictureLawyer");
+        }
         if (this.picture !== null) {
           this.picture = process.env.VUE_APP_STATIC_LAWYERS + this.picture;
         }
       } catch (error) {
         console.log(error);
+        Swal.fire({
+          icon: "error",
+          title: `${error.response.data.message}`,
+        });
       }
     },
-    // FUNCIÓN PARA PROCESAR LA IMAGEN
+    // FUNCIÓN PARA PROCESAR LA IMAGEN Y PREVISUALIZARLA
     processFile(event) {
       this.avatar = event.target.files[0];
+      this.namePreviewAvatar = this.avatar.name;
+      this.previewAvatar = URL.createObjectURL(this.avatar);
+    },
+    // FUNCIÓN PARA CANCELAR LA CARGA DE LA IMAGEN
+    cancellUploadPicture() {
+      this.avatar = null;
+      this.previewAvatar = null;
+      this.namePreviewAvatar = "";
     },
     // FUNCIÓN PARA ACTUALIZAR PERFIL DE ABOGADO
     async updateLawyer() {
@@ -288,7 +347,7 @@ export default {
           fd.append("avatar", this.avatar);
         }
         const response = await axios.put(
-          "http://localhost:3000/lawyers/" + this.idLawyer + "/edit",
+          process.env.VUE_APP_BACK_URL + "lawyers/" + this.idLawyer + "/edit",
           fd,
           {
             onUploadProgress: (uploadEvent) => {
@@ -303,6 +362,7 @@ export default {
           icon: "success",
         });
         this.getLawyer((this.$route.params.id = this.idLawyer));
+        this.previewAvatar = null;
       } catch (error) {
         console.log(error);
         Swal.fire({
@@ -315,7 +375,10 @@ export default {
     async deletePicture() {
       try {
         const response = await axios.put(
-          "http://localhost:3000/lawyers/" + this.idLawyer + "/delete-picture"
+          process.env.VUE_APP_BACK_URL +
+            "lawyers/" +
+            this.idLawyer +
+            "/delete-picture"
         );
         Swal.fire({
           title: `${response.data.message}`,
@@ -333,7 +396,10 @@ export default {
       }
       try {
         const response = await axios.post(
-          "http://localhost:3000/lawyers/" + this.idLawyer + "/email-password",
+          process.env.VUE_APP_BACK_URL +
+            "lawyers/" +
+            this.idLawyer +
+            "/email-password",
           {
             email: this.email,
             oldPassword: this.oldPassword,
@@ -369,7 +435,10 @@ export default {
       if (result.value) {
         try {
           const response = await axios.put(
-            "http://localhost:3000/lawyers/" + this.idLawyer + "/delete",
+            process.env.VUE_APP_BACK_URL +
+              "lawyers/" +
+              this.idLawyer +
+              "/delete",
             {
               lowReason: this.lowReason,
             }
@@ -398,7 +467,10 @@ export default {
     async addNewSpeciality() {
       try {
         const response = await axios.post(
-          "http://localhost:3000/lawyers/" + this.idLawyer + "/specialities",
+          process.env.VUE_APP_BACK_URL +
+            "lawyers/" +
+            this.idLawyer +
+            "/specialities",
           {
             speciality: this.speciality,
           }
@@ -421,7 +493,8 @@ export default {
     async deleteSpeciality(idSpeciality) {
       try {
         const response = await axios.delete(
-          "http://localhost:3000/lawyers/" +
+          process.env.VUE_APP_BACK_URL +
+            "lawyers/" +
             this.idLawyer +
             "/specialities/" +
             idSpeciality
@@ -468,6 +541,17 @@ img {
   border-radius: 50%;
   width: 100px;
   margin-top: 1rem;
+}
+.objetfit > img {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+}
+.objetfit p {
+  font-size: 0.4rem;
+}
+.objetfit button {
+  box-shadow: 5px 5px 30px red inset;
 }
 div#update {
   background-color: var(--background);
@@ -531,7 +615,7 @@ button#updateButton {
   font-size: 0.6rem;
 }
 div#editPassword {
-  margin-bottom: 2.5rem;
+  margin-bottom: 5rem;
 }
 div#changePassword {
   background-color: var(--background);
@@ -572,7 +656,15 @@ button#delete {
 
 @media (min-width: 700px) {
   img {
-    width: 200px;
+    width: 130px;
+  }
+  .objetfit > img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+  }
+  .objetfit p {
+    font-size: 0.5rem;
   }
   input {
     padding: 0.2rem;
@@ -615,8 +707,19 @@ button#delete {
 }
 
 @media (min-width: 1000px) {
+  img {
+    width: 200px;
+  }
+  .objetfit > img {
+    width: 130px;
+    height: 130px;
+    object-fit: cover;
+  }
+  .objetfit p {
+    font-size: 0.6rem;
+  }
   div#update {
-    width: 40%;
+    width: 50%;
     margin: 0 auto;
   }
   p {

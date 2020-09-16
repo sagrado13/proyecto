@@ -16,7 +16,7 @@ async function editBudget(req, res, next) {
     connection = await getConnection();
 
     const { idUser, idLawyer, idProcess, idBudget } = req.params;
-    const { status, message } = req.body;
+    const { status, message, price } = req.body;
 
     if (idUser) {
       // Comprobamos los datos
@@ -44,10 +44,10 @@ async function editBudget(req, res, next) {
         );
       }
 
-      // Comprobamos que el estado no está aceptado o rechazado
+      // Comprobamos que el estado no está Aceptado o Rechazado
       if (
-        userBudget[0].status_budget === `aceptado` ||
-        userBudget[0].status_budget === `rechazado`
+        userBudget[0].status_budget === `Aceptado` ||
+        userBudget[0].status_budget === `Rechazado`
       ) {
         throw generateError(
           `No se puede modificar el estado si ya esta aceptado o rechazado`,
@@ -65,21 +65,21 @@ async function editBudget(req, res, next) {
         [status, idBudget, idProcess]
       );
 
-      if (status.toLowerCase() === `aceptado`) {
+      if (status === `Aceptado`) {
         await connection.query(
           `
                 UPDATE processes
-                SET status_process='pendiente de una resolución', update_date=UTC_TIMESTAMP
+                SET status_process='Pendiente de una resolución', update_date=UTC_TIMESTAMP
                 WHERE id=?
                 `,
           [idProcess]
         );
       }
-      if (status.toLowerCase() === `rechazado`) {
+      if (status === `Rechazado`) {
         await connection.query(
           `
                 UPDATE processes
-                SET status_process='presupuesto rechazado', update_date=UTC_TIMESTAMP
+                SET status_process='Presupuesto rechazado', update_date=UTC_TIMESTAMP
                 WHERE id=?
                 `,
           [idProcess]
@@ -119,19 +119,43 @@ async function editBudget(req, res, next) {
         );
       }
 
-      // Actualizamos la bbdd
-      await connection.query(
-        `
+      // Comprobamos que el estado no está Aceptado o Rechazado
+      /*       if (
+        lawyerBudget[0].status_budget === `Aceptado` ||
+        lawyerBudget[0].status_budget === `Rechazado`
+      ) {
+        throw generateError(
+          `No se puede modificar el estado si ya esta aceptado o rechazado`,
+          400
+        );
+      } */
+
+      if (req.auth.role === `admin`) {
+        // Actualizamos la bbdd
+        await connection.query(
+          `
             UPDATE budgets
-            SET message_budget=?, update_date=UTC_TIMESTAMP
+            SET message_budget=?, price=?, update_date=UTC_TIMESTAMP
             WHERE id=? AND id_process=?
             `,
-        [message, idBudget, idProcess]
-      );
+          [message, price, idBudget, idProcess]
+        );
+      } else {
+        // Actualizamos la bbdd
+        await connection.query(
+          `
+              UPDATE budgets
+              SET message_budget=?, update_date=UTC_TIMESTAMP
+              WHERE id=? AND id_process=?
+              `,
+          [message, idBudget, idProcess]
+        );
+      }
+
       // Damos una respuesta
       res.send({
-        idBudget,
-        message,
+        status: `ok`,
+        message: `Presupuesto modificado correctamente`,
       });
     }
   } catch (error) {

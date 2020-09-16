@@ -23,7 +23,7 @@ async function editLawyer(req, res, next) {
       description,
       urgency,
     } = req.body;
-    console.log(description);
+
     // Comprobamos los datos
     await editLawyerSchema.validateAsync(req.body);
 

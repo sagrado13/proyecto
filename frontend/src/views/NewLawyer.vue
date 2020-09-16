@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="background">
     <!-- Declaramos vue-headful -->
     <vue-headful title="Regístrate abogado" />
 
@@ -13,38 +13,64 @@
     <div id="register">
       <form action>
         <label>Nombre del bufete*</label>
-        <input type="text" v-model="lawFirm" placeholder="Nombre del bufete" />
+        <input
+          type="text"
+          v-model="lawFirm"
+          required
+          placeholder="Nombre del bufete"
+        />
         <label>Dirección*</label>
-        <input type="text" v-model="street" placeholder="Dirección" />
+        <input type="text" v-model="street" required placeholder="Dirección" />
         <label>Código postal*</label>
-        <input type="text" v-model="zip" placeholder="Código postal" />
+        <input type="text" v-model="zip" required placeholder="Código postal" />
         <label>Localidad*</label>
-        <select v-model="city" name="city">
+        <select v-model="city" required name="city">
           <option value>Selecciona la localidad</option>
-          <option v-for="province in provinces" :key="province.id" :value="province">{{ province }}</option>
+          <option
+            v-for="province in provinces"
+            :key="province.id"
+            :value="province"
+            >{{ province }}</option
+          >
         </select>
         <label>Teléfono*</label>
-        <input type="tel" required v-model="phoneNumber" placeholder="Teléfono" />
+        <input
+          type="tel"
+          required
+          v-model="phoneNumber"
+          placeholder="Teléfono"
+        />
         <label>Usuario*</label>
-        <input type="text" v-model="login" placeholder="Usuario" />
+        <input type="text" v-model="login" required placeholder="Usuario" />
         <label>Email*</label>
-        <input type="email" v-model="emailLawyer" placeholder="Email" />
+        <input
+          type="email"
+          v-model="emailLawyer"
+          required
+          placeholder="Email"
+        />
         <label>Contraseña*</label>
         <input
-          :class=" { error: showMsg === true}"
+          :class="{ error: showMsg === true }"
           type="password"
           v-model="password"
           placeholder="Contraseña"
+          required
         />
-        <small class="errorMsg" v-if="showMsg">*No coincide la contraseña*</small>
+        <small class="errorMsg" v-if="showMsg"
+          >*No coincide la contraseña*</small
+        >
         <label>Repetir contraseña*</label>
         <input
-          :class=" { error: showMsg === true}"
+          :class="{ error: showMsg === true }"
           type="password"
           v-model="password1"
           placeholder="Repite la contraseña"
+          required
         />
-        <small class="errorMsg" v-if="showMsg">*No coincide la contraseña*</small>
+        <small class="errorMsg" v-if="showMsg"
+          >*No coincide la contraseña*</small
+        >
         <legend>Urgencia tratando los casos</legend>
         <select v-model="urgency" name="urgency">
           <option value>Urgencia tratando los casos</option>
@@ -55,7 +81,9 @@
         <legend>Descripción</legend>
         <input type="text" placeholder="Descripción" v-model="description" />
         <input id="upload" type="file" @change="processFile" ref="fileInput" />
-        <button id="uploadPicture" @click="$refs.fileInput.click()">Cargar imagen</button>
+        <button id="uploadPicture" @click="$refs.fileInput.click()">
+          Cargar imagen
+        </button>
         <progress max="100" :value.prop="uploadProgress"></progress>
       </form>
     </div>
@@ -170,13 +198,17 @@ export default {
         if (this.avatar !== null) {
           fd.append("avatar", this.avatar);
         }
-        const response = await axios.post("http://localhost:3000/lawyers", fd, {
-          onUploadProgress: (uploadEvent) => {
-            this.uploadProgress = Math.round(
-              (uploadEvent.loaded / uploadEvent.total) * 100
-            );
-          },
-        });
+        const response = await axios.post(
+          process.env.VUE_APP_BACK_URL + "lawyers",
+          fd,
+          {
+            onUploadProgress: (uploadEvent) => {
+              this.uploadProgress = Math.round(
+                (uploadEvent.loaded / uploadEvent.total) * 100
+              );
+            },
+          }
+        );
         this.$router.push("/");
         Swal.fire({
           title: "Abogado añadido correctamente",
@@ -200,6 +232,15 @@ export default {
 </script>
 
 <style scoped>
+div.background {
+  background-image: url(../assets/registryBackground.png);
+  background-color: var(--bright);
+  background-repeat: no-repeat;
+  background-size: cover;
+  padding-bottom: 5rem;
+  display: flex;
+  flex-direction: column;
+}
 .error {
   background-color: rgba(255, 0, 0, 0.336);
 }
@@ -214,7 +255,7 @@ div#register {
   margin: 0 auto;
   box-sizing: border-box;
   border-radius: 20px;
-  width: 80%;
+  width: 70%;
   padding-top: 1rem;
   padding-bottom: 1rem;
   background-color: var(--background);
@@ -260,6 +301,7 @@ legend {
 }
 button#back {
   box-shadow: none;
+  align-self: flex-start;
 }
 button {
   outline: none;
@@ -283,12 +325,13 @@ button#register {
   input {
     padding: 0.2rem;
     font-size: 0.9rem;
+    width: 300px;
   }
   legend {
     font-size: 1rem;
   }
   select {
-    width: 177px;
+    width: 300px;
     padding: 0.2rem;
     font-size: 0.9rem;
   }
@@ -304,17 +347,15 @@ button#register {
 
 @media (min-width: 1000px) {
   div#register {
-    width: 30%;
+    width: 50%;
   }
   label {
     font-size: 1rem;
   }
   input {
     font-size: 1rem;
-    width: 50%;
   }
   select {
-    width: 51%;
     font-size: 1rem;
   }
   button#uploadPicture {

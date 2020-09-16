@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isLoaded">
+  <div id="getBudget" v-if="isLoaded">
     <!-- Declaramos vue-headful -->
     <vue-headful title="Datos del presupuesto" />
 
@@ -18,7 +18,9 @@
       <!-- MODAL PARA EDITAR EL MENSAJE DEL PRESUPUESTO -->
       <div v-if="seeModal" class="modal">
         <div class="modalBox">
-          <legend>Mensaje para {{ customerName }} {{ customerSurname }}</legend>
+          <legend id="message">
+            Mensaje para {{ customerName }} {{ customerSurname }}
+          </legend>
           <textarea
             v-model="message"
             placeholder="Mensaje para cliente"
@@ -26,6 +28,10 @@
             cols="40"
             rows="20"
           ></textarea>
+          <div v-if="isAdmin === true">
+            <legend>Precio*</legend>
+            <input type="text" placeholder="Precio" v-model="price" />
+          </div>
           <div>
             <button @click="editBudget()">Enviar</button>
             <button @click="seeModal = !seeModal">Cancelar</button>
@@ -35,21 +41,16 @@
 
       <!-- PRESUPUESTO SELECCIONADO CON BOTONES EDITAR Y BORRAR SEGÚN UNAS CONDICIONES -->
       <getbudgetlawyercomp :budget="budget" />
-      <div id="send">
-        <button
-          :class="{ hide: budget.status_budget !== 'pendiente de respuesta' }"
-          @click="seeModal = !seeModal"
-        >
+      <div
+        id="send"
+        v-if="
+          budget.status_budget === 'Pendiente de respuesta' || isAdmin === true
+        "
+      >
+        <button @click="seeModal = !seeModal">
           Editar
         </button>
-        <button
-          v-if="
-            budget.status_budget === 'pendiente de respuesta' ||
-              isAdmin === true
-          "
-          id="delete"
-          @click="deleteBudget()"
-        >
+        <button id="delete" @click="deleteBudget()">
           Borrar
         </button>
       </div>
@@ -82,6 +83,7 @@ export default {
       customerName: "",
       customerSurname: "",
       message: "",
+      price: "",
       seeModal: false,
       isAdmin: "",
     };
@@ -105,13 +107,15 @@ export default {
         let token = localStorage.getItem("AUTH_TOKEN_KEY");
         axios.defaults.headers.common["Authorization"] = token;
         const response = await axios.get(
-          "http://localhost:3000/lawyers/" +
+          process.env.VUE_APP_BACK_URL +
+            "lawyers/" +
             this.idLawyer +
             "/process/" +
             this.idProcess
         );
         if (response.data.data[0].message_budget !== null) {
           this.message = response.data.data[0].message_budget;
+          this.price = response.data.data[0].price;
         }
         this.budget = response.data.data[0];
         this.idBudget = response.data.data[0].id;
@@ -135,7 +139,8 @@ export default {
     async editBudget() {
       try {
         const response = await axios.put(
-          "http://localhost:3000/lawyers/" +
+          process.env.VUE_APP_BACK_URL +
+            "lawyers/" +
             this.idLawyer +
             "/processes/" +
             this.idProcess +
@@ -144,9 +149,13 @@ export default {
             "/edit",
           {
             message: this.message,
+            price: this.price,
           }
         );
         this.seeModal = false;
+        this.price = "";
+        this.message = "";
+        console.log("llego");
         this.getBudget(this.idProcess);
       } catch (error) {
         console.log(error);
@@ -170,7 +179,8 @@ export default {
       if (result.value) {
         try {
           const response = await axios.put(
-            "http://localhost:3000/lawyers/" +
+            process.env.VUE_APP_BACK_URL +
+              "lawyers/" +
               this.idLawyer +
               "/processes/" +
               this.idProcess +
@@ -205,6 +215,9 @@ export default {
 </script>
 
 <style scoped>
+div#getBudget {
+  margin-bottom: 5rem;
+}
 h1 {
   text-decoration: underline;
   margin-top: 1rem;
@@ -222,6 +235,18 @@ div#send {
   display: flex;
   justify-content: space-between;
 }
+input {
+  outline: none;
+  width: 100px;
+  font-size: 0.9rem;
+  text-align: center;
+  background: var(--dark);
+  color: var(--bright);
+  border-width: 0 0 2px;
+  border-color: yellowgreen;
+  border-radius: 10px;
+}
+
 div#send button {
   outline: none;
   min-width: 100px;
@@ -244,7 +269,6 @@ div#send button#delete {
   background: rgba(252, 249, 249, 0.9);
 }
 .modalBox {
-  background: #fefefe;
   margin: 2% auto;
   padding: 1rem;
   width: 80%;
@@ -272,14 +296,19 @@ textarea {
   div#send button {
     font-size: 0.9rem;
   }
+  input {
+    width: 120px;
+    font-size: 0.9rem;
+    padding: 0.2rem;
+  }
   textarea {
     font-size: 1rem;
     width: 90%;
   }
-  div.modal button {
+  .modal button {
     font-size: 0.9rem;
   }
-  div.modal legend {
+  .modal legend#message {
     font-size: 1rem;
   }
 }
@@ -292,8 +321,14 @@ textarea {
   div#send button {
     font-size: 1rem;
   }
-  textarea {
+  .modal legend#message {
+    font-size: 1.3rem;
+  }
+  input {
     font-size: 1rem;
+  }
+  textarea {
+    font-size: 1.3rem;
   }
 }
 </style>

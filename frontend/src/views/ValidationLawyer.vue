@@ -17,7 +17,8 @@ export default {
     async validationLawyer() {
       try {
         const response = await axios.get(
-          "http://localhost:3000/lawyers/validation/" +
+          process.env.VUE_APP_BACK_URL +
+            "lawyers/validation/" +
             this.$route.params.registrationCode
         );
         Swal.fire({
@@ -41,5 +42,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

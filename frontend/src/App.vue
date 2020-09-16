@@ -12,7 +12,7 @@
       <!-- RUTAS A CONTACTO Y INFO -->
       <div id="nav">
         <router-link :to="{ name: 'Contact' }">Contacto</router-link>
-        <router-link :to="{ name: 'About' }">Info</router-link>
+        <router-link :to="{ name: 'About' }">About</router-link>
       </div>
 
       <!-- LOGIN Y RECUPERAR CONTARSEÑA DE USUARIO -->
@@ -121,34 +121,36 @@
         <div id="menuUser">
           <ul @click="show = !show" v-if="show">
             <h5>Bienvenido {{ name }}</h5>
-            <button>
-              <router-link :to="{ name: 'GetUser' }">Ver Perfil</router-link>
-            </button>
-            <button>
-              <router-link :to="{ name: 'ListProcessesUser' }"
-                >Ver procesos</router-link
-              >
-            </button>
-            <button v-if="rol === 'admin'">
-              <router-link :to="{ name: 'ListDeletedUsers' }"
-                >Usuarios de baja</router-link
-              >
-            </button>
-            <button v-if="rol === 'admin'">
-              <router-link :to="{ name: 'ListActivatedUsers' }"
-                >Usuarios activos</router-link
-              >
-            </button>
-            <button v-if="rol === 'admin'">
-              <router-link :to="{ name: 'ListDeletedLawyers' }"
-                >Abogados de baja</router-link
-              >
-            </button>
-            <button v-if="rol === 'admin'">
-              <router-link :to="{ name: 'ListActivatedLawyers' }"
-                >Abogados activos</router-link
-              >
-            </button>
+            <router-link tag="button" :to="{ name: 'GetUser' }"
+              >Ver Perfil</router-link
+            >
+            <router-link tag="button" :to="{ name: 'ListProcessesUser' }"
+              >Ver procesos</router-link
+            >
+            <router-link
+              v-if="rol === 'admin'"
+              tag="button"
+              :to="{ name: 'ListDeletedUsers' }"
+              >Usuarios de baja</router-link
+            >
+            <router-link
+              v-if="rol === 'admin'"
+              tag="button"
+              :to="{ name: 'ListActivatedUsers' }"
+              >Usuarios activos</router-link
+            >
+            <router-link
+              v-if="rol === 'admin'"
+              tag="button"
+              :to="{ name: 'ListDeletedLawyers' }"
+              >Abogados de baja</router-link
+            >
+            <router-link
+              v-if="rol === 'admin'"
+              tag="button"
+              :to="{ name: 'ListActivatedLawyers' }"
+              >Abogados activos</router-link
+            >
             <button @click="logout()">Logout</button>
             <p>Última conexión: {{ getFormat() }}h.</p>
           </ul>
@@ -182,14 +184,12 @@
         <div id="menuLawyer">
           <ul @click="show = !show" v-if="show">
             <h5 v-if="seeWelcomeLawyer">Bienvenido {{ lawFirm }}</h5>
-            <button>
-              <router-link :to="{ name: 'EditLawyer' }">Ver Perfil</router-link>
-            </button>
-            <button>
-              <router-link :to="{ name: 'ListProcessesLawyer' }"
-                >Ver procesos</router-link
-              >
-            </button>
+            <router-link tag="button" :to="{ name: 'EditLawyer' }"
+              >Ver Perfil</router-link
+            >
+            <router-link tag="button" :to="{ name: 'ListProcessesLawyer' }"
+              >Ver procesos</router-link
+            >
             <button @click="logout()">Logout</button>
             <p v-if="seeWelcomeLawyer">Última conexión: {{ getFormat() }}h.</p>
           </ul>
@@ -197,35 +197,25 @@
       </div>
 
       <!-- MODAL PARA RECUPERAR CONTRASEÑA USUARIO -->
-      <div id="recoverUser">
-        <div v-if="seeModalUser" class="modal">
-          <div class="modalBox">
-            <legend>Recupera tu contraseña:</legend>
-            <input type="email" v-model="emailUser" placeholder="Email" />
-            <br />
-            <button @click="recoverPasswordUser()">Recuperar contraseña</button>
-            <button id="cancel" @click="seeModalUser = !seeModalUser">
-              Cancelar
-            </button>
-          </div>
-        </div>
+      <div id="recoverUser" v-if="seeModalUser">
+        <legend>Recupera tu contraseña:</legend>
+        <input type="email" v-model="emailUser" placeholder="Email" />
+        <br />
+        <button @click="recoverPasswordUser()">Recuperar contraseña</button>
+        <button id="cancel" @click="seeModalUser = !seeModalUser">
+          Cancelar
+        </button>
       </div>
 
       <!-- MODAL PARA RECUPERAR CONTRASEÑA ABOGADO-->
-      <div id="recoverLawyer">
-        <div v-if="seeModalLawyer" class="modal">
-          <div class="modalBox">
-            <legend>Recupera tu contraseña:</legend>
-            <input type="email" v-model="emailLawyer" placeholder="Email" />
-            <br />
-            <button @click="recoverPasswordLawyer()">
-              Recuperar contraseña
-            </button>
-            <button id="cancel" @click="seeModalLawyer = !seeModalLawyer">
-              Cancelar
-            </button>
-          </div>
-        </div>
+      <div id="recoverLawyer" v-if="seeModalLawyer">
+        <legend>Recupera tu contraseña:</legend>
+        <input type="email" v-model="emailLawyer" placeholder="Email" />
+        <br />
+        <button @click="recoverPasswordLawyer()">Recuperar contraseña</button>
+        <button id="cancel" @click="seeModalLawyer = !seeModalLawyer">
+          Cancelar
+        </button>
       </div>
     </div>
 
@@ -292,10 +282,13 @@ export default {
         if (!this.emailOrLogin || !this.password) {
           throw new Error(`Te faltan datos`);
         }
-        const response = await axios.post("http://localhost:3000/users/login", {
-          emailOrLogin: this.emailOrLogin,
-          password: this.password,
-        });
+        const response = await axios.post(
+          process.env.VUE_APP_BACK_URL + "users/login",
+          {
+            emailOrLogin: this.emailOrLogin,
+            password: this.password,
+          }
+        );
         let token = response.data.data.token;
         let role = response.data.data.user[0].role;
         let name = response.data.data.user[0].name;
@@ -335,7 +328,7 @@ export default {
           throw new Error(`Te faltan datos`);
         }
         const response = await axios.post(
-          "http://localhost:3000/lawyers/login",
+          process.env.VUE_APP_BACK_URL + "lawyers/login",
           {
             emailOrLogin: this.emailOrLogin,
             password: this.password,
@@ -453,15 +446,12 @@ export default {
       this.seeModalUser = false;
       this.seeLoginLawyer = false;
       this.seeLoginUser = false;
-      console.log(
-        !this.seeWelcomeLawyer && !this.seeWelcomeUser && !this.seeLoginUser
-      );
     },
     // FUNCIÓN PARA RECUPERAR CONTRASEÑA DE USUARIO
     async recoverPasswordUser() {
       try {
         const response = await axios.post(
-          "http://localhost:3000/users/recover-password",
+          process.env.VUE_APP_BACK_URL + "users/recover-password",
           {
             email: this.emailUser,
           }
@@ -486,7 +476,7 @@ export default {
     async recoverPasswordLawyer() {
       try {
         const response = await axios.post(
-          "http://localhost:3000/lawyers/recover-password",
+          process.env.VUE_APP_BACK_URL + "lawyers/recover-password",
           {
             email: this.emailLawyer,
           }

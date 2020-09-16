@@ -9,7 +9,7 @@
     </button>
 
     <!-- LISTADO DE PUNTUCIONES DEL ABOGADO SELECCIONADO -->
-    <listratingscomp :lawyer="lawyer" :ratings="ratings" />
+    <listratingscomp :lawyer="lawyer" :ratings="ratings" @data="listRatings" />
   </div>
 </template>
 
@@ -37,12 +37,16 @@ export default {
       window.history.back();
     },
     // FUNCIÓN PARA OBTENER LISTADO DE PUNTUACIONES DEL ABOGADO SELECCIONADO
-    async listRatings() {
+    async listRatings(params) {
       try {
         const response = await axios.get(
-          "http://localhost:3000/lawyers/" +
+          process.env.VUE_APP_BACK_URL +
+            "lawyers/" +
             this.$route.params.id +
-            "/list-rating"
+            "/list-rating",
+          {
+            params,
+          }
         );
         for (let i = 0; i < response.data.data.ratings.length; i++) {
           if (response.data.data.ratings[i].login_user === null) {
@@ -68,6 +72,9 @@ export default {
 </script>
 
 <style scoped>
+div {
+  margin-bottom: 5rem;
+}
 @media (min-width: 700px) {
   button {
     font-size: 1.25rem;

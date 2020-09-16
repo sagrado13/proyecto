@@ -2,11 +2,24 @@
   <div v-if="isLoaded">
     <!-- DATOS DE UN PRESUPUESTO DETERMNINADO DEL USUARIO -->
     <p>
+      <span>Detalles del proceso nº {{ budget.id_process }}:</span>
+      {{ budget.message_process }}
+    </p>
+    <p>
       <span>Abogado:</span>
       <router-link
         id="link"
         :to="{ name: 'GetLawyer', params: { id: budget.id_lawyer } }"
-      >{{ budget.law_firm }}</router-link>
+        >{{ budget.law_firm }}</router-link
+      >
+    </p>
+    <p>
+      <span>Teléfono:</span>
+      {{ budget.phone_number_lawyer }}
+    </p>
+    <p>
+      <span>Email:</span>
+      {{ budget.email_lawyer }}
     </p>
     <p>
       <span>Estado:</span>
@@ -21,7 +34,12 @@
       {{ budget.price }}€
     </p>
     <p :class="{ hide: budget.rating === null }">
-      <star-rating :rating="Number(budget.rating)" :read-only="true" :star-size="20" :inline="true"></star-rating>
+      <star-rating
+        :rating="Number(budget.rating)"
+        :read-only="true"
+        :star-size="20"
+        :inline="true"
+      ></star-rating>
     </p>
     <p :class="{ hide: budget.opinion === null }">
       <span>Opinión:</span>

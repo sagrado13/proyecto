@@ -26,11 +26,20 @@ const routes = [
       allowAnon: true,
     },
   },
-  // ABOUT
+  // MORE INFO
   {
     path: "/about",
     name: "About",
     component: () => import("../views/About.vue"),
+    meta: {
+      allowAnon: true,
+    },
+  },
+  // MORE INFO
+  {
+    path: "/more-info",
+    name: "Info",
+    component: () => import("../views/Info.vue"),
     meta: {
       allowAnon: true,
     },
@@ -54,16 +63,6 @@ const routes = [
       allowAnon: false,
       onlyAdmin: true,
     },
-    beforeEnter: (to, from, next) => {
-      if (to.meta.onlyAdmin === true && !checkIsAdmin()) {
-        next({
-          path: "/",
-          query: { redirect: to.fullPath },
-        });
-      } else {
-        next();
-      }
-    },
   },
   // Listado de usuarios activos y darlos de baja
   {
@@ -73,16 +72,6 @@ const routes = [
     meta: {
       allowAnon: false,
       onlyAdmin: true,
-    },
-    beforeEnter: (to, from, next) => {
-      if (to.meta.onlyAdmin === true && !checkIsAdmin()) {
-        next({
-          path: "/",
-          query: { redirect: to.fullPath },
-        });
-      } else {
-        next();
-      }
     },
   },
   // Listado de abogados dados de baja
@@ -94,16 +83,6 @@ const routes = [
       allowAnon: false,
       onlyAdmin: true,
     },
-    beforeEnter: (to, from, next) => {
-      if (to.meta.onlyAdmin === true && !checkIsAdmin()) {
-        next({
-          path: "/",
-          query: { redirect: to.fullPath },
-        });
-      } else {
-        next();
-      }
-    },
   },
   // Listado de usuarios activos y darlos de baja
   {
@@ -113,16 +92,6 @@ const routes = [
     meta: {
       allowAnon: false,
       onlyAdmin: true,
-    },
-    beforeEnter: (to, from, next) => {
-      if (to.meta.onlyAdmin === true && !checkIsAdmin()) {
-        next({
-          path: "/",
-          query: { redirect: to.fullPath },
-        });
-      } else {
-        next();
-      }
     },
   },
   // RUTAS DE USUARIO
@@ -160,6 +129,7 @@ const routes = [
     component: () => import("../views/GetUser.vue"),
     meta: {
       allowAnon: false,
+      onlyUserOrAdmin: true,
     },
   },
   // Abrir proceso nuevo
@@ -169,16 +139,7 @@ const routes = [
     component: () => import("../views/NewProcess.vue"),
     meta: {
       allowAnon: false,
-    },
-    beforeEnter: (to, from, next) => {
-      if (isLoggedInLawyer()) {
-        next({
-          path: "/new-user",
-          query: { redirect: to.fullPath },
-        });
-      } else {
-        next();
-      }
+      onlyUserOrAdmin: true,
     },
   },
   // Ver processos de usuario
@@ -188,6 +149,7 @@ const routes = [
     component: () => import("../views/ListProcessesUser.vue"),
     meta: {
       allowAnon: false,
+      onlyUserOrAdmin: true,
     },
   },
   // Ver un presupuesto determinado
@@ -197,6 +159,7 @@ const routes = [
     component: () => import("../views/GetBudgetUser.vue"),
     meta: {
       allowAnon: false,
+      onlyUserOrAdmin: true,
     },
   },
   // Ver un abogado determinado
@@ -252,6 +215,7 @@ const routes = [
     component: () => import("../views/EditLawyer.vue"),
     meta: {
       allowAnon: false,
+      onlyLawyerOrAdmin: true,
     },
   },
   // Ver processos de abogado
@@ -261,6 +225,7 @@ const routes = [
     component: () => import("../views/ListProcessesLawyer.vue"),
     meta: {
       allowAnon: false,
+      onlyLawyerOrAdmin: true,
     },
   },
   // Ver un presupuesto determinado
@@ -270,15 +235,17 @@ const routes = [
     component: () => import("../views/GetBudgetLawyer.vue"),
     meta: {
       allowAnon: false,
+      onlyLawyerOrAdmin: true,
     },
   },
-  // Ver un presupuesto determinado
+  // Añadir un presupuesto nuevo
   {
     path: "/new-budget/:id",
     name: "NewBudget",
     component: () => import("../views/NewBudget.vue"),
     meta: {
       allowAnon: false,
+      onlyLawyerOrAdmin: true,
     },
   },
   // ERROR
@@ -296,10 +263,55 @@ const router = new VueRouter({
   routes,
 });
 
+// SOLO DEJA ENTRAR SI ESTÁ LOGUEADO
 router.beforeEach((to, from, next) => {
   if (!to.meta.allowAnon && !isLoggedInUser() && !isLoggedInLawyer()) {
     next({
-      path: "/new-user",
+      name: "NewUser",
+      query: { redirect: to.fullPath },
+    });
+  } else {
+    next();
+  }
+});
+
+// SOLO DEJA ENTRAR SI ES ADMIN
+router.beforeEach((to, from, next) => {
+  if (to.meta.onlyAdmin === true && !checkIsAdmin()) {
+    next({
+      name: "Home",
+      query: { redirect: to.fullPath },
+    });
+  } else {
+    next();
+  }
+});
+
+// SOLO DEJA ENTRAR SI ES ABOGADO O ADMIN
+router.beforeEach((to, from, next) => {
+  if (
+    to.meta.onlyLawyerOrAdmin === true &&
+    isLoggedInUser() &&
+    !checkIsAdmin()
+  ) {
+    next({
+      name: "Home",
+      query: { redirect: to.fullPath },
+    });
+  } else {
+    next();
+  }
+});
+
+// SOLO DEJA ENTRAR SI ES USUARIO O ADMIN
+router.beforeEach((to, from, next) => {
+  if (
+    to.meta.onlyUserOrAdmin === true &&
+    isLoggedInLawyer() &&
+    !checkIsAdmin()
+  ) {
+    next({
+      name: "Home",
       query: { redirect: to.fullPath },
     });
   } else {

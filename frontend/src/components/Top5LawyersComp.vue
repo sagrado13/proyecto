@@ -4,8 +4,15 @@
 
     <!-- SLIDE DE LOS 5 MEJORES ABOGADOS -->
     <hooper :infiniteScroll="true" :autoPlay="true" :itemsToShow="2">
-      <slide v-for="topLawyer in topLawyers" :key="topLawyer.id" style="padding: 1rem">
-        <router-link class="link" :to="{ name: 'GetLawyer', params: { id: topLawyer.id } }">
+      <slide
+        v-for="topLawyer in topLawyers"
+        :key="topLawyer.id"
+        style="padding: 1rem"
+      >
+        <router-link
+          class="link"
+          :to="{ name: 'GetLawyer', params: { id: topLawyer.id } }"
+        >
           <img
             :class="{ hide: topLawyer.picture_lawyer !== null }"
             src="../assets/profile.jpeg"
@@ -60,7 +67,7 @@ h3 {
   padding-bottom: 0.5rem;
   font-size: 1rem;
 }
-section.hooper {
+.hooper {
   width: 270px;
   height: 170px;
   margin: 0 auto;
@@ -73,6 +80,7 @@ li.hooper-slide img {
   border-radius: 50%;
   width: 30%;
 }
+
 li.hooper-slide {
   border-radius: 10px;
   width: 100%;

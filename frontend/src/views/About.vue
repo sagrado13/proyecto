@@ -1,175 +1,99 @@
 <template>
-  <div class="about">
-    <!-- Declaramos vue-headful -->
-    <vue-headful title="About" />
-    <!-- BOTÓN DE VOLVER ATRÁS -->
-    <button id="back" @click="goBack()">
-      <img src="../assets/deshacer.svg" />
-    </button>
-    <!-- LISTADOS CON LOGOS Y LINKS DE LAS TECNOLOGÍAS USADAS -->
-    <h2>Tecnologías usadas:</h2>
-    <div id="logos">
-      <ul>
-        <li>
-          <a href="https://developer.mozilla.org/en-US/docs/Glossary/JavaScript" target="__blank">
-            <img src="../assets/info/javaScript.png" alt="Logo JavaScript" />
-            <p>JavaScript</p>
-          </a>
-        </li>
-        <li>
-          <a href="https://developer.mozilla.org/en-US/docs/Glossary/HTML" target="__blank">
-            <img src="../assets/info/HTML.png" alt="Logo HTML" />
-            <p>HTML</p>
-          </a>
-        </li>
-        <li>
-          <a href="https://developer.mozilla.org/en-US/docs/Web/CSS" target="__blank">
-            <img src="../assets/info/CSS.png" alt="Logo CSS" />
-            <p>CSS</p>
-          </a>
-        </li>
-        <li>
-          <a href="https://www.mysql.com/" target="__blank">
-            <img src="../assets/info/MySQL.png" alt="Logo MySQL" />
-            <p>MySQL</p>
-          </a>
-        </li>
-        <li>
-          <a href="https://nodejs.org/en/" target="__blank">
-            <img src="../assets/info/nodeJS.png" alt="Logo nodeJS" />
-            <p>nodeJS</p>
-          </a>
-        </li>
-        <li>
-          <a href="https://expressjs.com/es/" target="__blank">
-            <img src="../assets/info/Express.png" alt="Logo nodeJs Express" />
-            <p>nodeJS Express</p>
-          </a>
-        </li>
-        <li>
-          <a href="https://sendgrid.com/" target="__blank">
-            <img src="../assets/info/SendGrid.png" alt="Logo SendGrid" />
-            <p>SenGrid</p>
-          </a>
-        </li>
-        <li>
-          <a href="https://jwt.io/" target="__blank">
-            <img src="../assets/info/JWT.jpg" alt="Logo JSON Web Token" />
-            <p>JSON Web Token</p>
-          </a>
-        </li>
-        <li>
-          <a href="https://date-fns.org/" target="__blank">
-            <img src="../assets/info/date-fns.png" alt="Logo date-fns" />
-            <p>Date-fns</p>
-          </a>
-        </li>
-        <li>
-          <a href="https://lodash.com/" target="__blank">
-            <img src="../assets/info/Lodash.png" alt="Logo Lodash" />
-            <p>Lodash</p>
-          </a>
-        </li>
-        <li>
-          <a href="https://vuejs.org/" target="__blank">
-            <img src="../assets/info/Vue.png" alt="Logo Vue" />
-            <p>Vue.js</p>
-          </a>
-        </li>
-        <li>
-          <a href="https://www.npmjs.com/package/axios#features" target="__blank">
-            <img src="../assets/info/axios.png" alt="Logo Axios" />
-            <p>Axios</p>
-          </a>
-        </li>
-        <li>
-          <a href="https://sweetalert2.github.io/" target="__blank">
-            <img src="../assets/info/sweetalert2.png" alt="Logo sweetalert2" />
-            <p>sweetalert2</p>
-          </a>
-        </li>
-        <li>
-          <a href="https://hapi.dev/" target="__blank">
-            <img src="../assets/info/hapi.png" alt="Logo Hapi-Joi" />
-            <p>Hapi-Joi</p>
-          </a>
-        </li>
-      </ul>
-    </div>
-    <!-- AGRADECIMIENTOS -->
-    <h2>Agradecimiento:</h2>
-    <a href="https://hackaboss.com/" target="__blank">
-      <img src="../assets/info/hackABoss.png" alt="Logo de Hack A Boss" />
-    </a>
+  <div>
+    <h1>¿Por qué confiar en nosotros?</h1>
+    <ul>
+      <li>
+        <img src="../assets/about/magnifying-glass.png" alt="Lupa" />
+        <p>Búsquedas exhaustivas por especialidad, localidad y urgencia, según tus preferencias.</p>
+      </li>
+      <li>
+        <img src="../assets/about/spain.png" alt="Mapa de españa" />
+        <p>Busca abogados en toda españa, trabajamos con abogados de todas las provincias del país.</p>
+      </li>
+      <li>
+        <img src="../assets/about/security.png" alt="Logo de seguridad" />
+        <p>Manten la confidencialidad y privacidad en todos los procesos que abras.</p>
+      </li>
+      <li>
+        <img src="../assets/about/pig.png" alt="Hucha cerdito" />
+        <p>Puedes ahorrar mucho dinero y tiempo, abriendo un proceso con uno de nuestros profesionales, y si no te encaja el presupuesto puedes rechazarlo sin compromiso.</p>
+      </li>
+    </ul>
   </div>
 </template>
 
 <script>
 export default {
   name: "About",
-  methods: {
-    // FUNCIÓN PARA VOLVER PARA ATRÁS
-    goBack() {
-      window.history.back();
-    },
-  },
 };
 </script>
 
 <style scoped>
-a,
-a p {
-  text-decoration: none;
-  color: var(--dark);
+div {
+  margin-bottom: 5rem;
 }
-h2:last-of-type {
-  margin-bottom: 1rem;
-}
-h2,
-p {
-  text-decoration: underline;
-}
-div#logos ul {
+ul {
   list-style: none;
-  display: grid;
-  gap: 1.5rem;
-  margin: 1.5rem;
-  justify-items: center;
-  align-items: center;
-  grid-template-columns: auto auto;
-  grid-template-rows: auto auto;
+  margin: 0.5rem;
 }
-
-div#logos ul li img {
-  width: 50px;
+div {
+  padding: 0.5rem;
+  background-color: var(--background);
+}
+h1 {
+  font-size: 1.3rem;
 }
 img {
-  width: 130px;
+  margin-top: 1rem;
+  width: 150px;
+}
+p {
+  font-size: 0.7rem;
+  font-weight: bold;
 }
 
 @media (min-width: 700px) {
-  div#logos ul {
-    grid-template-columns: auto auto auto;
-    grid-template-rows: auto auto auto;
+  div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 90%;
+    margin: 3% auto;
   }
-  div#logos ul li img {
-    width: 100px;
+  h1 {
+    font-size: 1.6rem;
+  }
+  ul {
+    display: grid;
+    gap: 1rem;
+
+    align-items: baseline;
+    grid-template-columns: auto auto;
+    grid-template-rows: auto auto;
   }
   img {
-    width: 170px;
+    width: 200px;
+  }
+  p {
+    font-size: 0.9rem;
   }
 }
 
-@media (min-width: 1000px) {
-  div#logos ul {
-    grid-template-columns: auto auto auto auto auto;
-    grid-template-rows: auto auto auto auto auto;
+@media (min-width: 1250px) {
+  div {
+    margin: 10% auto;
   }
-  div#logos ul li img {
-    width: 130px;
+  ul {
+    grid-template-columns: auto auto auto auto;
+  }
+  h1 {
+    font-size: 2rem;
   }
   img {
-    width: 230px;
+    width: 260px;
+  }
+  p {
+    font-size: 1rem;
   }
 }
 </style>

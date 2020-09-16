@@ -10,8 +10,13 @@
 
     <!-- FORMULARIO PARA ABRIR PROCESO CON EL ABOGADO SELECCIONADO -->
     <div id="addProcess">
-      <h1>Nuevo proceso con {{ this.$route.params.lawFirm}}</h1>
-      <textarea v-model="message" name="message" placeholder="Descripción detallada del caso"></textarea>
+      <h1>Nuevo proceso con {{ this.$route.params.lawFirm }}</h1>
+      <textarea
+        v-model="message"
+        name="message"
+        placeholder="Descripción detallada del caso"
+        required
+      ></textarea>
       <button id="send" @click="addNewProcess()">📨 Enviar</button>
     </div>
   </div>
@@ -49,7 +54,8 @@ export default {
           let token = localStorage.getItem("AUTH_TOKEN_KEY");
           axios.defaults.headers.common["Authorization"] = token;
           const response = await axios.post(
-            "http://localhost:3000/users/" +
+            process.env.VUE_APP_BACK_URL +
+              "users/" +
               getIdToken(token) +
               "/processes/lawyers/" +
               this.$route.params.id,
@@ -88,6 +94,7 @@ div#addProcess {
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-bottom: 5rem;
 }
 h1 {
   padding: 1.5rem;

@@ -20,12 +20,11 @@ const newProcessSchema = Joi.object().keys({
 // Validator editar proceso por usuario
 const editProcessUserSchema = Joi.object().keys({
   observations: Joi.string()
-    .min(10)
-    .max(300)
+    .min(15)
     .required()
     .error(
       generateError(
-        `El campo observations debe existir y tener entre 10 y 300 caracteres`,
+        `El campo observations debe existir y tener mínimo 15 caracteres`,
         400
       )
     ),

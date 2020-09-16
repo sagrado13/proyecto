@@ -38,7 +38,7 @@ async function deleteBudget(req, res, next) {
     }
 
     // Calculamos las horas que pasaron desde su creación y si supera 24 no lo dejamos eliminar,
-    // único que esté pendiente o sea el admin el que lo borre
+    // único que esté Pendiente o sea el admin el que lo borre
     const date = budget[0].creation_date;
     const now = new Date();
     const result = differenceInHours(now, date);
@@ -52,7 +52,7 @@ async function deleteBudget(req, res, next) {
     }
 
     if (
-      budget[0].status_budget !== `pendiente de una respuesta` &&
+      budget[0].status_budget !== `Pendiente de una respuesta` &&
       req.auth.role !== `admin`
     ) {
       throw generateError(
@@ -70,11 +70,11 @@ async function deleteBudget(req, res, next) {
       [idBudget]
     );
 
-    // Actualizamos processes cambiando el estado a pendiente de presupuesto
+    // Actualizamos processes cambiando el estado a Pendiente de presupuesto
     await connection.query(
       `
       UPDATE processes P
-      SET P.status_process='pendiente de presupuesto'
+      SET P.status_process='Pendiente de presupuesto'
       WHERE P.id=? AND P.id_lawyer=?
       `,
       [idProcess, idLawyer]

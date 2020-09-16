@@ -26,8 +26,7 @@
           <router-link
             class="link"
             :to="{ name: 'EditLawyer', params: { id: lawyer.id } }"
-            >{{ lawyer.law_firm }}</router-link
-          >
+          >{{ lawyer.law_firm }}</router-link>
         </p>
         <p>
           <span>Dirección:</span>
@@ -62,12 +61,10 @@
         <!-- BOTONES PARA DAR DE BAJA O VER LOS PROCESOS DEL ABOGADO DETERMINADO -->
         <div id="button">
           <button @click="sendDataLawyer(index)">Dar de baja</button>
-          <button>
-            <router-link
-              :to="{ name: 'ListProcessesLawyer', params: { id: lawyer.id } }"
-              >Ver procesos</router-link
-            >
-          </button>
+          <router-link
+            tag="button"
+            :to="{ name: 'ListProcessesLawyer', params: { id: lawyer.id } }"
+          >Ver procesos</router-link>
         </div>
       </li>
     </ul>
@@ -177,6 +174,7 @@ input {
   color: var(--dark);
   padding: 0.1rem;
   margin: 1rem;
+  width: 230px;
 }
 img {
   border-radius: 50%;

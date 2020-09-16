@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="footer">
     <!-- LINKS DE GITHUB, LINKEDIN, TWITTER Y GMAIL -->
     <div id="links">
       <a href="https://github.com/sagrado13?tab=repositories" target="_blank">
@@ -14,10 +14,7 @@
       <a href="https://twitter.com/home" target="_blank">
         <img src="../assets/twitter.svg" alt="Logo Twitter" />
       </a>
-      <a
-        href="mailto:legalshield5.33@gmail.com?Subject=Sugerencias%20o%20dudas"
-        target="_blank"
-      >
+      <a href="mailto:legalshield5.33@gmail.com?Subject=Sugerencias%20o%20dudas" target="_blank">
         <img src="../assets/gmail.svg" alt="Logo email" />
       </a>
     </div>
@@ -26,6 +23,7 @@
     <footer>
       <router-link :to="{ name: 'Privacy' }">Privacidad</router-link>
       <p>Copyright © 2020 by Iñaki GV</p>
+      <router-link :to="{ name: 'Info' }">Más info</router-link>
     </footer>
   </div>
 </template>

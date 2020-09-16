@@ -56,14 +56,14 @@
         <!-- BOTONES PARA VER MÁS Y VER PRESUPUESTO (VER PRESUPUESTO APARECE SI EXISTE PRESUPUESTO)-->
         <div id="buttons">
           <button @click="sendIdProcess(index)">Ver más</button>
-          <button :class="{ hide: process.status_budget === null }">
-            <router-link
-              :to="{
+          <router-link
+            :class="{ hide: process.status_budget === null }"
+            tag="button"
+            :to="{
                 name: 'GetBudgetLawyer',
                 params: { id: process.id, idLawyer: process.id_lawyer },
               }"
-            >Ver presupuesto</router-link>
-          </button>
+          >Ver presupuesto</router-link>
         </div>
       </li>
     </ul>

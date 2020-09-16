@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="listDeleted">
     <!-- Declaramos vue-headful -->
     <vue-headful title="Usuarios dados de baja" />
 
@@ -7,7 +7,15 @@
     <button id="back" @click="goBack()">
       <img src="../assets/deshacer.svg" />
     </button>
-    <h4>Usuarios dados de baja: 👤 {{ totalUsers }}</h4>
+
+    <!-- TOTAL ABOGADOS DADOS DE BAJA -->
+    <div id="info">
+      <p id="quantity">
+        <img src="../assets/home/totalUser.png" alt="Total abogados" />
+        {{ totalUsers }}
+      </p>
+      <p id="info">Usuarios dados de baja</p>
+    </div>
 
     <!-- ORDENACIÓN -->
     <div @click="listDeletedUsers">
@@ -57,7 +65,7 @@ export default {
         let token = localStorage.getItem("AUTH_TOKEN_KEY");
         axios.defaults.headers.common["Authorization"] = token;
         const response = await axios.get(
-          "http://localhost:3000/list-deleted-users",
+          process.env.VUE_APP_BACK_URL + "list-deleted-users",
           {
             params: {
               order: this.order,
@@ -73,14 +81,15 @@ export default {
           icon: "error",
           title: `${error.response.data.message}`,
         });
+        window.history.back();
       }
     },
     // FUNCIÓN PARA REACTIVAR LA CUENTA DE UN USUARIO
     async reactivateUser(dataUser) {
       const result = await Swal.fire({
-        title: `Estas seguro de que quieres reactivar la cuenta de ${
-          dataUser.name + " " + dataUser.surname
-        }`,
+        title: `Estas seguro de que quieres reactivar la cuenta de ${dataUser.name +
+          " " +
+          dataUser.surname}`,
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: "Sí, estoy seguro!",
@@ -90,7 +99,7 @@ export default {
       if (result.value) {
         try {
           const response = await axios.get(
-            "http://localhost:3000/reactivate-user/" + dataUser.id
+            process.env.VUE_APP_BACK_URL + "reactivate-user/" + dataUser.id
           );
           Swal.fire({
             title: `${response.data.message}`,
@@ -125,8 +134,24 @@ export default {
 </script>
 
 <style scoped>
-h4 {
-  margin: 1rem;
+div#listDeleted {
+  margin-bottom: 5rem;
+}
+div#info {
+  margin-bottom: 1rem;
+  font-weight: bold;
+}
+div#info img {
+  margin-right: 0.2rem;
+  width: 40px;
+}
+p#info {
+  font-size: 0.7rem;
+}
+p#quantity {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 select {
   background-color: var(--bright);
@@ -135,14 +160,29 @@ select {
 }
 
 @media (min-width: 700px) {
+  div#info img {
+    width: 50px;
+  }
+  p#quantity {
+    font-size: 1.2rem;
+  }
+  p#info {
+    font-size: 0.8rem;
+  }
   select {
     font-size: 0.9rem;
   }
 }
 
 @media (min-width: 700px) {
-  h4 {
-    margin: 1.5rem;
+  div#info img {
+    width: 60px;
+  }
+  p#info {
+    font-size: 1rem;
+  }
+  p#quantity {
+    font-size: 1.5rem;
   }
   select {
     font-size: 1rem;

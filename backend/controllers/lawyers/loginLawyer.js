@@ -21,9 +21,9 @@ async function loginLawyer(req, res, next) {
       `
             SELECT id, law_firm, picture_lawyer, active, update_date
             FROM lawyers
-            WHERE login_lawyer=? OR email_lawyer=? AND password=SHA2(?, 512)
+            WHERE login_lawyer=? AND password=SHA2(?, 512) OR email_lawyer=? AND password=SHA2(?, 512)
             `,
-      [emailOrLogin, emailOrLogin, password]
+      [emailOrLogin, password, emailOrLogin, password]
     );
 
     if (lawyer.length === 0) {

@@ -27,8 +27,7 @@
           <router-link
             class="link"
             :to="{ name: 'GetUser', params: { id: user.id } }"
-            >{{ user.name }} {{ user.surname }}</router-link
-          >
+          >{{ user.name }} {{ user.surname }}</router-link>
         </p>
         <p>
           <span>Ciudad:</span>
@@ -59,12 +58,10 @@
         <!-- BOTONES PARA DAR DE BAJA -->
         <div id="button">
           <button @click="sendDataUser(index)">Dar de baja</button>
-          <button>
-            <router-link
-              :to="{ name: 'ListProcessesUser', params: { id: user.id } }"
-              >Ver procesos</router-link
-            >
-          </button>
+          <router-link
+            tag="button"
+            :to="{ name: 'ListProcessesUser', params: { id: user.id } }"
+          >Ver procesos</router-link>
         </div>
       </li>
     </ul>
@@ -175,10 +172,11 @@ input {
   color: var(--dark);
   padding: 0.1rem;
   margin: 1rem;
+  width: 230px;
 }
 img {
   border-radius: 50%;
-  width: 35%;
+  width: 100px;
 }
 ul {
   margin-bottom: 2rem;
@@ -213,7 +211,10 @@ button:first-of-type {
 @media (min-width: 700px) {
   input {
     font-size: 0.9rem;
-    width: 250px;
+    width: 320px;
+  }
+  img {
+    width: 125px;
   }
   ul {
     display: flex;
@@ -221,7 +222,7 @@ button:first-of-type {
     justify-content: center;
   }
   ul li {
-    max-width: 190px;
+    width: 180px;
   }
   ul li p {
     margin-top: 0.6rem;
@@ -239,17 +240,16 @@ button:first-of-type {
   }
   ul li {
     font-size: 1rem;
-    max-width: none;
+    width: auto;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
   }
   input {
     font-size: 1rem;
-    width: 320px;
   }
   img {
-    width: 8%;
+    width: 150px;
   }
   ul li span {
     word-break: normal;

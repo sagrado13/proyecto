@@ -1,11 +1,13 @@
 <template>
-  <div>
+  <div id="getBudget">
     <!-- Declaramos vue-headful -->
     <vue-headful title="Datos del presupuesto" />
 
     <!-- BOTÓN DE VOLVER ATRÁS -->
     <button id="back">
-      <router-link :to="{ name: 'ListProcessesUser', params: { id: this.idUser } }">
+      <router-link
+        :to="{ name: 'ListProcessesUser', params: { id: this.idUser } }"
+      >
         <img src="../assets/deshacer.svg" />
       </router-link>
     </button>
@@ -17,9 +19,19 @@
         <!-- ACEPTAR O RECHARZAR EL PRESUPUESTO -->
         <fieldset>
           <legend>Acepta o rechaza el presupuesto</legend>
-          <input v-model="statusBudget" type="radio" name="aceptar" value="aceptado" />
+          <input
+            v-model="statusBudget"
+            type="radio"
+            name="aceptar"
+            value="Aceptado"
+          />
           <label>Aceptar</label>
-          <input v-model="statusBudget" type="radio" name="rechazar" value="rechazado" />
+          <input
+            v-model="statusBudget"
+            type="radio"
+            name="rechazar"
+            value="Rechazado"
+          />
           <label>Rechazar</label>
           <button id="send" @click="editBudget()">Enviar</button>
         </fieldset>
@@ -66,7 +78,8 @@ export default {
         }
         this.idUser = this.$route.params.idUser;
         const response = await axios.get(
-          "http://localhost:3000/users/" +
+          process.env.VUE_APP_BACK_URL +
+            "users/" +
             this.idUser +
             "/process/" +
             this.idProcess
@@ -74,8 +87,8 @@ export default {
         this.budget = response.data.data[0];
         this.idBudget = response.data.data[0].id;
         if (
-          response.data.data[0].status_budget === `aceptado` ||
-          response.data.data[0].status_budget === `rechazado`
+          response.data.data[0].status_budget === `Aceptado` ||
+          response.data.data[0].status_budget === `Rechazado`
         ) {
           this.showButton = false;
         }
@@ -118,7 +131,8 @@ export default {
       if (result.value) {
         try {
           const response = await axios.put(
-            "http://localhost:3000/users/" +
+            process.env.VUE_APP_BACK_URL +
+              "users/" +
               this.idUser +
               "/processes/" +
               this.idProcess +
@@ -164,6 +178,9 @@ export default {
 </script>
 
 <style scoped>
+div#getBudget {
+  margin-bottom: 5rem;
+}
 h1 {
   text-decoration: underline;
   margin-top: 1rem;

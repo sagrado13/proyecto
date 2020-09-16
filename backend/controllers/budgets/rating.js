@@ -19,7 +19,7 @@ async function rating(req, res, next) {
     await ratingSchema.validateAsync(req.body);
 
     // Verificamos el usuario que va a votar es el que firma la petición
-    if (req.auth.id !== Number(idUser)) {
+    if (req.auth.id !== Number(idUser) && req.auth.role !== `admin`) {
       throw generateError(`No puedes votar un proceso de otro usuario`, 401);
     }
 
@@ -40,8 +40,8 @@ async function rating(req, res, next) {
       );
     }
 
-    // Verificamos que el estado del proceso sea resuelto
-    if (process[0].status_process !== `resuelto`) {
+    // Verificamos que el estado del proceso sea Resuelto
+    if (process[0].status_process !== `Resuelto`) {
       throw generateError(
         `El proceso con id:${idProcess} tiene que estar resuelto para poder votarlo`,
         409

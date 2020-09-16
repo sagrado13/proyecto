@@ -7,8 +7,9 @@
 html {
   --dark: black;
   --bright: white;
-  --gray: lightgray;
-  --background: lightblue;
+  --gray: rgba(211, 211, 211, 0.7);
+  /* --background: lightblue; */
+  --background: rgba(173, 216, 230, 0.7);
   --button: deepskyblue;
   --header: rgb(47, 72, 89);
   --font: Merriweather, sans-serif;
@@ -17,9 +18,8 @@ html {
 }
 body {
   background-image: url(../assets/background.png);
-  background-repeat: repeat-y;
+  background-repeat: no-repeat;
   background-size: cover;
-  margin-bottom: 5rem;
 }
 
 #app {
@@ -41,6 +41,7 @@ body {
 }
 div.background {
   background-color: var(--header);
+  padding-top: 0.2rem;
   padding-bottom: 0.2rem;
   display: grid;
   align-items: center;
@@ -149,17 +150,24 @@ h5 {
   margin: 0.3rem;
   text-decoration: underline;
 }
+
 div#menuUser ul,
 div#menuLawyer ul {
   display: flex;
   flex-direction: column;
   position: absolute;
-  background-color: rgb(199, 229, 250);
+  z-index: 1;
+  background-color: rgb(173, 216, 230);
   right: 1rem;
-  width: 60%;
+  right: 1rem;
+  width: 50%;
   padding-bottom: 1rem;
   border-radius: 20px;
   border: 1px solid var(--dark);
+}
+div#menuUser ul button:hover,
+div#menuLawyer ul button:hover {
+  background-color: var(--bright);
 }
 div#menuUser ul button,
 div#menuLawyer ul button {
@@ -170,11 +178,15 @@ div#menuLawyer ul button {
   font-size: 0.6rem;
   font-weight: 900;
 }
+div#menuUser ul button a,
+div#menuLawyer ul buttton a {
+  width: 100%;
+}
 
 div#menuUser ul p,
 div#menuLawyer ul p {
   margin: 0.3rem;
-  font-size: 0.7rem;
+  font-size: 0.5rem;
 }
 
 button a {
@@ -270,6 +282,10 @@ button#back img {
   div.lawyerControl {
     grid-area: menuUserAndLawyer;
   }
+  div#menuUser ul,
+  div#menuLawyer ul {
+    width: 400px;
+  }
   div#menuUser ul button,
   div#menuLawyer ul button {
     padding: 1rem;
@@ -325,6 +341,10 @@ button#back img {
     width: 60px;
     margin-top: 1rem;
   }
+  div#menuUser ul,
+  div#menuLawyer ul {
+    width: 500px;
+  }
   div#menuUser ul button,
   div#menuLawyer ul button {
     font-size: 1rem;
@@ -356,9 +376,5 @@ button#back img {
   div.userControl,
   div.lawyerControl {
     grid-area: registerLawyer;
-  }
-  div#menuUser ul,
-  div#menuLawyer ul {
-    width: 30%;
   }
 }

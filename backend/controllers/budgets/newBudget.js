@@ -53,7 +53,7 @@ async function newBudget(req, res, next) {
     }
 
     // Verificamos que el proceso no tiene ya presupuesto
-    if (process[0].status_process !== `pendiente de presupuesto`) {
+    if (process[0].status_process !== `Pendiente de presupuesto`) {
       throw generateError(
         `No puedes dar presupuesto para un proceso que ya lo tiene`,
         409
@@ -72,11 +72,11 @@ async function newBudget(req, res, next) {
 
     const email = user[0].email_user;
 
-    // Actualizamos tabla proceso poniendo en estado: presupuestado
+    // Actualizamos tabla proceso poniendo en estado: Presupuestado
     await connection.query(
       `
         UPDATE processes
-        SET status_process="presupuestado", update_date=UTC_TIMESTAMP
+        SET status_process="Presupuestado", update_date=UTC_TIMESTAMP
         WHERE id=?
         `,
       [idProcess]

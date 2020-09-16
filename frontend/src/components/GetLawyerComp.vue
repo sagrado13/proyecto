@@ -38,11 +38,7 @@
       <span>Urgencia tratando los procesos:</span>
       {{ dataLawyer.urgency }}
     </p>
-    <p
-      v-show="
-        dataLawyer.description !== null && dataLawyer.description !== 'null'
-      "
-    >
+    <p v-show="dataLawyer.description !== null">
       <span>Descripción:</span>
       {{ dataLawyer.description }}
     </p>
@@ -59,7 +55,8 @@
       <router-link
         id="link"
         :to="{ name: 'ListRating', params: { id: dataLawyer.id } }"
-      >( {{ dataLawyer.totalRatings }} votos )</router-link>
+        >( {{ dataLawyer.totalRatings }} votos )</router-link
+      >
     </p>
     <p>
       <span>Registrado desde:</span>
@@ -68,9 +65,7 @@
     <p>
       <span>Última conexión:</span>
       Hace
-      {{
-      formatDistanceDate(dataLawyer.updateDate)
-      }}
+      {{ formatDistanceDate(dataLawyer.updateDate) }}
     </p>
   </div>
 </template>
@@ -111,7 +106,7 @@ export default {
 <style scoped>
 img {
   border-radius: 50%;
-  width: 35%;
+  width: 100px;
 }
 div#getLawyer {
   border: 1px solid var(--dark);
@@ -158,7 +153,7 @@ ul li span {
     margin: 0 auto;
   }
   img {
-    width: 20%;
+    width: 130px;
   }
   h2 {
     font-size: 1.65rem;
@@ -173,7 +168,7 @@ ul li span {
 
 @media (min-width: 1000px) {
   img {
-    width: 20%;
+    width: 200px;
   }
   h2 {
     font-size: 1.9rem;

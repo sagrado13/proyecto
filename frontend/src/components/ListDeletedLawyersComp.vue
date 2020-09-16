@@ -171,10 +171,11 @@ input {
   color: var(--dark);
   padding: 0.1rem;
   margin: 1rem;
+  width: 230px;
 }
 img {
   border-radius: 50%;
-  width: 35%;
+  width: 100px;
 }
 ul {
   margin-bottom: 2rem;
@@ -207,13 +208,16 @@ button {
     font-size: 0.9rem;
     width: 280px;
   }
+  img {
+    width: 125px;
+  }
   ul {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
   }
   ul li {
-    max-width: 190px;
+    width: 180px;
   }
   ul li p {
     margin-top: 0.6rem;
@@ -235,14 +239,13 @@ button {
   }
   ul li {
     font-size: 1rem;
-    max-width: none;
+    width: auto;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
   }
-
   img {
-    width: 8%;
+    width: 150px;
   }
   ul li span {
     word-break: normal;

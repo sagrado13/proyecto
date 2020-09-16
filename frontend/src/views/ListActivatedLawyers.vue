@@ -1,9 +1,22 @@
 <template>
-  <div>
+  <div id="listActivated">
     <!-- Declaramos vue-headful -->
     <vue-headful title="Abogados activos" />
+
+    <!-- BOTÓN DE VOLVER ATRÁS -->
+    <button id="back" @click="goBack()">
+      <img src="../assets/deshacer.svg" />
+    </button>
+
     <div v-if="!showLowLawyer" @click="listActivatedLawyers">
-      <h4>Abogados activos: 👤 {{ totalLawyers }}</h4>
+      <!-- TOTAL ABOGADOS ACTIVOS -->
+      <div id="info">
+        <p id="quantity">
+          <img src="../assets/home/totalLawyer.png" alt="Total abogados" />
+          {{ totalLawyers }}
+        </p>
+        <p id="info">Abogados activos</p>
+      </div>
 
       <!-- ORDENACIÓÓN -->
       <legend>Ordenar</legend>
@@ -71,7 +84,7 @@ export default {
         let token = localStorage.getItem("AUTH_TOKEN_KEY");
         axios.defaults.headers.common["Authorization"] = token;
         const response = await axios.get(
-          "http://localhost:3000/list-activated-lawyers",
+          process.env.VUE_APP_BACK_URL + "list-activated-lawyers",
           {
             params: {
               order: this.order,
@@ -109,7 +122,10 @@ export default {
       if (result.value) {
         try {
           const response = await axios.put(
-            "http://localhost:3000/lawyers/" + this.idLawyer + "/delete",
+            process.env.VUE_APP_BACK_URL +
+              "lawyers/" +
+              this.idLawyer +
+              "/delete",
             {
               lowReason: this.lowReason,
             }
@@ -134,6 +150,10 @@ export default {
         });
       }
     },
+    // FUNCIÓN PARA VOLVER PARA ATRÁS
+    goBack() {
+      window.history.back();
+    },
   },
   created() {
     this.listActivatedLawyers();
@@ -142,8 +162,24 @@ export default {
 </script>
 
 <style scoped>
-h4 {
-  margin: 1rem;
+div#listActivated {
+  margin-bottom: 5rem;
+}
+div#info {
+  margin-bottom: 1rem;
+  font-weight: bold;
+}
+div#info img {
+  margin-right: 0.2rem;
+  width: 40px;
+}
+p#info {
+  font-size: 0.7rem;
+}
+p#quantity {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 select {
   background-color: var(--bright);
@@ -176,8 +212,25 @@ button {
 button#delete {
   box-shadow: 5px 5px 30px red inset;
 }
+button#back {
+  margin: 0;
+  box-shadow: none;
+  min-width: 0;
+}
+button#back img {
+  width: 15px;
+}
 
 @media (min-width: 700px) {
+  div#info img {
+    width: 50px;
+  }
+  p#quantity {
+    font-size: 1.2rem;
+  }
+  p#info {
+    font-size: 0.8rem;
+  }
   div#deleteLawyer {
     width: 70%;
     margin: 2% auto;
@@ -193,11 +246,20 @@ button#delete {
     min-width: 300px;
     font-size: 0.9rem;
   }
+  button#back img {
+    width: 20px;
+  }
 }
 
 @media (min-width: 1000px) {
-  h4 {
-    margin: 1.5rem;
+  div#info img {
+    width: 60px;
+  }
+  p#info {
+    font-size: 1rem;
+  }
+  p#quantity {
+    font-size: 1.5rem;
   }
   select {
     font-size: 1rem;
@@ -217,6 +279,9 @@ button#delete {
     min-width: 450px;
     height: 350px;
     font-size: 1rem;
+  }
+  button#back img {
+    width: 30px;
   }
 }
 </style>

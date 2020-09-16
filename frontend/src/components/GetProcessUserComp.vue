@@ -15,7 +15,8 @@
       <router-link
         class="link"
         :to="{ name: 'GetLawyer', params: { id: process.id_lawyer } }"
-      >{{ process.law_firm }}</router-link>
+        >{{ process.law_firm }}</router-link
+      >
     </p>
     <p>
       <span>Localidad:</span>
@@ -73,18 +74,22 @@
     </p>
     <div id="buttons">
       <button
-        :class="{ hide: process.status_process === 'resuelto' }"
+        :class="{ hide: process.status_process === 'Resuelto' }"
         @click="sendProcessData()"
-      >Editar</button>
+      >
+        Editar
+      </button>
       <button
         id="delete"
         v-if="
-          process.status_process === 'pendiente de presupuesto' ||
-            process.status_process === 'resuelto' ||
+          process.status_process === 'Pendiente de presupuesto' ||
+            process.status_process === 'Resuelto' ||
             isAdmin === true
         "
         @click="sendProcessDelete()"
-      >Borrar</button>
+      >
+        Borrar
+      </button>
     </div>
   </div>
 </template>
@@ -93,7 +98,6 @@
 // Importamos date-fns
 import { format, formatDistanceToNow } from "date-fns";
 import es from "date-fns/locale/es";
-
 //IMPORTAMOS FUNCIÓN
 import { checkIsAdmin } from "../api/utils.js";
 export default {

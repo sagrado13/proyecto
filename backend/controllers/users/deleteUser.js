@@ -53,7 +53,8 @@ async function deleteUser(req, res, next) {
 
     for (let i = 0; i < process.length; i++) {
       if (
-        process[i].status_process !== `resuelto` &&
+        process[i].status_process !== `Resuelto` &&
+        process[i].status_process !== `Presupuesto rechazado` &&
         req.auth.role !== `admin`
       ) {
         throw generateError(

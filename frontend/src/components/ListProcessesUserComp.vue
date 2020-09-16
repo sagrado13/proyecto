@@ -56,18 +56,23 @@
         <!-- BOTONES PARA VER MÁS, VER PRESUPUESTO Y VOTAR (APARECEN SI SE DAN UNAS CONDICIONES) -->
         <div id="buttons">
           <button @click="sendIdProcess(index)">Ver más</button>
-          <button :class="{ hide: process.status_budget === null }">
-            <router-link
-              :to="{
-                name: 'GetBudgetUser',
-                params: { id: process.id, idUser: process.id_user },
-              }"
-            >Ver presupuesto</router-link>
-          </button>
+          <router-link
+            :class="{ hide: process.status_budget === null }"
+            tag="button"
+            :to="{
+              name: 'GetBudgetUser',
+              params: { id: process.id, idUser: process.id_user },
+            }"
+            >Ver presupuesto</router-link
+          >
           <button
-            v-if="process.status_process === 'resuelto' && process.rating === null"
+            v-if="
+              process.status_process === 'Resuelto' && process.rating === null
+            "
             @click="sendProcessData(index)"
-          >Votar</button>
+          >
+            Votar
+          </button>
         </div>
       </li>
     </ul>

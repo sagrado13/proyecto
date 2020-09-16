@@ -18,7 +18,8 @@ export default {
       try {
         console.log(this.$route.params.registrationCode);
         const response = await axios.get(
-          "http://localhost:3000/users/validation/" +
+          process.env.VUE_APP_BACK_URL +
+            "users/validation/" +
             this.$route.params.registrationCode
         );
         Swal.fire({
@@ -42,5 +43,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

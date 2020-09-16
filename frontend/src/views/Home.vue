@@ -4,8 +4,49 @@
     <vue-headful title="Inicio" />
     <!-- SPINNER -->
     <loaderspinner :is-loading="!isLoaded">
+      <!-- NÚMERO DE ABOGADOS EN LA WEB TOTAL DE PROCESOS ABIERTOS, RESUELTOS Y EN EL AÑO EN CURSO -->
+      <div id="info" v-if="showListLawyers">
+        <ul>
+          <li>
+            <p id="quantity">
+              <img src="../assets/home/totalLawyer.png" alt="Total abogados" />
+              {{ totalLawyers }}
+            </p>
+            <p id="info">Abogados en la web</p>
+          </li>
+          <li>
+            <p id="quantity">
+              <img src="../assets/home/processes.png" alt="Archivador" />
+              {{ totalProcesses }}
+            </p>
+            <p id="info">Procesos tratados</p>
+          </li>
+          <li>
+            <p id="quantity">
+              <img src="../assets/home/processes.png" alt="Archivador" />
+              {{ totalProcessesThisYear }}
+            </p>
+            <p id="info">Procesos tratados en {{ year }}</p>
+          </li>
+          <li>
+            <p id="quantity">
+              <img src="../assets/home/check.png" alt="Check" />
+              {{ processesSolved }}
+            </p>
+            <p id="info">Procesos resueltos</p>
+          </li>
+          <li>
+            <p id="quantity">
+              <img src="../assets/home/check.png" alt="Check" />
+              {{ processesSolvedThisYear }}
+            </p>
+            <p id="info">Procesos resueltos en {{ year }}</p>
+          </li>
+        </ul>
+      </div>
+
+      <!-- BUSCADOR -->
       <div id="search">
-        <p id="info">Abogados en la web: 👤 {{ totalLawyers }}</p>
         <h3>Busca el abogado que necesitas</h3>
         <!--  BUSCADOR POR ESPECIALIDAD -->
         <select v-model="speciality" name="speciality">
@@ -37,7 +78,15 @@
           <option value="Media">Media</option>
           <option value="Baja">Baja</option>
         </select>
-        <button @click="searchLawyer()">Buscar</button>
+        <div id="button">
+          <button @click="searchLawyer()">Buscar</button>
+          <button
+            @click="showListLawyers = !showListLawyers"
+            v-if="!showListLawyers"
+          >
+            Cancelar
+          </button>
+        </div>
       </div>
       <!-- TOP 5 DE ABOGADOS MEJOR VALORADOS -->
       <top5lawyerscomp v-if="showListLawyers" :topLawyers="topLawyers" />
@@ -59,7 +108,13 @@
       <listlawyerscomp v-if="showListLawyers" :lawyers="lawyers" />
       <div v-if="!showListLawyers">
         <!-- RESULTADO DE LA BÚSQUEDA -->
-        <p>Abogados encontrados: 👤 {{ totalLawyersFound }}</p>
+        <div id="info">
+          <p id="quantity">
+            <img src="../assets/home/totalLawyer.png" alt="Total abogados" />
+            {{ totalLawyersFound }}
+          </p>
+          <p id="info">Abogados encontrados</p>
+        </div>
         <searchlawyerscomp :searchLawyers="searchLawyers" />
       </div>
     </loaderspinner>
@@ -77,8 +132,6 @@ import listlawyerscomp from "@/components/ListLawyersComp.vue";
 import searchlawyerscomp from "@/components/searchLawyersComp.vue";
 // Importamos el componente Top10LawyersComp
 import top5lawyerscomp from "@/components/Top5LawyersComp.vue";
-// Importamos LoaderSpinner
-import loaderspinner from "@/components/LoaderSpinner.vue";
 
 export default {
   name: "Home",
@@ -86,7 +139,6 @@ export default {
     listlawyerscomp,
     searchlawyerscomp,
     top5lawyerscomp,
-    loaderspinner,
   },
   data() {
     return {
@@ -154,18 +206,28 @@ export default {
         "Zaragoza",
       ],
       topLawyers: [],
+      totalProcesses: "",
+      processesSolved: "",
+      totalProcessesThisYear: "",
+      processesSolvedThisYear: "",
+      year: "",
     };
   },
   computed: {
     isLoaded() {
-      return this.lawyers.length > 0 || this.searchLawyers.length > 0;
+      return (
+        (this.lawyers.length > 0 || this.searchLawyers.length > 0) &&
+        this.topLawyers.length > 0
+      );
     },
   },
   methods: {
     // FUNCIÓN PARA OBTENER LISTADO DE ABOGADOS
     async listLawyers() {
       try {
-        const response = await axios.get("http://localhost:3000/lawyers/list");
+        const response = await axios.get(
+          process.env.VUE_APP_BACK_URL + "lawyers/list"
+        );
         this.totalLawyers = response.data.data[0].total_lawyers;
         this.lawyers = response.data.lawyers;
       } catch (error) {
@@ -181,7 +243,7 @@ export default {
           );
         }
         const response = await axios.get(
-          "http://localhost:3000/lawyers/search",
+          process.env.VUE_APP_BACK_URL + "lawyers/search",
           {
             params: {
               speciality: this.speciality,
@@ -195,6 +257,7 @@ export default {
         this.searchLawyers = response.data.data.result;
         this.totalLawyersFound = response.data.data.totalLawyers;
         this.showListLawyers = false;
+        window.scrollTo(0, 350);
       } catch (error) {
         console.log(error);
         if (
@@ -215,13 +278,34 @@ export default {
         }
       }
     },
-    // FUNCIÓN PARA OBTENER EL TOP10 DE ABOGADOS CON LAS MEJORES PUNTUACIONES
+    // FUNCIÓN PARA OBTENER EL TOP DE ABOGADOS CON LAS MEJORES PUNTUACIONES
     async top10Lawyers() {
       try {
-        const response = await axios.get("http://localhost:3000/lawyers/top10");
+        const response = await axios.get(
+          process.env.VUE_APP_BACK_URL + "lawyers/top"
+        );
         this.topLawyers = response.data.data;
       } catch (error) {
         console.log(error.response.data.message);
+      }
+    },
+    // FUNCIÓN PARA OBTENER TOTAL DE PROCESOS Y TOTAL DE PROCESOS RESUELTOS Y EL TOTAL EN EL AÑO EN CURSO
+    async totalProcessesAndSolved() {
+      try {
+        const response = await axios.get(
+          process.env.VUE_APP_BACK_URL + "processes/total"
+        );
+        this.totalProcesses = response.data.data.processes[0].total_processes;
+        this.totalProcessesThisYear =
+          response.data.data.processesThisYear[0].total_processes_this_year;
+        this.processesSolved =
+          response.data.data.processesSolved[0].total_processes_solved;
+        this.processesSolvedThisYear =
+          response.data.data.processesSolvedThisYear[0].total_processes_solved_this_year;
+        let now = new Date();
+        this.year = now.getFullYear();
+      } catch (error) {
+        console.log(error);
       }
     },
   },
@@ -229,13 +313,40 @@ export default {
   created() {
     this.listLawyers();
     this.top10Lawyers();
+    this.totalProcessesAndSolved();
   },
 };
 </script>
 
 <style scoped>
+div.home {
+  margin-bottom: 5rem;
+}
+div#info img {
+  margin-right: 0.2rem;
+  width: 40px;
+}
 p#info {
-  margin-top: 1rem;
+  font-size: 0.7rem;
+}
+ul {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  margin: 1rem;
+  /* background-color: var(--background); */
+}
+p#quantity {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+li {
+  font-weight: bold;
+  margin: 1rem;
+  width: 35%;
 }
 h3 {
   font-size: 1rem;
@@ -261,7 +372,11 @@ div#search select {
   color: var(--dark);
   border-radius: 10px;
 }
-div#search button {
+div#button {
+  display: flex;
+  justify-content: space-evenly;
+}
+div#button button {
   font-size: 0.7rem;
   border-radius: 20px;
   outline: 0;
@@ -280,6 +395,18 @@ div#order select {
 }
 
 @media (min-width: 700px) {
+  div#info img {
+    width: 50px;
+  }
+  p#quantity {
+    font-size: 1.2rem;
+  }
+  p#info {
+    font-size: 0.8rem;
+  }
+  li {
+    width: 15%;
+  }
   h3 {
     font-size: 1.25rem;
     margin: 0.7rem;
@@ -294,7 +421,7 @@ div#order select {
     width: 30%;
     display: inline-block;
   }
-  div#search button {
+  div#button button {
     font-size: 0.9rem;
   }
 
@@ -302,12 +429,18 @@ div#order select {
     font-size: 0.9rem;
     padding: 0.1rem;
   }
-  p {
-    margin-top: 1rem;
-  }
 }
 
 @media (min-width: 1000px) {
+  div#info img {
+    width: 60px;
+  }
+  p#info {
+    font-size: 1rem;
+  }
+  p#quantity {
+    font-size: 1.5rem;
+  }
   h3 {
     font-size: 1.5rem;
   }
@@ -321,7 +454,7 @@ div#order select {
     width: 230px;
     margin: 1rem;
   }
-  div#search button {
+  div#button button {
     font-size: 1rem;
     min-width: 100px;
   }

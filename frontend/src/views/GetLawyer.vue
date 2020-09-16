@@ -7,14 +7,17 @@
       <img src="../assets/deshacer.svg" />
     </button>
     <!-- BOTÓN DE ABRIR PROCESO CON EL ABOGADO SELECCIONADO -->
-    <button id="openProcess">
-      <router-link
-        :to="{
-          name: 'NewProcess',
-          params: { id: dataLawyer.id, lawFirm: dataLawyer.lawFirm },
-        }"
-      >💼 Abrir proceso</router-link>
-    </button>
+
+    <router-link
+      id="openProcess"
+      tag="button"
+      :to="{
+        name: 'NewProcess',
+        params: { id: dataLawyer.id, lawFirm: dataLawyer.lawFirm },
+      }"
+      >💼 Abrir proceso</router-link
+    >
+
     <!-- DATOS DEL ABOGADO SELECCIONADO -->
     <getlawyercomp :dataLawyer="dataLawyer" :specialities="specialities" />
   </div>
@@ -52,7 +55,10 @@ export default {
     async GetLawyer() {
       try {
         const response = await axios.get(
-          "http://localhost:3000/lawyers/" + this.$route.params.id + "/data"
+          process.env.VUE_APP_BACK_URL +
+            "lawyers/" +
+            this.$route.params.id +
+            "/data"
         );
         this.dataLawyer = response.data.data.responseData;
         this.specialities = response.data.data.specialities;
@@ -76,6 +82,9 @@ export default {
 </script>
 
 <style scoped>
+div {
+  margin-bottom: 5rem;
+}
 button#openProcess {
   outline: none;
   font-size: 0.7rem;

@@ -39,13 +39,12 @@ async function deleteProcess(req, res, next) {
     const result = differenceInHours(now, date);
 
     if (
-      result > 23 &&
-      status !== `pendiente de presupuesto` &&
-      status !== `resuelto` &&
+      (result > 23 || status !== `Pendiente de presupuesto`) &&
+      status !== `Resuelto` &&
       req.auth.role !== `admin`
     ) {
       throw generateError(
-        `Para poder eliminar un proceso tiene que ser en las primeras 24 horas, que esté pendiente de presupuesto, que esté resuelto o que seas el admin`,
+        `Para poder eliminar un proceso tiene que ser en las primeras 24 horas, que esté Pendiente de presupuesto, que esté resuelto o que seas el admin`,
         403
       );
     }

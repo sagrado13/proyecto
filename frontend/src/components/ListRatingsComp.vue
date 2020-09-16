@@ -33,6 +33,19 @@
       </p>
     </div>
 
+    <!-- ORDENACIÓN -->
+    <div id="order" @click="orderList()">
+      <legend>Ordenar</legend>
+      <select v-model="order" name="order">
+        <option value>Fecha</option>
+        <option value="rating">Puntuación</option>
+      </select>
+      <select v-model="direction" name="direction">
+        <option value>Ascendente</option>
+        <option value="desc">Descendente</option>
+      </select>
+    </div>
+
     <!-- LISTADO DE LAS PUNTUACIONES DEL ABOGADO SELECCIONADO -->
     <ul>
       <li v-for="rating in ratings" :key="rating.id">
@@ -43,9 +56,7 @@
         <p>
           <star-rating
             :rating="Number(rating.rating)"
-            :increment="0.1"
             :read-only="true"
-            :fixed-points="1"
             :star-size="20"
             :inline="true"
             :glow="2"
@@ -70,6 +81,12 @@ export default {
     lawyer: Object,
     ratings: Array,
   },
+  data() {
+    return {
+      order: "",
+      direction: "",
+    };
+  },
   methods: {
     //FUNCIÓN PARA SACAR IMAGEN
     getPictureLawyers(picture) {
@@ -80,6 +97,17 @@ export default {
     //FUNCIÓN PARA FORMATEAR FECHA
     formatDate(date) {
       return format(new Date(date), "dd/MM/yyyy HH:mm");
+    },
+    orderList() {
+      let params = {
+        order: this.order,
+        direction: this.direction,
+      };
+      this.$emit("data", params);
+    },
+    sendSpecialityId(index) {
+      let idSpeciality = this.specialities[index].id;
+      this.$emit("delete", idSpeciality);
     },
   },
 };
@@ -99,6 +127,15 @@ img {
   margin-top: 1rem;
   border-radius: 50%;
   width: 30%;
+}
+
+div#order legend {
+  margin-top: 0.3rem;
+}
+div#order select {
+  outline: none;
+  background-color: var(--bright);
+  color: var(--dark);
 }
 ul {
   margin-top: 2rem;
@@ -128,6 +165,10 @@ ul li p {
   h2 {
     font-size: 1.5rem;
   }
+  div#order select {
+    font-size: 0.9rem;
+    padding: 0.1rem;
+  }
   ul {
     display: flex;
     flex-wrap: wrap;
@@ -142,8 +183,15 @@ ul li p {
 }
 
 @media (min-width: 1000px) {
+  div#header p {
+    font-size: 1.1rem;
+  }
   img {
     width: 10%;
+  }
+  div#order select {
+    font-size: 1rem;
+    padding: 0.2rem;
   }
   ul li {
     width: 23%;

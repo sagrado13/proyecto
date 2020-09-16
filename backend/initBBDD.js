@@ -61,7 +61,7 @@ async function main() {
         active BOOLEAN DEFAULT false,
         registration_code TINYTEXT,
         description TINYTEXT,
-        urgency ENUM('alta', 'media', 'baja') DEFAULT 'media' NOT NULL,
+        urgency ENUM('Alta', 'Media', 'Baja') DEFAULT 'Media' NOT NULL,
         creation_date DATETIME NOT NULL,
         update_date DATETIME NOT NULL,
         last_auth_update DATETIME NOT NULL
@@ -72,8 +72,8 @@ async function main() {
       CREATE TABLE IF NOT EXISTS processes(
           id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
           message_process TEXT NOT NULL,
-          observations VARCHAR(300),
-          status_process ENUM('pendiente de presupuesto', 'presupuestado', 'presupuesto rechazado', 'pendiente de una resolución', 'resuelto') DEFAULT 'pendiente de presupuesto' NOT NULL,
+          observations TEXT,
+          status_process ENUM('Pendiente de presupuesto', 'Presupuestado', 'Presupuesto rechazado', 'Pendiente de una resolución', 'Resuelto') DEFAULT 'Pendiente de presupuesto' NOT NULL,
           active BOOLEAN DEFAULT true,
           id_user INT UNSIGNED,
           FOREIGN KEY(id_user) REFERENCES users(id),
@@ -87,7 +87,7 @@ async function main() {
     await connection.query(`
       CREATE TABLE IF NOT EXISTS budgets(
           id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-          status_budget ENUM('pendiente de respuesta', 'aceptado', 'rechazado') DEFAULT 'pendiente de respuesta' NOT NULL,
+          status_budget ENUM('Pendiente de respuesta', 'Aceptado', 'Rechazado') DEFAULT 'Pendiente de respuesta' NOT NULL,
           message_budget TEXT NOT NULL ,
           price INT NOT NULL,
           rating INT,

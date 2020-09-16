@@ -20,11 +20,11 @@ async function loginUser(req, res, next) {
     // Verificamos el login o email y la password
     const [user] = await connection.query(
       `
-            SELECT id, name, picture_user, role, low_reason, active, update_date
+            SELECT id, name, picture_user, role, low_reason, active, update_date, password
             FROM users
-            WHERE login_user=? OR email_user=? AND password=SHA2(?, 512)
+            WHERE login_user=? AND password=SHA2(?, 512) OR email_user=? AND password=SHA2(?, 512)
             `,
-      [emailOrLogin, emailOrLogin, password]
+      [emailOrLogin, password, emailOrLogin, password]
     );
 
     if (user.length === 0) {

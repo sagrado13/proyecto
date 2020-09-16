@@ -59,10 +59,6 @@ async function getLawyer(req, res, next) {
       updateDate: lawyerData.update_date,
       login: lawyerData.login_lawyer,
     };
-    /*     // Si es el propio abogado o admin mostramos más datos
-    if (lawyerData.id === req.auth.id || req.auth.role === `admin`) {
-      responseData.login_lawyer = lawyerData.login_lawyer;
-    } */
 
     // Damos una respuesta
     res.send({

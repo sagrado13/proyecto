@@ -10,15 +10,23 @@
     <!-- FORMULARIO PARA CONTACTAR CON EL ADMIN -->
     <div id="contact">
       <label for>Nombre*</label>
-      <input v-model="name" type="text" placeholder="Nombre" />
+      <input v-model="name" type="text" placeholder="Nombre" required />
       <label for>Apellidos*</label>
-      <input v-model="surname" type="text" placeholder="Apellidos" />
+      <input v-model="surname" type="text" placeholder="Apellidos" required />
       <label for>Teléfono*</label>
-      <input v-model="phoneNumber" type="tel" placeholder="Teléfono" />
+      <input v-model="phoneNumber" type="tel" placeholder="Teléfono" required />
       <label for>Email*</label>
-      <input v-model="email" type="email" placeholder="Email" />
+      <input v-model="email" type="email" placeholder="Email" required />
       <label for>Escribe tu mensaje*</label>
-      <textarea v-model="message" name id cols="30" rows="10" placeholder="Escribe tu mensaje"></textarea>
+      <textarea
+        v-model="message"
+        name
+        id
+        cols="30"
+        rows="10"
+        placeholder="Escribe tu mensaje"
+        required
+      ></textarea>
       <button id="send" @click="sendContact">Enviar</button>
     </div>
   </div>
@@ -54,13 +62,16 @@ export default {
         return (this.showMsg = true);
       }
       try {
-        const response = await axios.post("http://localhost:3000/contact", {
-          name: this.name,
-          surname: this.surname,
-          phoneNumber: this.phoneNumber.replace(/[\-\.\  ]/g, ""),
-          emailUser: this.email,
-          message: this.message,
-        });
+        const response = await axios.post(
+          process.env.VUE_APP_BACK_URL + "contact",
+          {
+            name: this.name,
+            surname: this.surname,
+            phoneNumber: this.phoneNumber.replace(/[\-\.\  ]/g, ""),
+            emailUser: this.email,
+            message: this.message,
+          }
+        );
         Swal.fire({
           icon: "success",
           title: `${response.data.message}`,
@@ -133,6 +144,7 @@ button#send {
 @media (min-width: 700px) {
   div#contact {
     width: 70%;
+    margin-bottom: 5rem;
   }
   p {
     font-size: 0.9rem;
@@ -156,7 +168,7 @@ button#send {
 
 @media (min-width: 1000px) {
   div#contact {
-    width: 50%;
+    width: 60%;
   }
   p {
     font-size: 1rem;

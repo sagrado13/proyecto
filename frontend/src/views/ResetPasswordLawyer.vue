@@ -7,16 +7,20 @@
     <div class="modal">
       <div class="modalBox">
         <h4>Recupera tu contraseña:</h4>
-        <small class="errorMsg" v-if="showMsg">*No coincide la contraseña*</small>
+        <small class="errorMsg" v-if="showMsg"
+          >*No coincide la contraseña*</small
+        >
         <input
-          :class=" { error: showMsg === true}"
+          :class="{ error: showMsg === true }"
           type="password"
           v-model="newPassword"
           placeholder="Contraseña nueva"
         />
-        <small class="errorMsg" v-if="showMsg">*No coincide la contraseña*</small>
+        <small class="errorMsg" v-if="showMsg"
+          >*No coincide la contraseña*</small
+        >
         <input
-          :class=" { error: showMsg === true}"
+          :class="{ error: showMsg === true }"
           type="password"
           v-model="newPassword1"
           placeholder="Repite la contraseña"
@@ -54,7 +58,8 @@ export default {
       }
       try {
         const response = await axios.post(
-          "http://localhost:3000/lawyers/reset-password/" +
+          process.env.VUE_APP_BACK_URL +
+            "lawyers/reset-password/" +
             this.$route.params.recoverCode,
           {
             newPassword: this.newPassword,
@@ -97,7 +102,6 @@ export default {
   background: rgba(252, 249, 249, 0.8);
 }
 .modalBox {
-  background: #fefefe;
   margin: 2% auto;
   padding: 1rem;
   width: 80%;

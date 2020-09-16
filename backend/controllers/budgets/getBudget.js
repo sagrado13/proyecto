@@ -15,8 +15,8 @@ async function getBudget(req, res, next) {
       const [budgetUser] = await connection.query(
         `
             SELECT B.id, B.status_budget, B.message_budget, B.price, B.rating, B.opinion, B.id_lawyer, 
-            B.creation_date, B.update_date, L.law_firm, L.city_lawyer, L.phone_number_lawyer, 
-            L.email_lawyer, L.picture_lawyer, P.id_user
+            B.id_process, B.creation_date, B.update_date, L.law_firm, L.city_lawyer, L.phone_number_lawyer, 
+            L.email_lawyer, L.picture_lawyer, P.message_process, P.status_process
             FROM budgets B
             LEFT JOIN lawyers L ON B.id_lawyer=L.id
             LEFT JOIN processes P ON B.id_process=P.id

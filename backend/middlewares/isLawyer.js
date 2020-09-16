@@ -42,6 +42,11 @@ async function isLawyer(req, res, next) {
       throw generateError(`El abogado no existe en la base de datos`, 404);
     }
 
+    // Verificamos que sea abogado o admin
+    if (tokenInfo.role === `normal`) {
+      throw generateError(`No tienes acceso a los datos de otra persona`, 401);
+    }
+
     // Verificamos si la fecha de creación del token es menor que la que tenemos en la bbdd
     const tokenCreatedAt = new Date(tokenInfo.iat * 1000);
     const lawyerLastAuthUpdate = new Date(result[0].last_auth_update);

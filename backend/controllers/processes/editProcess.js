@@ -36,8 +36,8 @@ async function editProcess(req, res, next) {
         throw generateError(`No tienes permiso para editar el proceso`, 401);
       }
 
-      // Verificamos si el estado es resuelto
-      if (userProcess[0].status_process === `resuelto`) {
+      // Verificamos si el estado es Resuelto
+      if (userProcess[0].status_process === `Resuelto`) {
         throw generateError(
           `No puedes editar observations si el proceso está resuelto`,
           400
@@ -87,7 +87,7 @@ async function editProcess(req, res, next) {
       }
 
       // Comprobamos que el el presupuesto está aceptado
-      if (lawyerBudget[0].status_budget !== `aceptado`) {
+      if (lawyerBudget[0].status_budget !== `Aceptado`) {
         throw generateError(
           `No puedes dar un proceso como resuelto si el presupuesto no está aceptado`,
           400
@@ -98,7 +98,7 @@ async function editProcess(req, res, next) {
       await connection.query(
         `
             UPDATE processes
-            SET status_process='resuelto', update_date=UTC_TIMESTAMP
+            SET status_process='Resuelto', update_date=UTC_TIMESTAMP
             WHERE id=?
             `,
         [idProcess]

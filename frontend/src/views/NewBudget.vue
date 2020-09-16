@@ -17,6 +17,7 @@
       placeholder="Mensaje para el cliente"
       cols="45"
       rows="20"
+      required
     ></textarea>
     <legend>Precio*</legend>
     <input type="text" placeholder="Precio" v-model="price" />
@@ -55,7 +56,8 @@ export default {
         let token = localStorage.getItem("AUTH_TOKEN_KEY");
         axios.defaults.headers.common["Authorization"] = `${token}`;
         const response = await axios.post(
-          "http://localhost:3000/lawyers/" +
+          process.env.VUE_APP_BACK_URL +
+            "lawyers/" +
             getIdToken(token) +
             "/processes/" +
             this.idProcess +
@@ -92,7 +94,7 @@ export default {
 
 <style scoped>
 div {
-  margin-bottom: 2rem;
+  margin-bottom: 5rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -118,7 +120,6 @@ input {
   width: 30%;
   text-align: center;
   font-size: 0.9rem;
-  text-align: center;
   background: var(--dark);
   color: var(--bright);
   border-width: 0 0 2px;
@@ -133,6 +134,9 @@ button#create {
 }
 
 @media (min-width: 700px) {
+  h4 {
+    font-size: 1.15rem;
+  }
   legend {
     font-size: 0.9rem;
   }

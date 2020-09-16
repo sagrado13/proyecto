@@ -29,12 +29,11 @@ const newBudgetSchema = Joi.object().keys({
 // Validator editar presupuesto por usuario
 const editBudgetUserSchema = Joi.object().keys({
   status: Joi.string()
-    .lowercase()
-    .valid(`aceptado`, `rechazado`)
+    .valid(`Aceptado`, `Rechazado`)
     .required()
     .error(
       generateError(
-        `El campo status debe existir y ser: 'aceptado' o 'rechazado'`,
+        `El campo status debe existir y ser: 'Aceptado' o 'Rechazado'`,
         400
       )
     ),
@@ -49,6 +48,15 @@ const editBudgetLawyerSchema = Joi.object().keys({
       generateError(
         `El campor message debe existir y tener mínimo 20 caracteres`,
         400
+      )
+    ),
+  price: Joi.number()
+    .min(1)
+    .integer()
+    .required()
+    .error(
+      generateError(
+        `El campo price debe existir, tener minímo un número y ser entero`
       )
     ),
 });

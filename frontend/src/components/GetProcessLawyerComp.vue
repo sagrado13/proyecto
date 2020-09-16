@@ -70,14 +70,18 @@
     </p>
     <div id="buttons">
       <button
-        :class="{
-          hide: process.status_process !== 'pendiente de una resolución',
-        }"
+        v-if="process.status_process === 'Pendiente de una resolución'"
+        id="processSolved"
         @click="sendProcessData()"
-      >Proceso resuelto</button>
-      <button :class="{ hide: process.status_budget !== null }">
-        <router-link :to="{ name: 'NewBudget', params: { id: process.id } }">Añadir presupuesto</router-link>
+      >
+        Proceso resuelto
       </button>
+      <router-link
+        :class="{ hide: process.status_budget !== null }"
+        tag="button"
+        :to="{ name: 'NewBudget', params: { id: process.id } }"
+        >Añadir presupuesto</router-link
+      >
     </div>
   </div>
 </template>
@@ -86,7 +90,6 @@
 // Importamos date-fns
 import { format, formatDistanceToNow } from "date-fns";
 import es from "date-fns/locale/es";
-
 export default {
   name: "GetProcessLawyerComp",
   props: {
@@ -100,7 +103,7 @@ export default {
   methods: {
     // FUNCIÓN QUE EMITE UN EVENTO CON EL DATO 'RESUELTO' PARA CAMBIAR A ESE ESTADO EL PROCESO
     sendProcessData() {
-      let processData = `resuelto`;
+      let processData = `Resuelto`;
       this.$emit("data", processData);
     },
     // FUNCIÓN PARA OBTENER FOTO DE USUARIO
@@ -154,7 +157,7 @@ button {
   border-radius: 20px;
   box-shadow: 5px 5px 30px var(--button) inset;
 }
-button:nth-child(1) {
+button#processSolved {
   box-shadow: 5px 5px 30px yellowgreen inset;
 }
 .vue-star-rating {

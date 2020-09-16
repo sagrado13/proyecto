@@ -13,7 +13,7 @@
     </p>
     <p>
       Estos datos facilitados por el usuario, son recabados con la finalidad de
-      facilitar la prestación de servicios por parte de un Legal Shield
+      facilitar la prestación de servicios por parte de Legal Shield.
     </p>
     <p>
       El trato que reciban los datos de carácter personal, será conforme en todo
@@ -34,7 +34,7 @@
     </p>
     <p>
       El usuario se compromete a indicar en el periodo mas breve posible
-      cualquier cambio o modificacion de los datos facilitados a Legal Shield
+      cualquier cambio o modificacion de los datos facilitados a Legal Shield.
     </p>
     <h5>4. DERECHO DE ACCESO, RECTIFICACIÓN, OPOSICION Y CANCELACION</h5>
     <p>
@@ -121,8 +121,9 @@ export default {
 
 <style scoped>
 div {
+  margin-bottom: 5rem;
   padding: 0.5rem;
-  background-color: var(--bright);
+  background-color: rgba(255, 255, 255, 0.7);
 }
 h5 {
   margin: 0.5rem;
@@ -151,7 +152,7 @@ p {
 @media (min-width: 1000px) {
   div {
     width: 60%;
-    margin: 0 auto;
+    margin: 5% auto;
   }
   p {
     margin-top: 0.5rem;

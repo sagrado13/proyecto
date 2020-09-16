@@ -155,20 +155,19 @@ const editLawyerSchema = Joi.object().keys({
       )
     ),
   description: Joi.string()
-    .max(30)
+    .max(60)
     .error(
       generateError(
-        `El campo description debe ser alfanúmerico y no tener más de 30 caracteres`,
+        `El campo description debe ser alfanúmerico y no tener más de 60 caracteres`,
         400
       )
     ),
   urgency: Joi.string()
-    .valid(`alta`, `media`, `baja`)
-    .lowercase()
+    .valid(`Alta`, `Media`, `Baja`)
     .required()
     .error(
       generateError(
-        `El campo urgency debe existir y ser: 'alta', 'media', 'baja'`,
+        `El campo urgency debe existir y ser: 'Alta', 'Media', 'Baja'`,
         400
       )
     ),
@@ -262,10 +261,9 @@ const searchLawyerSchema = Joi.object().keys({
     .min(2)
     .error(generateError(`El campo city debe tener  mínimo 2 caracteres`, 400)),
   urgency: Joi.string()
-    .valid(`alta`, `media`, `baja`)
-    .lowercase()
+    .valid(`Alta`, `Media`, `Baja`)
     .error(
-      generateError(`El campo urgency debe ser: 'alta', 'media', 'baja'`, 400)
+      generateError(`El campo urgency debe ser: 'Alta', 'Media', 'Baja'`, 400)
     ),
 });
 

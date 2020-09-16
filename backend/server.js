@@ -52,6 +52,7 @@ const editProcess = require("./controllers/processes/editProcess");
 const deleteProcess = require("./controllers/processes/deleteProcess");
 const getProcesss = require("./controllers/processes/getProcess");
 const listProcess = require("./controllers/processes/listProcess");
+const totalProcesses = require("./controllers/processes/totalProcesses");
 
 // Budgets controllers
 const newBudget = require("./controllers/budgets/newBudget");
@@ -179,13 +180,17 @@ app.post("/lawyers/login", loginLawyer);
 // GET - /lawyers/:idLawyer/data
 app.get("/lawyers/:idLawyer/data", getLawyer);
 
+// Ver información de abogado por abogado
+// GET - /lawyers/data/:idLawyer
+app.get("/lawyers/data/:idLawyer", isLawyer, getLawyer);
+
 // Listar los 20 últimos abogados conectados
 // GET - /lawyers/list
 app.get("/lawyers/list", listLawyers);
 
-// Listar el Top 10 abogados con la mejor puntueción
-// GET - /lawyers/top10
-app.get("/lawyers/top10", topLawyers);
+// Listar el Top abogados con la mejor puntueción
+// GET - /lawyers/top
+app.get("/lawyers/top", topLawyers);
 
 // Borrar abogado
 // PUT - /lawyers/:idLawyer/delete
@@ -273,6 +278,10 @@ app.get("/users/:idUser/list/processes", isUser, listProcess);
 // Listar procesos por abogado
 // GET - /lawyers/:idLawyer/list/processes
 app.get("/lawyers/:idLawyer/list/processes", isLawyer, listProcess);
+
+// Total de procesos
+// GET - /processes/total
+app.get("/processes/total", totalProcesses);
 
 // BUDGETS ENDPOINTS
 

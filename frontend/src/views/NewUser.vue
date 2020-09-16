@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="background">
     <!-- Declaramos vue-headful -->
     <vue-headful title="Regístrate usuario" />
 
@@ -19,29 +19,42 @@
         <label>Ciudad*</label>
         <input type="text" required v-model="city" placeholder="Ciudad" />
         <label>Teléfono*</label>
-        <input type="tel" required v-model="phoneNumber" placeholder="Teléfono" />
+        <input
+          type="tel"
+          required
+          v-model="phoneNumber"
+          placeholder="Teléfono"
+        />
         <label>Usuario*</label>
         <input type="text" required v-model="login" placeholder="Usuario" />
         <label>Email*</label>
         <input type="email" required v-model="email" placeholder="Email" />
         <label>Contraseña*</label>
         <input
-          :class=" { error: showMsg === true}"
+          :class="{ error: showMsg === true }"
           type="password"
           v-model="password"
           placeholder="Contraseña"
+          required
         />
-        <small class="errorMsg" v-if="showMsg">*No coincide la contraseña*</small>
+        <small class="errorMsg" v-if="showMsg"
+          >*No coincide la contraseña*</small
+        >
         <label>Repetir contraseña*</label>
         <input
-          :class=" { error: showMsg === true}"
+          :class="{ error: showMsg === true }"
           type="password"
           v-model="password1"
           placeholder="Repite la contraseña"
+          required
         />
-        <small class="errorMsg" v-if="showMsg">*No coincide la contraseña*</small>
+        <small class="errorMsg" v-if="showMsg"
+          >*No coincide la contraseña*</small
+        >
         <input id="upload" type="file" @change="processFile" ref="fileInput" />
-        <button id="uploadPicture" @click="$refs.fileInput.click()">Cargar imagen</button>
+        <button id="uploadPicture" @click="$refs.fileInput.click()">
+          Cargar imagen
+        </button>
         <progress max="100" :value.prop="uploadProgress"></progress>
       </form>
     </div>
@@ -93,13 +106,17 @@ export default {
         if (this.avatar !== null) {
           fd.append("avatar", this.avatar);
         }
-        const response = await axios.post("http://localhost:3000/users", fd, {
-          onUploadProgress: (uploadEvent) => {
-            this.uploadProgress = Math.round(
-              (uploadEvent.loaded / uploadEvent.total) * 100
-            );
-          },
-        });
+        const response = await axios.post(
+          process.env.VUE_APP_BACK_URL + "users",
+          fd,
+          {
+            onUploadProgress: (uploadEvent) => {
+              this.uploadProgress = Math.round(
+                (uploadEvent.loaded / uploadEvent.total) * 100
+              );
+            },
+          }
+        );
         this.$route.push("/");
         Swal.fire({
           icon: "success",
@@ -122,6 +139,15 @@ export default {
 </script>
 
 <style scoped>
+div.background {
+  background-image: url(../assets/registryBackground.png);
+  background-color: var(--bright);
+  background-repeat: no-repeat;
+  background-size: cover;
+  padding-bottom: 5rem;
+  display: flex;
+  flex-direction: column;
+}
 .error {
   background-color: rgba(255, 0, 0, 0.336);
 }
@@ -172,6 +198,7 @@ button {
 }
 button#back {
   box-shadow: none;
+  align-self: flex-start;
 }
 button#uploadPicture {
   margin-top: 0.5rem;
@@ -189,6 +216,7 @@ button#register {
   input {
     padding: 0.2rem;
     font-size: 0.9rem;
+    width: 300px;
   }
   button#uploadPicture {
     margin-top: 0.8rem;
@@ -202,14 +230,13 @@ button#register {
 
 @media (min-width: 1000px) {
   div#register {
-    width: 30%;
+    width: 50%;
   }
   label {
     font-size: 1rem;
   }
   input {
     font-size: 1rem;
-    width: 50%;
   }
   button#uploadPicture {
     margin-top: 1.5rem;

@@ -3,7 +3,11 @@
     <!-- Declaramos vue-headful -->
     <vue-headful title="Ver y editar perfil" />
     <!-- BOTÓN DE VOLVER ATRÁS -->
-    <button v-if="!showLowUser && !showEditPassword" id="back" @click="goBack()">
+    <button
+      v-if="!showLowUser && !showEditPassword"
+      id="back"
+      @click="goBack()"
+    >
       <img src="../assets/deshacer.svg" />
     </button>
     <!--  VER Y EDITAR PERFIL -->
@@ -13,19 +17,33 @@
         src="../assets/profile.jpeg"
         alt="Foto de perfil por defecto"
       />
-      <img :class="{ hide: picture === null }" :src="picture" alt="Avatar de usuario" />
+      <img
+        :class="{ hide: picture === null }"
+        :src="picture"
+        alt="Avatar de usuario"
+      />
       <button id="deletePicture" @click="deletePicture">Eliminar imagen</button>
       <p>Estos son tus datos {{ name }}, puedes actualizarlos si deseas.</p>
       <legend>Nombre*</legend>
-      <input type="text" placeholder="Nombre" v-model="name" />
+      <input type="text" placeholder="Nombre" v-model="name" required />
       <legend>Apellidos*</legend>
-      <input type="text" placeholder="Apellidos" v-model="surname" />
+      <input type="text" placeholder="Apellidos" v-model="surname" required />
       <legend>Ciudad*</legend>
-      <input type="text" placeholder="Ciudad" v-model="city" />
+      <input type="text" placeholder="Ciudad" v-model="city" required />
       <legend>Teléfono*</legend>
-      <input type="tel" placeholder="Número de teléfono" v-model="phoneNumber" />
+      <input
+        type="tel"
+        placeholder="Número de teléfono"
+        v-model="phoneNumber"
+        required
+      />
       <legend>Usuario*</legend>
-      <input type="text" placeholder="Usuario" v-model="login" />
+      <input type="text" placeholder="Usuario" v-model="login" required />
+      <div class="objetfit" v-if="previewAvatar">
+        <img :src="previewAvatar" />
+        <p>{{ namePreviewAvatar }}</p>
+        <button @click="cancellUploadPicture">Cancelar</button>
+      </div>
       <input id="upload" type="file" @change="processFile" ref="fileInput" />
       <button @click="$refs.fileInput.click()">Cargar imagen</button>
       <progress max="100" :value.prop="uploadProgress"></progress>
@@ -34,23 +52,33 @@
 
     <!-- BOTONES PARA CAMBIAR EMAIL Y CONTRASEÑA O DARSE DE BAJA -->
     <div id="editPassword" v-if="!showEditPassword && !showLowUser">
-      <button @click="showEditPassword = !showEditPassword">Cambiar email o contraseña</button>
-      <button id="delete" @click="showLowUser = !showLowUser">Date de baja</button>
+      <button @click="showEditPassword = !showEditPassword">
+        Cambiar email o contraseña
+      </button>
+      <button id="delete" @click="showLowUser = !showLowUser">
+        Date de baja
+      </button>
     </div>
 
     <!-- CAMBIAR EMAIL Y CONTRASEÑA -->
     <div v-if="showEditPassword" id="changePassword">
       <p>Cambia tu email o contraseña</p>
       <legend>Email*</legend>
-      <input type="email" placeholder="Email" v-model="email" />
+      <input type="email" placeholder="Email" v-model="email" required />
       <legend>Contraseña antigua*</legend>
-      <input type="password" placeholder="Contraseña antigua" v-model="oldPassword" />
+      <input
+        type="password"
+        placeholder="Contraseña antigua"
+        v-model="oldPassword"
+        required
+      />
       <legend>Contraseña nueva*</legend>
       <input
         :class="{ error: showMsg === true }"
         type="password"
         v-model="newPassword"
         placeholder="Contraseña nueva"
+        required
       />
       <small class="errorMsg" v-if="showMsg">*No coincide la contraseña*</small>
       <legend>Repetir contraseña nueva*</legend>
@@ -59,6 +87,7 @@
         type="password"
         v-model="newPassword1"
         placeholder="Repite la contraseña nueva"
+        required
       />
       <small class="errorMsg" v-if="showMsg">*No coincide la contraseña*</small>
       <div>
@@ -77,6 +106,7 @@
         cols="30"
         rows="10"
         placeholder="Motivo por el que nos abandonas"
+        required
       ></textarea>
       <button @click="showLowUser = !showLowUser">Cancelar</button>
       <button id="delete" @click="deleteUser()">Date de baja</button>
@@ -105,6 +135,8 @@ export default {
       login: "",
       picture: "",
       avatar: null,
+      previewAvatar: null,
+      namePreviewAvatar: "",
       uploadProgress: 0,
       email: "",
       oldPassword: "",
@@ -131,8 +163,9 @@ export default {
           axios.defaults.headers.common["Authorization"] = token;
           this.idUser = getIdToken(token);
         }
+
         const response = await axios.get(
-          "http://localhost:3000/users/" + this.idUser + "/data"
+          process.env.VUE_APP_BACK_URL + "users/" + this.idUser + "/data"
         );
         this.idUser = response.data.data.id;
         this.user = response.data.data;
@@ -142,8 +175,10 @@ export default {
         this.phoneNumber = response.data.data.phoneNumber;
         this.login = response.data.data.login;
         this.picture = response.data.data.picture;
-        localStorage.setItem("PICTURE_USER", this.picture);
-        this.$emit("showPictureUser");
+        if (checkIsAdmin() !== true) {
+          localStorage.setItem("PICTURE_USER", this.picture);
+          this.$emit("showPictureUser");
+        }
         if (this.picture !== null) {
           this.picture = process.env.VUE_APP_STATIC_USERS + this.picture;
         }
@@ -155,9 +190,17 @@ export default {
         });
       }
     },
-    // FUNCIÓN PARA PROCESAR LA IMAGEN
+    // FUNCIÓN PARA PROCESAR LA IMAGEN Y PREVISUALIZARLA
     processFile(event) {
       this.avatar = event.target.files[0];
+      this.namePreviewAvatar = this.avatar.name;
+      this.previewAvatar = URL.createObjectURL(this.avatar);
+    },
+    // FUNCIÓN PARA CANCELAR LA CARGA DE LA IMAGEN
+    cancellUploadPicture() {
+      this.avatar = null;
+      this.previewAvatar = null;
+      this.namePreviewAvatar = "";
     },
     // FUNCIÓN PARA ACTUALIZAR DATOS USUARIO
     async updateUser() {
@@ -172,7 +215,7 @@ export default {
           fd.append("avatar", this.avatar);
         }
         const response = await axios.put(
-          "http://localhost:3000/users/" + this.idUser + "/edit",
+          process.env.VUE_APP_BACK_URL + "users/" + this.idUser + "/edit",
           fd,
           {
             onUploadProgress: (uploadEvent) => {
@@ -183,6 +226,7 @@ export default {
           }
         );
         this.getUser();
+        this.previewAvatar = null;
         Swal.fire({
           title: `${response.data.message}`,
           icon: "success",
@@ -209,7 +253,10 @@ export default {
       if (result.value) {
         try {
           const response = await axios.put(
-            "http://localhost:3000/users/" + this.idUser + "/delete-picture"
+            process.env.VUE_APP_BACK_URL +
+              "users/" +
+              this.idUser +
+              "/delete-picture"
           );
           Swal.fire({
             icon: "success",
@@ -234,7 +281,10 @@ export default {
       }
       try {
         const response = await axios.post(
-          "http://localhost:3000/users/" + `${this.idUser}` + "/email-password",
+          process.env.VUE_APP_BACK_URL +
+            "users/" +
+            `${this.idUser}` +
+            "/email-password",
           {
             email: this.email,
             oldPassword: this.oldPassword,
@@ -270,7 +320,10 @@ export default {
       if (result.value) {
         try {
           const response = await axios.put(
-            "http://localhost:3000/users/" + `${this.idUser}` + "/delete",
+            process.env.VUE_APP_BACK_URL +
+              "users/" +
+              `${this.idUser}` +
+              "/delete",
             {
               lowReason: this.lowReason,
             }
@@ -318,6 +371,17 @@ img {
   width: 100px;
   margin-top: 1rem;
 }
+.objetfit > img {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+}
+.objetfit p {
+  font-size: 0.4rem;
+}
+.objetfit button {
+  box-shadow: 5px 5px 30px red inset;
+}
 div#update {
   background-color: var(--background);
   margin: 1rem;
@@ -325,7 +389,7 @@ div#update {
   display: flex;
   flex-direction: column;
   align-items: center;
-  border-radius: 10%;
+  border-radius: 10px;
 }
 p {
   font-size: 0.9rem;
@@ -373,7 +437,7 @@ button#updateButton {
   font-size: 0.6rem;
 }
 div#editPassword {
-  margin-bottom: 2rem;
+  margin-bottom: 5rem;
 }
 div#changePassword {
   background-color: var(--background);
@@ -412,7 +476,15 @@ button#delete {
 
 @media (min-width: 700px) {
   img {
-    width: 200px;
+    width: 130px;
+  }
+  .objetfit > img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+  }
+  .objetfit p {
+    font-size: 0.5rem;
   }
   p {
     font-size: 1rem;
@@ -455,8 +527,19 @@ button#delete {
 
 @media (min-width: 1000px) {
   div#update {
-    width: 40%;
+    width: 50%;
     margin: 0 auto;
+  }
+  img {
+    width: 200px;
+  }
+  .objetfit > img {
+    width: 130px;
+    height: 130px;
+    object-fit: cover;
+  }
+  .objetfit p {
+    font-size: 0.6rem;
   }
   p {
     font-size: 1.1rem;

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="listProcesses">
     <!-- Declaramos vue-headful -->
     <vue-headful title="Tus procesos" />
 
@@ -22,7 +22,11 @@
         </div>
 
         <!-- LISTADO DE PROCESOS DEL USUARIO -->
-        <listprocessesusercomp @data="getProcess" @id="getIdProcessRating" :processes="processes" />
+        <listprocessesusercomp
+          @data="getProcess"
+          @id="getIdProcessRating"
+          :processes="processes"
+        />
       </div>
       <div v-if="!seeListProcesses">
         <!-- BOTÓN DE VOLVER ATRÁS -->
@@ -33,7 +37,11 @@
         <!-- DATOS DEL PROCESO DETERMINADO -->
         <div id="getProcess">
           <h2>Proceso Nº {{ idProcess }}</h2>
-          <getprocessusercomp @data="showObservations" @delete="deleteProcess" :process="process" />
+          <getprocessusercomp
+            @data="showObservations"
+            @delete="deleteProcess"
+            :process="process"
+          />
 
           <!-- MODAL PARA EDITAR PROCESO -->
           <div v-if="seeModal" class="modal">
@@ -57,11 +65,22 @@
       <div id="rating" v-if="seeModalRating" class="modal">
         <div class="modalBox">
           <h3>
-            Puntuación del proceso Nº {{ processRatingId }}, resuelto por
+            Puntuación del proceso Nº {{ idProcess }}, resuelto por
             {{ lawyerRating }}
           </h3>
-          <star-rating v-model="rating" :star-size="35" :inline="true" :glow="5"></star-rating>
-          <textarea v-model="opinion" name="opinion" cols="40" rows="10" placeholder="Opinión"></textarea>
+          <star-rating
+            v-model="rating"
+            :star-size="35"
+            :inline="true"
+            :glow="5"
+          ></star-rating>
+          <textarea
+            v-model="opinion"
+            name="opinion"
+            cols="40"
+            rows="10"
+            placeholder="Opinión"
+          ></textarea>
           <button @click="cancellRating()">Cancelar</button>
           <button @click="ratingProcess()">Votar</button>
         </div>
@@ -79,8 +98,6 @@ import Swal from "sweetalert2";
 import listprocessesusercomp from "@/components/ListProcessesUserComp.vue";
 // Importamos el componente GetProcessUserComp
 import getprocessusercomp from "@/components/GetProcessUserComp.vue";
-// Importamos LoaderSpinner
-import loaderspinner from "@/components/LoaderSpinner.vue";
 // IMPORTAMOS FUNCIONES
 import { getIdToken } from "../api/utils";
 import { checkIsAdmin } from "../api/utils.js";
@@ -89,7 +106,6 @@ export default {
   components: {
     listprocessesusercomp,
     getprocessusercomp,
-    loaderspinner,
   },
   data() {
     return {
@@ -105,7 +121,6 @@ export default {
       rating: 0,
       opinion: "",
       seeModalRating: false,
-      processRatingId: "",
       lawyerRating: "",
     };
   },
@@ -128,7 +143,10 @@ export default {
           this.idUser = getIdToken(token);
         }
         const response = await axios.get(
-          "http://localhost:3000/users/" + this.idUser + "/list/processes",
+          process.env.VUE_APP_BACK_URL +
+            "users/" +
+            this.idUser +
+            "/list/processes",
           {
             params: {
               order: this.order,
@@ -156,7 +174,8 @@ export default {
         this.idProcess = idProcess;
         this.seeListProcesses = false;
         const response = await axios.get(
-          "http://localhost:3000/users/" +
+          process.env.VUE_APP_BACK_URL +
+            "users/" +
             this.idUser +
             "/processes/" +
             this.idProcess
@@ -175,7 +194,8 @@ export default {
     async updateProcess() {
       try {
         const response = await axios.put(
-          "http://localhost:3000/users/" +
+          process.env.VUE_APP_BACK_URL +
+            "users/" +
             this.idUser +
             "/processes/" +
             this.idProcess +
@@ -209,7 +229,8 @@ export default {
       if (result.value) {
         try {
           const response = await axios.put(
-            "http://localhost:3000/users/" +
+            process.env.VUE_APP_BACK_URL +
+              "users/" +
               this.idUser +
               "/processes/" +
               this.idProcess +
@@ -237,7 +258,7 @@ export default {
     },
     // FUNCIÓN PARA MOSTAR EL MODAL PARA VOTAR PROCESO DETERMINADO
     getIdProcessRating(processData) {
-      this.processRatingId = processData.id;
+      this.idProcess = processData.id;
       this.lawyerRating = processData.law_firm;
       this.seeListProcesses = false;
       this.seeModalRating = true;
@@ -252,34 +273,40 @@ export default {
       try {
         if (this.opinion.length > 0) {
           const response = await axios.put(
-            "http://localhost:3000/users/" +
+            process.env.VUE_APP_BACK_URL +
+              "users/" +
               this.idUser +
               "/processes/" +
-              this.processRatingId +
+              this.idProcess +
               "/budgets",
             {
               rating: this.rating,
               opinion: this.opinion,
             }
           );
+          this.listProcesses();
           this.getProcess(this.idProcess);
           this.seeModalRating = false;
+          this.seeListProcesses = true;
           Swal.fire({
             icon: "success",
             title: `${response.data.message}`,
           });
         } else {
           const response = await axios.put(
-            "http://localhost:3000/users/" +
+            process.env.VUE_APP_BACK_URL +
+              "users/" +
               this.idUser +
               "/processes/" +
-              this.processRatingId +
+              this.idProcess +
               "/budgets",
             {
               rating: this.rating,
             }
           );
           this.seeModalRating = false;
+          this.seeListProcesses = true;
+          this.listProcesses();
           this.getProcess(this.idProcess);
           Swal.fire({
             icon: "success",
@@ -303,6 +330,9 @@ export default {
 </script>
 
 <style scoped>
+div#listProcesses {
+  margin-bottom: 5rem;
+}
 h1 {
   text-decoration: underline;
   margin: 1rem;
@@ -339,15 +369,15 @@ button#back {
   background: rgba(252, 249, 249, 0.9);
 }
 .modalBox {
-  background: #fefefe;
+  background: var(--button);
   margin: 0 auto;
   padding: 1rem;
   width: 80%;
   border: 1px solid var(--dark);
-  background: var(--button);
 }
 .modalBox textarea {
   width: 90%;
+  padding: 0.2rem;
 }
 
 .modal button {

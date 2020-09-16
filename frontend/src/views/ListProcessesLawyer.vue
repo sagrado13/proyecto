@@ -1,11 +1,11 @@
 <template>
-  <div>
+  <div id="listProcesses">
     <!-- Declaramos vue-headful -->
     <vue-headful title="Tus procesos" />
 
     <!-- SPINNER -->
     <loaderspinner :is-loading="!isLoaded">
-      <div id="listProcesses" v-if="seeListProcesses">
+      <div v-if="seeListProcesses">
         <h1>Tus Procesos</h1>
 
         <!-- ORDENACIÓN -->
@@ -50,8 +50,7 @@ import Swal from "sweetalert2";
 import listprocesseslawyercomp from "@/components/ListProcessesLawyerComp.vue";
 // Importamos el componente GetProcessLawyerComp
 import getprocesslawyercomp from "@/components/GetProcessLawyerComp.vue";
-// Importamos LoaderSpinner
-import loaderspinner from "@/components/LoaderSpinner.vue";
+
 // IMPORTAMOS FUNCIONES
 import { getIdToken } from "../api/utils";
 import { checkIsAdmin } from "../api/utils.js";
@@ -60,7 +59,6 @@ export default {
   components: {
     listprocesseslawyercomp,
     getprocesslawyercomp,
-    loaderspinner,
   },
   data() {
     return {
@@ -93,7 +91,10 @@ export default {
           this.idLawyer = getIdToken(token);
         }
         const response = await axios.get(
-          "http://localhost:3000/lawyers/" + this.idLawyer + "/list/processes",
+          process.env.VUE_APP_BACK_URL +
+            "lawyers/" +
+            this.idLawyer +
+            "/list/processes",
           {
             params: {
               order: this.order,
@@ -117,7 +118,8 @@ export default {
         this.idProcess = idProcess;
         this.seeListProcesses = false;
         const response = await axios.get(
-          "http://localhost:3000/lawyers/" +
+          process.env.VUE_APP_BACK_URL +
+            "lawyers/" +
             this.idLawyer +
             "/processes/" +
             this.idProcess
@@ -131,13 +133,15 @@ export default {
     async updateProcess(processData) {
       try {
         const response = await axios.put(
-          "http://localhost:3000/lawyers/" +
+          process.env.VUE_APP_BACK_URL +
+            "lawyers/" +
             this.idLawyer +
             "/processes/" +
             this.idProcess +
             "/edit"
         );
         this.getProcess(this.idProcess);
+        this.listProcesses(this.idLawyer);
         Swal.fire({
           title: `${response.data.message}`,
           icon: "success",
@@ -165,7 +169,7 @@ h1 {
   margin: 1rem;
 }
 div#listProcesses {
-  margin-bottom: 2rem;
+  margin-bottom: 5rem;
 }
 div#order select {
   background-color: var(--bright);
