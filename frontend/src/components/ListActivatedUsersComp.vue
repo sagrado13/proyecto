@@ -10,7 +10,7 @@
 
     <!-- DATOS DE LOS USUARIOS ACTIVOS -->
     <ul>
-      <li v-for="(user, index) in filtered" :key="user.id">
+      <li v-for="user in filtered" :key="user.id">
         <img
           :class="{ hide: user.picture_user !== null }"
           src="../assets/profile.jpeg"
@@ -55,13 +55,16 @@
           {{ formatDistanceDate(user.update_date) }}
         </p>
 
-        <!-- BOTONES PARA DAR DE BAJA -->
+        <!-- BOTONES PARA VER PROCESOS E UN USUARIO DETERMINADO -->
         <div id="button">
-          <button @click="sendDataUser(index)">Dar de baja</button>
           <router-link
             tag="button"
             :to="{ name: 'ListProcessesUser', params: { id: user.id } }"
-          >Ver procesos</router-link>
+          >Ver procesos pendientes</router-link>
+          <router-link
+            tag="button"
+            :to="{ name: 'ListProcessesResolvedUser', params: { id: user.id } }"
+          >Ver procesos resueltos</router-link>
         </div>
       </li>
     </ul>
@@ -133,11 +136,6 @@ export default {
         return process.env.VUE_APP_STATIC_USERS + picture;
       }
     },
-    // FUNCIÓN PARA ENVIAR LOS DATOS DEL USUARIO SELECCIONADO
-    sendDataUser(index) {
-      let dataUser = this.filtered[index];
-      this.$emit("data", dataUser);
-    },
     //FUNCIÓN PARA FORMATEAR FECHA
     formatDate(date) {
       return format(new Date(date), "dd/MM/yyyy");
@@ -203,9 +201,6 @@ button {
   border-radius: 20px;
   margin: 0.5rem;
   box-shadow: 5px 5px 30px var(--button) inset;
-}
-button:first-of-type {
-  box-shadow: 5px 5px 30px red inset;
 }
 
 @media (min-width: 700px) {

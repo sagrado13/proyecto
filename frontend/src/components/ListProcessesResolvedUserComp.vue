@@ -1,12 +1,12 @@
 <template>
   <div>
-    <!-- DATOS DEL LOS PROCESOS DEL ABOGADO -->
+    <!-- DATOS DE LOS PROCESOS DEL USUARIO -->
     <ul>
-      <li v-for="(process, index) in processes" :key="process.id">
+      <li v-for="(process, index) in processesResolved" :key="process.id">
         <h3>
           <span>Proceso Nº {{ process.id }}</span>
         </h3>
-        <p :class="{ hide: process.rating === null }">
+        <p>
           <star-rating
             :rating="Number(process.rating)"
             :read-only="true"
@@ -16,12 +16,12 @@
           ></star-rating>
         </p>
         <p>
-          <span>Cliente:</span>
-          {{ process.name }} {{ process.surname }}
+          <span>Abogado:</span>
+          {{ process.law_firm }}
         </p>
         <p>
-          <span>Ciudad:</span>
-          {{ process.city_user }}
+          <span>Localidad del abogado:</span>
+          {{ process.city_lawyer }}
         </p>
         <p>
           <span>Estado del proceso:</span>
@@ -53,17 +53,23 @@
           {{ formatDistanceDate(process.update_date) }}
         </p>
 
-        <!-- BOTONES PARA VER MÁS Y VER PRESUPUESTO (VER PRESUPUESTO APARECE SI EXISTE PRESUPUESTO)-->
+        <!-- BOTONES PARA VER MÁS, VER PRESUPUESTO Y VOTAR (APARECEN SI SE DAN UNAS CONDICIONES) -->
         <div id="buttons">
           <button @click="sendIdProcess(index)">Ver más</button>
           <router-link
             :class="{ hide: process.status_budget === null }"
             tag="button"
             :to="{
-                name: 'GetBudgetLawyer',
-                params: { id: process.id, idLawyer: process.id_lawyer },
-              }"
+              name: 'GetBudgetUser',
+              params: { id: process.id, idUser: process.id_user },
+            }"
           >Ver presupuesto</router-link>
+          <button
+            v-if="
+              process.status_process === 'Resuelto' && process.rating === null
+            "
+            @click="sendProcessData(index)"
+          >Votar</button>
         </div>
       </li>
     </ul>
@@ -76,15 +82,20 @@ import { format, formatDistanceToNow } from "date-fns";
 import es from "date-fns/locale/es";
 
 export default {
-  name: "ListProcessesLawyerComp",
+  name: "ListProcessesResolvedUserComp",
   props: {
-    processes: Array,
+    processesResolved: Array,
   },
   methods: {
     // FUNCIÓN QUE EMITE UN EVENTO EL CUAL ENVÍA EL ID DEL PROCESO SELECCIONADO PARA VER TODA LA INFORMACIÓN
     sendIdProcess(index) {
-      let idProcess = this.processes[index].id;
-      this.$emit("id", idProcess);
+      let idProcess = this.processesResolved[index].id;
+      this.$emit("data", idProcess);
+    },
+    // FUNCIÓN QUE EMITE UN EVENTO EL CUAL ENVÍA DATOS DEL PROCESO SELECCIONADO PARA VOTARLO
+    sendProcessData(index) {
+      let processData = this.processesResolved[index];
+      this.$emit("id", processData);
     },
     //FUNCIÓN PARA FORMATEAR FECHA
     formatDate(date) {
@@ -102,15 +113,15 @@ export default {
 </script>
 
 <style scoped>
-ul li {
-  list-style: none;
-  background-color: var(--bright);
+ul {
+  margin-bottom: 2rem;
 }
 ul li {
   list-style: none;
   border: 1px solid var(--dark);
   margin: 0.5rem;
   padding: 0.3rem;
+  background: white;
 }
 ul li h3 {
   text-decoration: underline;
@@ -131,8 +142,9 @@ p {
 }
 div#buttons {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
 }
+
 button {
   outline: none;
   margin-top: 0.5rem;

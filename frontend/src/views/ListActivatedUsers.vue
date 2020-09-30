@@ -8,47 +8,36 @@
       <img src="../assets/deshacer.svg" />
     </button>
 
-    <!-- ORDENACIÓN -->
-    <div @click="listActivatedUsers" v-if="!showLowUser">
-      <!-- TOTAL ABOGADOS DADOS DE BAJA -->
-      <div id="info">
-        <p id="quantity">
-          <img src="../assets/home/totalUser.png" alt="Total abogados" />
-          {{ totalUsers }}
-        </p>
-        <p id="info">Usuarios activos</p>
+    <!-- SPINNER -->
+    <loaderspinner :is-loading="!isLoaded">
+      <div @click="listActivatedUsers">
+        <!-- TOTAL ABOGADOS DADOS DE BAJA -->
+        <div id="info">
+          <p id="quantity">
+            <img src="../assets/home/totalUser.png" alt="Total abogados" />
+            {{ totalUsers }}
+          </p>
+          <p id="info">Usuarios activos</p>
+        </div>
+
+        <!-- ORDENACIÓN -->
+        <legend>Ordenar</legend>
+        <select v-model="order" name="order">
+          <option value>Nombre</option>
+          <option value="email">Email</option>
+          <option value="city">Ciudad</option>
+          <option value="login">Login</option>
+          <option value="updateDate">Última conexión</option>
+        </select>
+        <select v-model="direction" name="direction">
+          <option value>Ascendente</option>
+          <option value="desc">Descendente</option>
+        </select>
+
+        <!-- LISTADO DE USUARIOS ACTIVOS -->
+        <listactivateduserscomp :users="users" />
       </div>
-
-      <legend>Ordenar</legend>
-      <select v-model="order" name="order">
-        <option value>Nombre</option>
-        <option value="email">Email</option>
-        <option value="city">Ciudad</option>
-        <option value="login">Login</option>
-        <option value="updateDate">Última conexión</option>
-      </select>
-      <select v-model="direction" name="direction">
-        <option value>Ascendente</option>
-        <option value="desc">Descendente</option>
-      </select>
-
-      <!-- LISTADO DE USUARIOS ACTIVOS -->
-      <listactivateduserscomp @data="showLowUsers" :users="users" />
-    </div>
-
-    <!-- FORMULARIO PARA DAR DE BAJA -->
-    <div id="deleteUser" v-if="showLowUser">
-      <p>Dar de baja a {{ lowUser }}</p>
-      <textarea
-        v-model="lowReason"
-        name="lowReason"
-        cols="30"
-        rows="10"
-        placeholder="Motivo por el que das de baja a este usuario"
-      ></textarea>
-      <button @click="showLowUser = !showLowUser">Cancelar</button>
-      <button id="delete" @click="deleteUser">Dar de baja</button>
-    </div>
+    </loaderspinner>
   </div>
 </template>
 
@@ -70,11 +59,12 @@ export default {
       totalUsers: "",
       order: "",
       direction: "",
-      lowReason: "",
-      showLowUser: false,
-      lowUser: "",
-      idUser: "",
     };
+  },
+  computed: {
+    isLoaded() {
+      return this.users.length > 0;
+    },
   },
   methods: {
     // FUNCIÓN PARA LISTAR LOS USUARIOS ACTIVOS
@@ -100,52 +90,6 @@ export default {
           title: `${error.response.data.message}`,
         });
         window.history.back();
-      }
-    },
-    // FUNCIÓN PARA MOSTRAR FORMULARIO PARA DAR DE BAJA
-    showLowUsers(dataUser) {
-      this.showLowUser = true;
-      this.lowUser = dataUser.name + " " + dataUser.surname;
-      this.idUser = dataUser.id;
-    },
-    // FUNCIÓN PARA DAR DE BAJA UN USUARIO
-    async deleteUser() {
-      const result = await Swal.fire({
-        title: `Estas seguro de que quieres dar de baja a ${this.lowUser}`,
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Sí, estoy seguro!",
-        cancelButtonText: "No, cancelar!",
-        reverseButtons: true,
-      });
-      if (result.value) {
-        try {
-          const response = await axios.put(
-            process.env.VUE_APP_BACK_URL +
-              "users/" +
-              `${this.idUser}` +
-              "/delete",
-            {
-              lowReason: this.lowReason,
-            }
-          );
-          this.showLowUser = false;
-          Swal.fire({
-            title: "Usuario borrado correctamente",
-            icon: "success",
-          });
-        } catch (error) {
-          console.log(error);
-          Swal.fire({
-            icon: "error",
-            title: `${error.response.data.message}`,
-          });
-        }
-      } else {
-        Swal.fire({
-          title: "Baja cancelada",
-          icon: "error",
-        });
       }
     },
     // FUNCIÓN PARA VOLVER PARA ATRÁS
@@ -185,33 +129,6 @@ select {
   color: var(--dark);
   font-size: 0.7rem;
 }
-div#deleteUser {
-  display: inline-block;
-  background-color: var(--background);
-  border-radius: 30px;
-  margin: 1rem;
-  padding: 1rem;
-}
-div#deleteUser p {
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-}
-textarea {
-  outline: none;
-  font-size: 0.8rem;
-  width: 90%;
-}
-button {
-  outline: none;
-  margin: 1rem;
-  font-size: 0.5rem;
-  border-radius: 20px;
-  min-width: 55px;
-  box-shadow: 5px 5px 30px var(--button) inset;
-}
-button#delete {
-  box-shadow: 5px 5px 30px red inset;
-}
 button#back {
   margin: 0;
   box-shadow: none;
@@ -234,14 +151,6 @@ button#back img {
   select {
     font-size: 0.9rem;
   }
-  button {
-    font-size: 0.8rem;
-    min-width: 90px;
-  }
-  textarea {
-    min-width: 300px;
-    font-size: 0.9rem;
-  }
   button#back img {
     width: 20px;
   }
@@ -258,19 +167,6 @@ button#back img {
     font-size: 1.5rem;
   }
   select {
-    font-size: 1rem;
-  }
-  div#deleteUser p {
-    margin-top: 2rem;
-    margin-bottom: 2rem;
-  }
-  button {
-    font-size: 0.9rem;
-    min-width: 100px;
-  }
-  textarea {
-    min-width: 450px;
-    height: 350px;
     font-size: 1rem;
   }
   button#back img {

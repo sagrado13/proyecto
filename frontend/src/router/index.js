@@ -142,11 +142,21 @@ const routes = [
       onlyUserOrAdmin: true,
     },
   },
-  // Ver processos de usuario
+  // Ver procesos de usuario sin resolver
   {
     path: "/processes-user/",
     name: "ListProcessesUser",
     component: () => import("../views/ListProcessesUser.vue"),
+    meta: {
+      allowAnon: false,
+      onlyUserOrAdmin: true,
+    },
+  },
+  // Ver procesos de usuario resueltos
+  {
+    path: "/processes-user/resolved/",
+    name: "ListProcessesResolvedUser",
+    component: () => import("../views/ListProcessesResolvedUser.vue"),
     meta: {
       allowAnon: false,
       onlyUserOrAdmin: true,
@@ -218,11 +228,21 @@ const routes = [
       onlyLawyerOrAdmin: true,
     },
   },
-  // Ver processos de abogado
+  // Ver procesos de abogado sin resolver
   {
     path: "/processes-lawyer/",
     name: "ListProcessesLawyer",
     component: () => import("../views/ListProcessesLawyer.vue"),
+    meta: {
+      allowAnon: false,
+      onlyLawyerOrAdmin: true,
+    },
+  },
+  // Ver procesos de abogado resueltos
+  {
+    path: "/processes-lawyer/resolved",
+    name: "ListProcessesResolvedLawyer",
+    component: () => import("../views/ListProcessesResolvedLawyer.vue"),
     meta: {
       allowAnon: false,
       onlyLawyerOrAdmin: true,

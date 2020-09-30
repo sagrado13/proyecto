@@ -53,7 +53,7 @@
           {{ formatDistanceDate(process.update_date) }}
         </p>
 
-        <!-- BOTONES PARA VER MÁS, VER PRESUPUESTO Y VOTAR (APARECEN SI SE DAN UNAS CONDICIONES) -->
+        <!-- BOTONES PARA VER MÁS, VER PRESUPUESTO (APARECEN SI SE DAN UNAS CONDICIONES) -->
         <div id="buttons">
           <button @click="sendIdProcess(index)">Ver más</button>
           <router-link
@@ -63,16 +63,7 @@
               name: 'GetBudgetUser',
               params: { id: process.id, idUser: process.id_user },
             }"
-            >Ver presupuesto</router-link
-          >
-          <button
-            v-if="
-              process.status_process === 'Resuelto' && process.rating === null
-            "
-            @click="sendProcessData(index)"
-          >
-            Votar
-          </button>
+          >Ver presupuesto</router-link>
         </div>
       </li>
     </ul>
@@ -94,11 +85,6 @@ export default {
     sendIdProcess(index) {
       let idProcess = this.processes[index].id;
       this.$emit("data", idProcess);
-    },
-    // FUNCIÓN QUE EMITE UN EVENTO EL CUAL ENVÍA DATOS DEL PROCESO SELECCIONADO PARA VOTARLO
-    sendProcessData(index) {
-      let processData = this.processes[index];
-      this.$emit("id", processData);
     },
     //FUNCIÓN PARA FORMATEAR FECHA
     formatDate(date) {

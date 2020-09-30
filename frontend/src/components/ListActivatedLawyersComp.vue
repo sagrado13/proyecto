@@ -10,7 +10,7 @@
 
     <!-- DATOS DE LOS ABOGADOS ACTIVOS -->
     <ul>
-      <li v-for="(lawyer, index) in filtered" :key="lawyer.id">
+      <li v-for="lawyer in filtered" :key="lawyer.id">
         <img
           :class="{ hide: lawyer.picture_lawyer !== null }"
           src="../assets/profile.jpeg"
@@ -58,13 +58,16 @@
           {{ formatDistanceDate(lawyer.update_date) }}
         </p>
 
-        <!-- BOTONES PARA DAR DE BAJA O VER LOS PROCESOS DEL ABOGADO DETERMINADO -->
+        <!-- BOTONES PARA VER LOS PROCESOS DE UN ABOGADO DETERMINADO -->
         <div id="button">
-          <button @click="sendDataLawyer(index)">Dar de baja</button>
           <router-link
             tag="button"
             :to="{ name: 'ListProcessesLawyer', params: { id: lawyer.id } }"
-          >Ver procesos</router-link>
+          >Ver procesos pendientes</router-link>
+          <router-link
+            tag="button"
+            :to="{ name: 'ListProcessesResolvedLawyer', params: { id: lawyer.id } }"
+          >Ver procesos resueltos</router-link>
         </div>
       </li>
     </ul>
@@ -136,11 +139,6 @@ export default {
         return process.env.VUE_APP_STATIC_LAWYERS + picture;
       }
     },
-    // FUNCIÓN PARA ENVIAR EL ID DEL ABOGADO SELECCIONADO
-    sendDataLawyer(index) {
-      let dataLawyer = this.filtered[index];
-      this.$emit("data", dataLawyer);
-    },
     //FUNCIÓN PARA FORMATEAR FECHA
     formatDate(date) {
       return format(new Date(date), "dd/MM/yyyy");
@@ -205,9 +203,6 @@ button {
   border-radius: 20px;
   margin: 0.5rem;
   box-shadow: 5px 5px 30px var(--button) inset;
-}
-button:first-of-type {
-  box-shadow: 5px 5px 30px red inset;
 }
 
 @media (min-width: 700px) {

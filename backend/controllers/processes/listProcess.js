@@ -35,7 +35,7 @@ async function listProcess(req, res, next) {
             FROM processes P
             LEFT JOIN lawyers L ON P.id_lawyer=L.id
             LEFT JOIN budgets B ON B.id_process=P.id
-            WHERE P.id_user=? AND P.active=true
+            WHERE P.id_user=? AND P.active=true AND P.status_process!='Resuelto'
             ORDER BY ${orderBy} ${orderDirection}
             `,
         [idUser]
@@ -51,13 +51,35 @@ async function listProcess(req, res, next) {
 
       // Miramos si tiene algún proceso y sino lanzamos un error
       if (processUser.length === 0) {
-        throw generateError(`No tienes ningún proceso abierto`, 404);
+        throw generateError(
+          `No tienes ningún proceso abierto sin resolver`,
+          404
+        );
+      }
+
+      const [processSolvedUser] = await connection.query(
+        `
+            SELECT P.id, P.message_process, P.observations, P.status_process, P.id_user, P.creation_date, 
+            P.update_date, L.law_firm, L.city_lawyer, B.status_budget, B.price, B.rating
+            FROM processes P
+            LEFT JOIN lawyers L ON P.id_lawyer=L.id
+            LEFT JOIN budgets B ON B.id_process=P.id
+            WHERE P.id_user=? AND P.active=true AND P.status_process='Resuelto'
+            ORDER BY ${orderBy} ${orderDirection}
+            `,
+        [idUser]
+      );
+
+      // Miramos si tiene algún proceso y sino lanzamos un error
+      if (processSolvedUser.length === 0) {
+        throw generateError(`No tienes ningún proceso abierto resuelto`, 404);
       }
 
       // Damos una respuesta
       res.send({
         status: `ok`,
         data: processUser,
+        processSolvedUser,
       });
     }
 
@@ -69,7 +91,7 @@ async function listProcess(req, res, next) {
             FROM processes P
             LEFT JOIN users U ON P.id_user=U.id
             LEFT JOIN budgets B ON B.id_process=P.id
-            WHERE P.id_lawyer=? AND P.active=true
+            WHERE P.id_lawyer=? AND P.active=true AND P.status_process!='Resuelto'
             ORDER BY ${orderBy} ${orderDirection}
             `,
         [idLawyer]
@@ -85,13 +107,38 @@ async function listProcess(req, res, next) {
 
       // Comprobamos si tiene algún proceso y sino tiene lanzamos un error
       if (processLawyer.length === 0) {
-        throw generateError(`No tienes ningún proceso solicitado`, 404);
+        throw generateError(
+          `No tienes ningún proceso solicitado pendiente de resolver`,
+          404
+        );
+      }
+
+      const [processSolvedLawyer] = await connection.query(
+        `
+            SELECT P.id, P.message_process, P.observations, P.status_process, P.id_lawyer, P.creation_date, 
+            P.update_date, U.name, U.surname, U.city_user, B.status_budget, B.price, B.rating
+            FROM processes P
+            LEFT JOIN users U ON P.id_user=U.id
+            LEFT JOIN budgets B ON B.id_process=P.id
+            WHERE P.id_lawyer=? AND P.active=true AND P.status_process='Resuelto'
+            ORDER BY ${orderBy} ${orderDirection}
+            `,
+        [idLawyer]
+      );
+
+      // Comprobamos si tiene algún proceso y sino tiene lanzamos un error
+      if (processSolvedLawyer.length === 0) {
+        throw generateError(
+          `No tienes ningún proceso solicitado resuelto`,
+          404
+        );
       }
 
       // Damos una respuesta
       res.send({
         status: `ok`,
         data: processLawyer,
+        processSolvedLawyer,
       });
     }
   } catch (error) {

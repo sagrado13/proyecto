@@ -8,33 +8,36 @@
       <img src="../assets/deshacer.svg" />
     </button>
 
-    <!-- TOTAL ABOGADOS DADOS DE BAJA -->
-    <div id="info">
-      <p id="quantity">
-        <img src="../assets/home/totalLawyer.png" alt="Total abogados" />
-        {{ totalLawyers }}
-      </p>
-      <p id="info">Abogados dados de baja</p>
-    </div>
+    <!-- SPINNER -->
+    <loaderspinner :is-loading="!isLoaded">
+      <!-- TOTAL ABOGADOS DADOS DE BAJA -->
+      <div id="info">
+        <p id="quantity">
+          <img src="../assets/home/totalLawyer.png" alt="Total abogados" />
+          {{ totalLawyers }}
+        </p>
+        <p id="info">Abogados dados de baja</p>
+      </div>
 
-    <!-- ORDENACIÓN -->
-    <div @click="listDeletedLawyers">
-      <legend>Ordenar</legend>
-      <select v-model="order" name="order">
-        <option value>Bufete</option>
-        <option value="email">Email</option>
-        <option value="city">Localidad</option>
-        <option value="login">Login</option>
-        <option value="updateDate">Última conexión</option>
-      </select>
-      <select v-model="direction" name="direction">
-        <option value>Ascendente</option>
-        <option value="desc">Descendente</option>
-      </select>
-    </div>
+      <!-- ORDENACIÓN -->
+      <div @click="listDeletedLawyers">
+        <legend>Ordenar</legend>
+        <select v-model="order" name="order">
+          <option value>Bufete</option>
+          <option value="email">Email</option>
+          <option value="city">Localidad</option>
+          <option value="login">Login</option>
+          <option value="updateDate">Última conexión</option>
+        </select>
+        <select v-model="direction" name="direction">
+          <option value>Ascendente</option>
+          <option value="desc">Descendente</option>
+        </select>
+      </div>
 
-    <!-- LISTADO DE ABOGADOS DADOS DE BAJA -->
-    <listdeletedlawyerscomp @data="reactivateLawyer" :lawyers="lawyers" />
+      <!-- LISTADO DE ABOGADOS DADOS DE BAJA -->
+      <listdeletedlawyerscomp @data="reactivateLawyer" :lawyers="lawyers" />
+    </loaderspinner>
   </div>
 </template>
 
@@ -57,6 +60,11 @@ export default {
       order: "",
       direction: "",
     };
+  },
+  computed: {
+    isLoaded() {
+      return this.lawyers.length > 0;
+    },
   },
   methods: {
     // FUNCIÓN PARA LISTAR LOS ABOGADOS DADOS DE BAJA

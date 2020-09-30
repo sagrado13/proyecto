@@ -2,7 +2,7 @@
   <div>
     <!-- DATOS DEL LOS PROCESOS DEL ABOGADO -->
     <ul>
-      <li v-for="(process, index) in processes" :key="process.id">
+      <li v-for="(process, index) in processesResolved" :key="process.id">
         <h3>
           <span>Proceso Nº {{ process.id }}</span>
         </h3>
@@ -76,14 +76,14 @@ import { format, formatDistanceToNow } from "date-fns";
 import es from "date-fns/locale/es";
 
 export default {
-  name: "ListProcessesLawyerComp",
+  name: "ListProcessesResolvedLawyerComp",
   props: {
-    processes: Array,
+    processesResolved: Array,
   },
   methods: {
     // FUNCIÓN QUE EMITE UN EVENTO EL CUAL ENVÍA EL ID DEL PROCESO SELECCIONADO PARA VER TODA LA INFORMACIÓN
     sendIdProcess(index) {
-      let idProcess = this.processes[index].id;
+      let idProcess = this.processesResolved[index].id;
       this.$emit("id", idProcess);
     },
     //FUNCIÓN PARA FORMATEAR FECHA

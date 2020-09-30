@@ -8,33 +8,36 @@
       <img src="../assets/deshacer.svg" />
     </button>
 
-    <!-- TOTAL ABOGADOS DADOS DE BAJA -->
-    <div id="info">
-      <p id="quantity">
-        <img src="../assets/home/totalUser.png" alt="Total abogados" />
-        {{ totalUsers }}
-      </p>
-      <p id="info">Usuarios dados de baja</p>
-    </div>
+    <!-- SPINNER -->
+    <loaderspinner :is-loading="!isLoaded">
+      <!-- TOTAL USUARIOS DADOS DE BAJA -->
+      <div id="info">
+        <p id="quantity">
+          <img src="../assets/home/totalUser.png" alt="Total abogados" />
+          {{ totalUsers }}
+        </p>
+        <p id="info">Usuarios dados de baja</p>
+      </div>
 
-    <!-- ORDENACIÓN -->
-    <div @click="listDeletedUsers">
-      <legend>Ordenar</legend>
-      <select v-model="order" name="order">
-        <option value>Nombre</option>
-        <option value="email">Email</option>
-        <option value="city">Ciudad</option>
-        <option value="login">Login</option>
-        <option value="updateDate">Última conexión</option>
-      </select>
-      <select v-model="direction" name="direction">
-        <option value>Ascendente</option>
-        <option value="desc">Descendente</option>
-      </select>
-    </div>
+      <!-- ORDENACIÓN -->
+      <div @click="listDeletedUsers">
+        <legend>Ordenar</legend>
+        <select v-model="order" name="order">
+          <option value>Nombre</option>
+          <option value="email">Email</option>
+          <option value="city">Ciudad</option>
+          <option value="login">Login</option>
+          <option value="updateDate">Última conexión</option>
+        </select>
+        <select v-model="direction" name="direction">
+          <option value>Ascendente</option>
+          <option value="desc">Descendente</option>
+        </select>
+      </div>
 
-    <!-- LISTADO DE USUARIOS DADOS DE BAJA -->
-    <listdeleteduserscomp @data="reactivateUser" :users="users" />
+      <!-- LISTADO DE USUARIOS DADOS DE BAJA -->
+      <listdeleteduserscomp @data="reactivateUser" :users="users" />
+    </loaderspinner>
   </div>
 </template>
 
@@ -57,6 +60,11 @@ export default {
       order: "",
       direction: "",
     };
+  },
+  computed: {
+    isLoaded() {
+      return this.users.length > 0;
+    },
   },
   methods: {
     // FUNCIÓN PARA LISTAR LOS USUARIOS DADOS DE BAJA
@@ -87,9 +95,9 @@ export default {
     // FUNCIÓN PARA REACTIVAR LA CUENTA DE UN USUARIO
     async reactivateUser(dataUser) {
       const result = await Swal.fire({
-        title: `Estas seguro de que quieres reactivar la cuenta de ${dataUser.name +
-          " " +
-          dataUser.surname}`,
+        title: `Estas seguro de que quieres reactivar la cuenta de ${
+          dataUser.name + " " + dataUser.surname
+        }`,
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: "Sí, estoy seguro!",

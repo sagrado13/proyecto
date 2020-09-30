@@ -1,12 +1,12 @@
 <template>
   <div id="listProcesses">
     <!-- Declaramos vue-headful -->
-    <vue-headful title="Tus procesos" />
+    <vue-headful title="Tus procesos resueltos" />
 
     <!-- SPINNER -->
-    <loaderspinner :is-loading="!isLoaded">
+    <loaderspinner>
       <div v-if="seeListProcesses">
-        <h1>Tus Procesos Pendientes</h1>
+        <h1>Tus Procesos Resueltos</h1>
 
         <!-- ORDENACIÓN -->
         <div id="order" @click="listProcesses">
@@ -22,7 +22,11 @@
         </div>
 
         <!-- LISTADO DE PROCESOS DEL USUARIO -->
-        <listprocessesusercomp @data="getProcess" :processes="processes" />
+        <listprocessesresolvedusercomp
+          @data="getProcess"
+          @id="getIdProcessRating"
+          :processesResolved="processesResolved"
+        />
       </div>
       <div v-if="!seeListProcesses">
         <!-- BOTÓN DE VOLVER ATRÁS -->
@@ -33,23 +37,21 @@
         <!-- DATOS DEL PROCESO DETERMINADO -->
         <div id="getProcess">
           <h2>Proceso Nº {{ idProcess }}</h2>
-          <getprocessusercomp @data="showObservations" @delete="deleteProcess" :process="process" />
+          <getprocessusercomp @delete="deleteProcess" :process="process" />
+        </div>
+      </div>
 
-          <!-- MODAL PARA EDITAR PROCESO -->
-          <div v-if="seeModal" class="modal">
-            <div class="modalBox">
-              <h3>Editar observaciones del proceso Nº {{ idProcess }}:</h3>
-              <textarea
-                placeholder="Observaciones"
-                v-model="observations"
-                name="observations"
-                cols="30"
-                rows="15"
-              ></textarea>
-              <button @click="seeModal = !seeModal">Cancelar</button>
-              <button @click="updateProcess()">Actualizar</button>
-            </div>
-          </div>
+      <!-- MODAL PARA VOTAR PROCESO -->
+      <div id="rating" v-if="seeModalRating" class="modal">
+        <div class="modalBox">
+          <h3>
+            Puntuación del proceso Nº {{ idProcess }}, resuelto por
+            {{ lawyerRating }}
+          </h3>
+          <star-rating v-model="rating" :star-size="35" :inline="true" :glow="5"></star-rating>
+          <textarea v-model="opinion" name="opinion" cols="40" rows="10" placeholder="Opinión"></textarea>
+          <button @click="cancellRating()">Cancelar</button>
+          <button @click="ratingProcess()">Votar</button>
         </div>
       </div>
     </loaderspinner>
@@ -61,36 +63,38 @@
 import axios from "axios";
 // Importamos sweetalert2
 import Swal from "sweetalert2";
-// Importamos el componente ListProcessesUserComp
-import listprocessesusercomp from "@/components/ListProcessesUserComp.vue";
+// Importamos el componente ListProcessesResolvedUserComp
+import listprocessesresolvedusercomp from "@/components/ListProcessesResolvedUserComp.vue";
 // Importamos el componente GetProcessUserComp
 import getprocessusercomp from "@/components/GetProcessUserComp.vue";
 // IMPORTAMOS FUNCIONES
 import { getIdToken } from "../api/utils";
 import { checkIsAdmin } from "../api/utils.js";
 export default {
-  name: "ListProcessesUser",
+  name: "ListProcessesResolvedUser",
   components: {
-    listprocessesusercomp,
+    listprocessesresolvedusercomp,
     getprocessusercomp,
   },
   data() {
     return {
-      processes: [],
+      processesResolved: [],
       seeListProcesses: true,
       order: "",
       direction: "",
       idProcess: "",
       idUser: "",
       process: null,
-      seeModal: false,
-      observations: "",
+      rating: 0,
+      opinion: "",
+      seeModalRating: false,
+      lawyerRating: "",
     };
   },
   computed: {
-    isLoaded() {
-      return this.processes.length > 0 || this.process === null;
-    },
+    /*     isLoaded() {
+      return this.processesResolved.length > 0 || this.process === null;
+    }, */
   },
   methods: {
     // FUNCIÓN PARA OBTENER LISTADO DE PROCESOS DE USUARIO
@@ -117,7 +121,7 @@ export default {
             },
           }
         );
-        this.processes = response.data.data;
+        this.processesResolved = response.data.processSolvedUser;
       } catch (error) {
         console.log(error.response.data);
         Swal.fire({
@@ -146,36 +150,6 @@ export default {
         this.process = response.data.data[0];
       } catch (error) {
         console.log(error);
-      }
-    },
-    //FUNCIÓN PARA MOSTRAR LAS OBSERVACIONES DEL PROCESO
-    showObservations(processData) {
-      this.observations = processData.observations;
-      this.seeModal = true;
-    },
-    // FUNCIÓN PARA ACTUALIZAR LAS OBSERVACIONES DE UN PROCESO
-    async updateProcess() {
-      try {
-        const response = await axios.put(
-          process.env.VUE_APP_BACK_URL +
-            "users/" +
-            this.idUser +
-            "/processes/" +
-            this.idProcess +
-            "/edit",
-          {
-            observations: this.observations,
-          }
-        );
-        this.seeModal = false;
-        this.getProcess(this.idProcess);
-        console.log(response);
-      } catch (error) {
-        console.log(error.response.data);
-        Swal.fire({
-          icon: "error",
-          title: `${error.response.data.message}`,
-        });
       }
     },
     // FUNCIÓN PARA BORRAR PROCESO
@@ -216,6 +190,69 @@ export default {
         Swal.fire({
           title: "Borrado de proceso cancelado",
           icon: "error",
+        });
+      }
+    },
+    // FUNCIÓN PARA MOSTAR EL MODAL PARA VOTAR PROCESO DETERMINADO
+    getIdProcessRating(processData) {
+      this.idProcess = processData.id;
+      this.lawyerRating = processData.law_firm;
+      this.seeListProcesses = false;
+      this.seeModalRating = true;
+    },
+    // FUNCIÓN PARA CANCELAR LA VOTACIÓN
+    cancellRating() {
+      this.seeModalRating = false;
+      this.seeListProcesses = true;
+    },
+    // FUNCIÓN PARA VOTAR
+    async ratingProcess() {
+      try {
+        if (this.opinion.length > 0) {
+          const response = await axios.put(
+            process.env.VUE_APP_BACK_URL +
+              "users/" +
+              this.idUser +
+              "/processes/" +
+              this.idProcess +
+              "/budgets",
+            {
+              rating: this.rating,
+              opinion: this.opinion,
+            }
+          );
+          this.listProcesses();
+          this.seeModalRating = false;
+          this.seeListProcesses = true;
+          Swal.fire({
+            icon: "success",
+            title: `${response.data.message}`,
+          });
+        } else {
+          const response = await axios.put(
+            process.env.VUE_APP_BACK_URL +
+              "users/" +
+              this.idUser +
+              "/processes/" +
+              this.idProcess +
+              "/budgets",
+            {
+              rating: this.rating,
+            }
+          );
+          this.seeModalRating = false;
+          this.seeListProcesses = true;
+          this.listProcesses();
+          Swal.fire({
+            icon: "success",
+            title: `${response.data.message}`,
+          });
+        }
+      } catch (error) {
+        console.log(error.response.data.message);
+        Swal.fire({
+          icon: "error",
+          title: `${error.response.data.message}`,
         });
       }
     },
@@ -282,6 +319,24 @@ button#back {
   border-radius: 20px;
   margin: 0.5rem;
 }
+div#rating {
+  display: flex;
+  align-items: center;
+}
+div#rating h3 {
+  margin-bottom: 2rem;
+}
+div#rating textarea {
+  outline: none;
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+}
+div#rating button {
+  font-size: 0.8rem;
+}
+div#rating button:last-of-type {
+  box-shadow: 5px 5px 30px yellowgreen inset;
+}
 
 @media (min-width: 700px) {
   div#order select {
@@ -304,6 +359,12 @@ button#back {
     display: flex;
     align-items: center;
   }
+  div#rating textarea {
+    font-size: 1rem;
+  }
+  div#rating button {
+    font-size: 0.9rem;
+  }
 
   @media (min-width: 1000px) {
     div#order select {
@@ -325,6 +386,15 @@ button#back {
     div.modal textarea {
       width: 90%;
       font-size: 1.25rem;
+    }
+    div#rating h3 {
+      font-size: 1.4rem;
+    }
+    div#rating textarea {
+      font-size: 1.25rem;
+    }
+    div#rating button {
+      font-size: 1rem;
     }
   }
 }

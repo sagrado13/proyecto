@@ -4,12 +4,8 @@
     <vue-headful title="Datos del presupuesto" />
 
     <!-- BOTÓN DE VOLVER ATRÁS -->
-    <button id="back">
-      <router-link
-        :to="{ name: 'ListProcessesLawyer', params: { id: this.idLawyer } }"
-      >
-        <img src="../assets/deshacer.svg" />
-      </router-link>
+    <button id="back" @click="goBack">
+      <img src="../assets/deshacer.svg" />
     </button>
 
     <div id="main">
@@ -18,9 +14,7 @@
       <!-- MODAL PARA EDITAR EL MENSAJE DEL PRESUPUESTO -->
       <div v-if="seeModal" class="modal">
         <div class="modalBox">
-          <legend id="message">
-            Mensaje para {{ customerName }} {{ customerSurname }}
-          </legend>
+          <legend id="message">Mensaje para {{ customerName }} {{ customerSurname }}</legend>
           <textarea
             v-model="message"
             placeholder="Mensaje para cliente"
@@ -47,12 +41,8 @@
           budget.status_budget === 'Pendiente de respuesta' || isAdmin === true
         "
       >
-        <button @click="seeModal = !seeModal">
-          Editar
-        </button>
-        <button id="delete" @click="deleteBudget()">
-          Borrar
-        </button>
+        <button @click="seeModal = !seeModal">Editar</button>
+        <button id="delete" @click="deleteBudget()">Borrar</button>
       </div>
     </div>
   </div>
@@ -206,6 +196,10 @@ export default {
           icon: "error",
         });
       }
+    },
+    // FUNCIÓN PARA VOLVER PARA ATRÁS
+    goBack() {
+      window.history.back();
     },
   },
   created() {

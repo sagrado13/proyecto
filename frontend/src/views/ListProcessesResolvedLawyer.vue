@@ -6,7 +6,7 @@
     <!-- SPINNER -->
     <loaderspinner :is-loading="!isLoaded">
       <div v-if="seeListProcesses">
-        <h1>Tus Procesos Pendientes</h1>
+        <h1>Tus Procesos Resueltos</h1>
 
         <!-- ORDENACIÓN -->
         <div id="order" @click="listProcesses">
@@ -22,7 +22,7 @@
         </div>
 
         <!-- LISTADO DE PROCESOS DEL ABOGADO -->
-        <listprocesseslawyercomp @id="getProcess" :processes="processes" />
+        <listprocessesresolvedlawyercomp @id="getProcess" :processesResolved="processesResolved" />
       </div>
 
       <div v-if="!seeListProcesses">
@@ -34,7 +34,7 @@
         <!-- DATOS DE PROCESO DETERMINADO -->
         <div id="getProcess">
           <h2>Proceso Nº {{ idProcess }}</h2>
-          <getprocesslawyercomp @data="updateProcess" :process="process" />
+          <getprocesslawyercomp :process="process" />
         </div>
       </div>
     </loaderspinner>
@@ -47,7 +47,7 @@ import axios from "axios";
 // Importamos sweetalert2
 import Swal from "sweetalert2";
 // Importamos el componente ListProcessesLawyerComp
-import listprocesseslawyercomp from "@/components/ListProcessesLawyerComp.vue";
+import listprocessesresolvedlawyercomp from "@/components/ListProcessesResolvedLawyerComp.vue";
 // Importamos el componente GetProcessLawyerComp
 import getprocesslawyercomp from "@/components/GetProcessLawyerComp.vue";
 
@@ -55,26 +55,25 @@ import getprocesslawyercomp from "@/components/GetProcessLawyerComp.vue";
 import { getIdToken } from "../api/utils";
 import { checkIsAdmin } from "../api/utils.js";
 export default {
-  name: "ListProcessesLawyer",
+  name: "ListProcessesResolvedLawyer",
   components: {
-    listprocesseslawyercomp,
+    listprocessesresolvedlawyercomp,
     getprocesslawyercomp,
   },
   data() {
     return {
       idLawyer: "",
-      processes: [],
+      processesResolved: [],
       seeListProcesses: true,
       order: "",
       direction: "",
       idProcess: "",
       process: null,
-      statusProcess: "",
     };
   },
   computed: {
     isLoaded() {
-      return this.processes !== null || this.process !== null;
+      return this.processesResolved !== null || this.process !== null;
     },
   },
   methods: {
@@ -102,7 +101,7 @@ export default {
             },
           }
         );
-        this.processes = response.data.data;
+        this.processesResolved = response.data.processSolvedLawyer;
       } catch (error) {
         console.log(error);
         Swal.fire({
@@ -127,32 +126,6 @@ export default {
         this.process = response.data.data[0];
       } catch (error) {
         console.log(error.response.data.message);
-      }
-    },
-    // FUNCIÓN PARA ACTUALIZAR EL ESTADO DE UN PROCESO
-    async updateProcess(processData) {
-      try {
-        const response = await axios.put(
-          process.env.VUE_APP_BACK_URL +
-            "lawyers/" +
-            this.idLawyer +
-            "/processes/" +
-            this.idProcess +
-            "/edit"
-        );
-        this.getProcess(this.idProcess);
-        this.listProcesses(this.idLawyer);
-        Swal.fire({
-          title: `${response.data.message}`,
-          icon: "success",
-          confirmButtonText: "OK",
-        });
-      } catch (error) {
-        console.log(error);
-        Swal.fire({
-          icon: "error",
-          title: `${error.response.data.message}`,
-        });
       }
     },
   },

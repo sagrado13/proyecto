@@ -4,12 +4,8 @@
     <vue-headful title="Datos del presupuesto" />
 
     <!-- BOTÓN DE VOLVER ATRÁS -->
-    <button id="back">
-      <router-link
-        :to="{ name: 'ListProcessesUser', params: { id: this.idUser } }"
-      >
-        <img src="../assets/deshacer.svg" />
-      </router-link>
+    <button id="back" @click="goBack">
+      <img src="../assets/deshacer.svg" />
     </button>
 
     <!-- PRESUPUESTO -->
@@ -19,19 +15,9 @@
         <!-- ACEPTAR O RECHARZAR EL PRESUPUESTO -->
         <fieldset>
           <legend>Acepta o rechaza el presupuesto</legend>
-          <input
-            v-model="statusBudget"
-            type="radio"
-            name="aceptar"
-            value="Aceptado"
-          />
+          <input v-model="statusBudget" type="radio" name="aceptar" value="Aceptado" />
           <label>Aceptar</label>
-          <input
-            v-model="statusBudget"
-            type="radio"
-            name="rechazar"
-            value="Rechazado"
-          />
+          <input v-model="statusBudget" type="radio" name="rechazar" value="Rechazado" />
           <label>Rechazar</label>
           <button id="send" @click="editBudget()">Enviar</button>
         </fieldset>
